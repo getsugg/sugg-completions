@@ -13,6 +13,7 @@ import { platform } from "os";
 import { createHighlighter } from "shiki";
 import { createTransformerFactory, rendererRich, rendererClassic } from "@shikijs/twoslash";
 import { createTwoslasher } from "twoslash";
+import { scanSource } from "../src/scan.js";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const completionsDir = join(__dirname, "..", "..", "completions");
@@ -34,6 +35,7 @@ mkdirSync(highlightedDir, { recursive: true });
 interface ScriptEntry {
   stem: string;
   path: string;
+  analysis?: string;
 }
 
 const entries: ScriptEntry[] = [];
@@ -78,6 +80,8 @@ for (const entry of entries) {
   const fullPath = join(completionsDir, entry.path.replace("./completions/", ""));
   const source = readFileSync(fullPath, "utf-8");
 
+  entry.analysis = JSON.stringify(scanSource(source));
+
   const htmlRich = highlighter.codeToHtml(source, {
     lang: "ts",
     theme: "dark-plus",
@@ -96,7 +100,7 @@ for (const entry of entries) {
 const list = entries
   .map(
     (e) =>
-      `  { stem: "${e.stem}", title: "${e.stem}", description: "${e.stem}", source: () => fetchSource("${e.stem}"), highlighted: () => fetchHighlighted("${e.stem}"), highlightedClassic: () => fetchHighlightedClassic("${e.stem}") },`,
+      `  { stem: "${e.stem}", title: "${e.stem}", description: "${e.stem}", source: () => fetchSource("${e.stem}"), highlighted: () => fetchHighlighted("${e.stem}"), highlightedClassic: () => fetchHighlightedClassic("${e.stem}"), staticAnalysis: JSON.parse('${e.analysis}') },`,
   )
   .join("\n");
 
@@ -117,6 +121,7 @@ export interface ScriptInfo {
   source: () => Promise<string>
   highlighted: () => Promise<string>
   highlightedClassic: () => Promise<string>
+  staticAnalysis: { line: number; type: "danger" | "dynamic" | "safe"; api?: string }[]
 }
 
 const scripts: ScriptInfo[] = [
