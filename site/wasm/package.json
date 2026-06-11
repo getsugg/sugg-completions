@@ -1,0 +1,15 @@
+{
+  "name": "sugg-wasm",
+  "version": "0.3.4",
+  "files": [
+    "sugg_wasm_bg.wasm",
+    "sugg_wasm.js",
+    "sugg_wasm.d.ts"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "./snippets/*"
+  ],
+  "main": "sugg_wasm.js",
+  "types": "sugg_wasm.d.ts"
+}

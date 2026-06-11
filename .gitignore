@@ -1,0 +1,8 @@
+node_modules/
+dist/
+site/node_modules/
+site/dist/
+*.local
+AGENTS.md
+site/snapshots/
+site/public/highlighted/
