@@ -123,21 +123,21 @@
 
 .dark,
 [data-kb-theme="dark"] {
-  --background: 222 14% 10%;
+  --background: 220 14% 7%;
   --foreground: 210 13% 89%;
-  --muted: 216 12% 16%;
-  --muted-foreground: 210 8% 48%;
+  --muted: 215 10% 15%;
+  --muted-foreground: 215 8% 55%;
   --accent: 38 98% 50%;
   --accent-foreground: 222 14% 10%;
-  --popover: 222 14% 10%;
+  --popover: 220 14% 7%;
   --popover-foreground: 210 13% 89%;
-  --border: 216 12% 16%;
-  --input: 216 12% 16%;
-  --card: 222 14% 10%;
+  --border: 215 10% 15%;
+  --input: 215 10% 15%;
+  --card: 220 14% 12%;
   --card-foreground: 210 13% 89%;
   --primary: 38 98% 50%;
   --primary-foreground: 222 14% 10%;
-  --secondary: 216 12% 16%;
+  --secondary: 215 10% 15%;
   --secondary-foreground: 210 13% 89%;
   --destructive: 0 70% 35%;
   --destructive-foreground: 0 0% 98%;
@@ -197,7 +197,7 @@ body {
 .source-viewer {
   font-size: 13px;
   font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
-  line-height: 1.35;
+  line-height: 1.7;
 }
 .source-viewer .line-row {
   display: flex;
@@ -210,11 +210,11 @@ body {
   display: flex;
   align-items: center;
   content: attr(data-line-number);
-  width: 32px;
+  width: 40px;
   flex-shrink: 0;
   text-align: right;
-  padding: 0 8px 0 0;
-  margin-right: 6px;
+  padding: 0 12px 0 0;
+  margin-right: 12px;
   color: #484f58;
   font-size: 11px;
   font-family: "JetBrains Mono", "Fira Code", monospace;

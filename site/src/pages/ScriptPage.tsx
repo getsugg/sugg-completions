@@ -74,7 +74,7 @@ export default function ScriptPage() {
           </div>
         </Show>
         <Show when={!analysis.loading && analysis()}>
-          <div class="flex items-center gap-1.5 rounded border border-border px-2.5 py-1 text-[10px] text-muted-foreground">
+          <div class="flex items-center gap-1.5 rounded border border-[#30363d] bg-[#21262d] px-2.5 py-1 text-[10px] text-[#8b949e]">
             <span class="text-green-500">✓</span>
             自动分析
             {counts().danger > 0 && (

@@ -17,7 +17,7 @@ function App() {
 
   return (
     <div class="min-h-screen bg-background text-foreground">
-      <header class="flex items-center gap-3 border-b border-border px-5 py-0 h-12">
+      <header class="flex items-center gap-3 border-b border-border px-5 py-0 h-12 bg-card">
         <h1 class="text-base font-semibold text-primary before:content-['❯_'] before:text-green-500">
           Sugg Completions
         </h1>
