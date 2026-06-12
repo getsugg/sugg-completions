@@ -1,12 +1,11 @@
 import { Show, createMemo } from "solid-js";
 import { useParams } from "@solidjs/router";
 import { ScriptList } from "./components/ScriptList";
-import HomePage from "./HomePage";
-import ScriptPage from "./ScriptPage";
-
-import NotFound from "./NotFound";
+import HomePage from "./pages/HomePage";
+import ScriptPage from "./pages/ScriptPage";
+import NotFound from "./pages/NotFound";
 import scripts from "./scripts";
-import { getScript } from "./scripts-utils";
+import { getScript } from "./lib/scripts-utils";
 import "@shikijs/twoslash/style-rich.css";
 import "./App.css";
 

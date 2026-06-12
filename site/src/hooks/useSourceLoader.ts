@@ -1,5 +1,5 @@
 import { createResource, createMemo } from "solid-js";
-import { getScript, fetchSource, fetchHighlighted } from "../scripts-utils";
+import { getScript, fetchSource, fetchHighlighted } from "../lib/scripts-utils";
 
 export function useSourceLoader(stem: () => string | null) {
   const [source] = createResource(stem, async (s) => {

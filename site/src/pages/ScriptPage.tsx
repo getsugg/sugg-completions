@@ -1,12 +1,12 @@
 import { Show, createSignal, createMemo, createEffect } from "solid-js";
 import { useParams } from "@solidjs/router";
-import { useSourceLoader } from "./hooks/useSourceLoader";
-import { useAnalysis } from "./hooks/useAnalysis";
-import { getScript } from "./scripts-utils";
+import { useSourceLoader } from "../hooks/useSourceLoader";
+import { useAnalysis } from "../hooks/useAnalysis";
+import { getScript } from "../lib/scripts-utils";
 import { Resizable, ResizablePanel, ResizableHandle } from "~/components/ui/resizable";
-import { SourceViewer } from "./components/SourceViewer";
-import { DetailArea } from "./DetailArea";
-import type { FilterType } from "./types";
+import { SourceViewer } from "../components/SourceViewer";
+import { DetailArea } from "../components/DetailArea";
+import type { FilterType, LineAnnotation } from "../types";
 
 const scrollPositions = new Map<string, number>();
 
@@ -46,7 +46,7 @@ export default function ScriptPage() {
   });
 
   const lineClasses = createMemo(() => {
-    const anns = analysis()?.anns ?? [];
+    const anns: LineAnnotation[] = analysis()?.anns ?? [];
     const filter = filteredType();
     const n = rawLines().length;
     const classes: string[] = [];

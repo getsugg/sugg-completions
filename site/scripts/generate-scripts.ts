@@ -13,7 +13,7 @@ import { platform } from "os";
 import { createHighlighter } from "shiki";
 import { createTransformerFactory, rendererRich } from "@shikijs/twoslash";
 import { createTwoslasher } from "twoslash";
-import { scanSource } from "../src/scan.js";
+import { scanSource } from "../src/lib/scan.js";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const completionsDir = join(__dirname, "..", "..", "completions");

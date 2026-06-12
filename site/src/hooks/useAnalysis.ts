@@ -1,8 +1,8 @@
 import { createResource, createMemo } from "solid-js";
-import { ensureWasm, extract, analyzeApis } from "../parser";
-import { scanSource } from "../scan";
-import type { AnalysisData } from "../types";
-import { getScript, fetchSource } from "../scripts-utils";
+import { ensureWasm, extract, analyzeApis } from "../lib/parser";
+import { scanSource } from "../lib/scan";
+import type { AnalysisData, LineAnnotation } from "../types";
+import { getScript, fetchSource } from "../lib/scripts-utils";
 
 const analysisCache = new Map<string, AnalysisData>();
 
@@ -14,7 +14,8 @@ export function useAnalysis(stem: () => string | null) {
     const script = getScript(s);
     if (!script) return undefined;
     const src = await fetchSource(script);
-    const anns = script.staticAnalysis.length > 0 ? script.staticAnalysis : scanSource(src);
+    const anns: LineAnnotation[] =
+      script.staticAnalysis.length > 0 ? script.staticAnalysis : scanSource(src);
     await ensureWasm();
     const r = extract(src, "script.ts");
     const apis = r.dynamic.trim() ? analyzeApis(r.dynamic) : [];
@@ -24,7 +25,7 @@ export function useAnalysis(stem: () => string | null) {
   });
 
   const counts = createMemo(() => {
-    const anns = data()?.anns ?? [];
+    const anns: LineAnnotation[] = data()?.anns ?? [];
     return {
       total: anns.length,
       danger: anns.filter((a) => a.type === "danger").length,

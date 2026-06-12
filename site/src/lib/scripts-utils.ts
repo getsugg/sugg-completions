@@ -1,5 +1,5 @@
-import scripts from "./scripts";
-import type { ScriptInfo } from "./types";
+import scripts from "../scripts";
+import type { ScriptInfo } from "../types";
 
 export function getScript(stem: string): ScriptInfo | undefined {
   return scripts.find((s) => s.stem === stem);

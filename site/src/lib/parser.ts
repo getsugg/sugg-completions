@@ -1,5 +1,5 @@
-import init, { extract as wasmExtract, analyze_apis as wasmAnalyze } from "../wasm/sugg_wasm.js";
-import wasmUrl from "../wasm/sugg_wasm_bg.wasm?url";
+import init, { extract as wasmExtract, analyze_apis as wasmAnalyze } from "../../wasm/sugg_wasm.js";
+import wasmUrl from "../../wasm/sugg_wasm_bg.wasm?url";
 
 let ready = false;
 let initPromise: Promise<void> | null = null;

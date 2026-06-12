@@ -1,11 +1,11 @@
 import { Show, createSignal, createMemo, createEffect, onMount } from "solid-js";
 import ResizablePrimitive from "@corvu/resizable";
 import { createResizeObserver } from "@solid-primitives/resize-observer";
-import type { AnalysisData, FilterType } from "./types";
-import { FilterBar } from "./components/FilterBar";
-import { AnnotationList } from "./components/AnnotationList";
-import { DynamicCodePanel } from "./components/DynamicCodePanel";
-import { StaticCodePanel } from "./components/StaticCodePanel";
+import type { AnalysisData, FilterType } from "../types";
+import { FilterBar } from "./FilterBar";
+import { AnnotationList } from "./AnnotationList";
+import { DynamicCodePanel } from "./DynamicCodePanel";
+import { StaticCodePanel } from "./StaticCodePanel";
 
 export interface DetailAreaProps {
   analysis: () => AnalysisData | undefined;
@@ -51,12 +51,7 @@ export function DetailArea(props: DetailAreaProps) {
     }
   };
 
-  let cachedAnalysis: AnalysisData | undefined;
-  createEffect(() => {
-    if (props.analysis()) cachedAnalysis = props.analysis();
-  });
-
-  const displayAnalysis = () => props.analysis() ?? cachedAnalysis;
+  const displayAnalysis = createMemo((prev: AnalysisData | undefined) => props.analysis() ?? prev);
   const [activeTab, setActiveTab] = createSignal<"summary" | "dynamic" | "static">("summary");
 
   const matchedLines = createMemo(() => {
