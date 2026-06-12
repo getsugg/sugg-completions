@@ -1,9 +1,10 @@
-import { createResource, createSignal, Show, createEffect, createMemo } from "solid-js";
+import { createResource, createSignal, Show, createEffect, createMemo, For } from "solid-js";
 import type { Component } from "solid-js";
 import { useParams, useNavigate } from "@solidjs/router";
+import { createVirtualizer } from "@tanstack/solid-virtual";
 import "@shikijs/twoslash/style-rich.css";
 import "./App.css";
-import scripts, { getScript } from "./scripts";
+import scripts, { getScript, type ScriptInfo } from "./scripts";
 import { ensureWasm, extract, analyzeApis } from "./parser";
 import type { ExtractResult, ApiUsage } from "./parser";
 import { scanSource } from "./scan";
@@ -42,40 +43,79 @@ const App: Component = () => {
 
   void ensureWasm();
 
-  // ——— Source & Highlighting (dual-load: classic fallback) ———
+  // ——— Source & Highlighting ———
   const [source] = createResource(selectedStem, async (stem) => {
     if (!stem) return "";
     return getScript(stem)?.source() ?? "";
-  });
-  const [twoslashClassic] = createResource(selectedStem, async (stem) => {
-    if (!stem) return "";
-    return getScript(stem)?.highlightedClassic() ?? "";
   });
   const [twoslashHighlighted] = createResource(selectedStem, async (stem) => {
     if (!stem) return "";
     return getScript(stem)?.highlighted() ?? "";
   });
-  const [visibleContent, setVisibleContent] = createSignal("");
-  const [visibleStem, setVisibleStem] = createSignal("");
-  createEffect(() => {
-    const h = twoslashHighlighted() || twoslashClassic();
-    const stem = selectedStem();
-    if (h && stem) {
-      setVisibleContent(h);
-      setVisibleStem(stem);
+  // ——— Line extraction & virtual scrolling ———
+  const rawLines = createMemo(() => {
+    const html = twoslashHighlighted();
+    if (!html) return [];
+    const lines: string[] = [];
+    let pos = 0;
+    const marker = '<span class="line"';
+    while (true) {
+      const start = html.indexOf(marker, pos);
+      if (start === -1) break;
+      const tagEnd = html.indexOf(">", start);
+      if (tagEnd === -1) break;
+      let depth = 1;
+      let i = tagEnd + 1;
+      while (depth > 0 && i < html.length) {
+        const nextOpen = html.indexOf("<span", i);
+        const nextClose = html.indexOf("</span>", i);
+        if (nextClose === -1) break;
+        if (nextOpen !== -1 && nextOpen < nextClose) {
+          depth++;
+          i = nextOpen + 6;
+        } else {
+          depth--;
+          i = nextClose + 7;
+        }
+      }
+      lines.push(html.slice(start, i));
+      pos = i;
     }
+    return lines;
   });
 
-  // ——— Filter / Panel / Search ———
+  let scrollEl: HTMLDivElement | undefined;
+  const virtualizer = createVirtualizer({
+    get count() {
+      return rawLines().length;
+    },
+    getScrollElement: () => scrollEl ?? null,
+    estimateSize: () => 22,
+    overscan: 10,
+  });
+
+  // ——— Per-script state, saved/restored on switch ———
+  interface ScriptUIState {
+    filteredType: FilterType;
+    panelOpen: boolean;
+    activeTab: "summary" | "dynamic" | "static";
+    searchQuery: string;
+    focusIdx: number;
+    scrollTop: number;
+  }
+
   const [filteredType, setFilteredType] = createSignal<FilterType>("all");
   const [panelOpen, setPanelOpen] = createSignal(false);
   const [activeTab, setActiveTab] = createSignal<"summary" | "dynamic" | "static">("summary");
   const [searchQuery, setSearchQuery] = createSignal("");
+  const [focusIdx, setFocusIdx] = createSignal(-1);
+
+  let prevScript: (ScriptInfo & { ui?: ScriptUIState }) | null = null;
 
   // ——— Analysis (runs AFTER highlighted content is visible) ———
   const analysisCache = new Map<string, AnalysisData>();
   const [analysis] = createResource(
-    () => visibleStem() || null,
+    () => selectedStem(),
     async (stem): Promise<AnalysisData> => {
       const cached = analysisCache.get(stem);
       if (cached) return cached;
@@ -91,48 +131,90 @@ const App: Component = () => {
     },
   );
 
-  // eslint-disable-next-line no-unassigned-vars
-  let sourceDiv: HTMLDivElement | undefined;
+  // Line annotation classes (data-driven, no DOM queries)
+  const lineClasses = createMemo(() => {
+    const anns = analysis()?.anns ?? [];
+    const filter = filteredType();
+    const n = rawLines().length;
+    const classes: string[] = [];
+    for (let i = 0; i < n; i++) {
+      const ann = anns.find((a) => a.line === i);
+      let cls = "";
+      if (ann) cls = `line-${ann.type}`;
+      if (filter !== "all" && (!ann || ann.type !== filter))
+        cls = cls ? cls + " line-muted" : "line-muted";
+      classes[i] = cls;
+    }
+    return classes;
+  });
 
-  // Apply annotation CSS classes to DOM lines
+  // Matched lines for ◀▶ navigation
+  const matchedLines = createMemo(() => {
+    const filter = filteredType();
+    if (filter === "all") return [];
+    return (analysis()?.anns ?? [])
+      .filter((a) => a.type === filter)
+      .map((a) => a.line)
+      .sort((a, b) => a - b);
+  });
+  // Save/restore on script switch
   createEffect(() => {
     const stem = selectedStem();
-    const vStem = visibleStem();
-    const data = analysis();
-    const filter = filteredType();
-    const html = visibleContent();
-    if (!data || !sourceDiv || !html) return;
-    if (data.stem !== stem || stem !== vStem) return;
-    queueMicrotask(() => {
-      const lines = sourceDiv!.querySelectorAll("span.line");
-      for (const el of lines)
-        el.classList.remove("line-danger", "line-dynamic", "line-safe", "line-muted");
-      for (const a of data.anns) {
-        const el = lines[a.line];
-        if (el) el.classList.add(`line-${a.type}`);
-      }
-      if (filter !== "all") {
-        for (let i = 0; i < lines.length; i++) {
-          const el = lines[i];
-          const ann = data.anns.find((a) => a.line === i);
-          if (!ann || ann.type !== filter) el.classList.add("line-muted");
-        }
-      }
+    if (!stem) {
+      prevScript = null;
+      return;
+    }
+    const script = getScript(stem) as (ScriptInfo & { ui?: ScriptUIState }) | undefined;
+    if (!script) {
+      prevScript = null;
+      return;
+    }
+
+    if (prevScript && scrollEl) {
+      prevScript.ui = {
+        filteredType: filteredType(),
+        panelOpen: panelOpen(),
+        activeTab: activeTab(),
+        searchQuery: searchQuery(),
+        focusIdx: focusIdx(),
+        scrollTop: Math.max(0, scrollEl.scrollTop),
+      };
+    }
+    prevScript = script;
+
+    const s = script.ui;
+    if (s) {
+      setFilteredType(s.filteredType);
+      setPanelOpen(s.panelOpen);
+      setActiveTab(s.activeTab);
+      setSearchQuery(s.searchQuery);
+      setFocusIdx(s.focusIdx);
+    } else {
+      setPanelOpen(false);
+      setFilteredType("all");
+      setFocusIdx(-1);
+      setSearchQuery("");
+    }
+  });
+
+  // Restore scroll position after new content renders
+  createEffect(() => {
+    const lines = rawLines();
+    if (!lines.length || !scrollEl) return;
+    const stem = selectedStem();
+    if (!stem) return;
+    const script = getScript(stem) as (ScriptInfo & { ui?: ScriptUIState }) | undefined;
+    const saved = script?.ui;
+    requestAnimationFrame(() => {
+      if (!scrollEl) return;
+      scrollEl.scrollTop = saved && saved.scrollTop > 0 ? saved.scrollTop : 0;
     });
   });
 
-  // Reset on script change
-  createEffect(() => {
-    selectedStem();
-    setPanelOpen(false);
-    setFilteredType("all");
-    setSearchQuery("");
-  });
-
   const scrollToLine = (line: number) => {
-    if (!sourceDiv) return;
-    const el = sourceDiv.querySelector(`span.line:nth-child(${line + 1})`);
-    el?.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (!scrollEl) return;
+    const top = line * 22 - scrollEl.clientHeight / 2 + 11;
+    scrollEl.scrollTop = Math.max(0, top);
   };
 
   const selectStem = (stem: string) => navigate(`/${stem}`);
@@ -191,8 +273,8 @@ const App: Component = () => {
         </div>
       </header>
 
-      <div class="flex min-h-[calc(100vh-48px)]">
-        <aside class="w-[200px] shrink-0 border-r border-border py-3 overflow-auto">
+      <div class="flex h-[calc(100vh-48px)]">
+        <aside class="w-50 shrink-0 border-r border-border py-3 overflow-auto">
           <h2 class="px-3.5 pb-2 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
             Scripts
           </h2>
@@ -269,14 +351,42 @@ const App: Component = () => {
               </Show>
             </div>
 
-            <div class="flex-1 overflow-auto">
+            <div
+              ref={(el) => {
+                scrollEl = el;
+              }}
+              class="flex-1 min-h-0 overflow-auto"
+            >
               <Card class="m-0 rounded-none border-0 border-b border-border shadow-none">
                 <CardContent class="p-0">
-                  <div
-                    ref={sourceDiv}
-                    class="source-viewer overflow-auto p-4 text-sm leading-relaxed"
-                    innerHTML={visibleContent()}
-                  />
+                  <div class="source-viewer twoslash p-4 text-sm leading-relaxed">
+                    <div
+                      style={{
+                        height: `${virtualizer.getTotalSize()}px`,
+                        position: "relative",
+                      }}
+                    >
+                      <For each={virtualizer.getVirtualItems()}>
+                        {(item) => (
+                          <div
+                            data-line-number={item.index + 1}
+                            class={(() => {
+                              const cls = lineClasses()[item.index];
+                              return cls ? `line-row ${cls}` : "line-row";
+                            })()}
+                            style={{
+                              position: "absolute",
+                              top: `${item.start}px`,
+                              left: 0,
+                              width: "100%",
+                              height: `${item.size}px`,
+                            }}
+                            innerHTML={rawLines()[item.index] || ""}
+                          />
+                        )}
+                      </For>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -290,7 +400,10 @@ const App: Component = () => {
                       filteredType() === k ? "outline-1 outline-current" : ""
                     }`}
                     style={{ color: FILTER_COLORS[k] }}
-                    onClick={() => setFilteredType(k)}
+                    onClick={() => {
+                      setFilteredType(k);
+                      setFocusIdx(-1);
+                    }}
                   >
                     <span
                       class="inline-block size-1.5 rounded-full"
@@ -302,6 +415,35 @@ const App: Component = () => {
                     </span>
                   </button>
                 ))}
+                <div class="w-px h-3 bg-border mx-1" />
+                <button
+                  type="button"
+                  class="cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed text-muted-foreground hover:text-foreground px-1"
+                  disabled={filteredType() === "all" || matchedLines().length === 0}
+                  onClick={() => {
+                    const lines = matchedLines();
+                    const cur = focusIdx();
+                    const next = cur < 0 ? lines.length - 1 : Math.max(0, cur - 1);
+                    setFocusIdx(next);
+                    scrollToLine(lines[next]);
+                  }}
+                >
+                  ◀
+                </button>
+                <button
+                  type="button"
+                  class="cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed text-muted-foreground hover:text-foreground px-1"
+                  disabled={filteredType() === "all" || matchedLines().length === 0}
+                  onClick={() => {
+                    const lines = matchedLines();
+                    const cur = focusIdx();
+                    const next = cur < 0 ? 0 : Math.min(lines.length - 1, cur + 1);
+                    setFocusIdx(next);
+                    scrollToLine(lines[next]);
+                  }}
+                >
+                  ▶
+                </button>
                 <div class="flex-1" />
                 <button
                   type="button"
@@ -331,7 +473,7 @@ const App: Component = () => {
                   ))}
                 </div>
 
-                <div class="max-h-[260px] overflow-auto px-4 py-3 text-xs">
+                <div class="max-h-65 overflow-auto px-4 py-3 text-xs">
                   <Show when={activeTab() === "summary"}>
                     <div class="mb-2">
                       <input

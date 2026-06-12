@@ -11,7 +11,7 @@ import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { platform } from "os";
 import { createHighlighter } from "shiki";
-import { createTransformerFactory, rendererRich, rendererClassic } from "@shikijs/twoslash";
+import { createTransformerFactory, rendererRich } from "@shikijs/twoslash";
 import { createTwoslasher } from "twoslash";
 import { scanSource } from "../src/scan.js";
 
@@ -74,7 +74,6 @@ const twoslasher = createTwoslasher({
   },
 });
 const twoslashTransformerRich = createTransformerFactory(twoslasher, rendererRich())({});
-const twoslashTransformerClassic = createTransformerFactory(twoslasher, rendererClassic())({});
 
 for (const entry of entries) {
   const fullPath = join(completionsDir, entry.path.replace("./completions/", ""));
@@ -88,27 +87,17 @@ for (const entry of entries) {
     transformers: [twoslashTransformerRich],
   });
   writeFileSync(join(highlightedDir, `${entry.stem}.html`), htmlRich, "utf-8");
-
-  const htmlClassic = highlighter.codeToHtml(source, {
-    lang: "ts",
-    theme: "dark-plus",
-    transformers: [twoslashTransformerClassic],
-  });
-  writeFileSync(join(highlightedDir, `${entry.stem}.classic.html`), htmlClassic, "utf-8");
 }
 
 const list = entries
   .map(
     (e) =>
-      `  { stem: "${e.stem}", title: "${e.stem}", description: "${e.stem}", source: () => fetchSource("${e.stem}"), highlighted: () => fetchHighlighted("${e.stem}"), highlightedClassic: () => fetchHighlightedClassic("${e.stem}"), staticAnalysis: JSON.parse('${e.analysis}') },`,
+      `  { stem: "${e.stem}", title: "${e.stem}", description: "${e.stem}", source: () => fetchSource("${e.stem}"), highlighted: () => fetchHighlighted("${e.stem}"), staticAnalysis: JSON.parse('${e.analysis}') },`,
   )
   .join("\n");
 
 const pathMap = entries.map((e) => `  "${e.stem}": "${e.path}",`).join("\n");
 const hlPathMap = entries.map((e) => `  "${e.stem}": "./highlighted/${e.stem}.html",`).join("\n");
-const hlClassicPathMap = entries
-  .map((e) => `  "${e.stem}": "./highlighted/${e.stem}.classic.html",`)
-  .join("\n");
 
 writeFileSync(
   outFile,
@@ -120,7 +109,6 @@ export interface ScriptInfo {
   description: string
   source: () => Promise<string>
   highlighted: () => Promise<string>
-  highlightedClassic: () => Promise<string>
   staticAnalysis: { line: number; type: "danger" | "dynamic" | "safe"; api?: string }[]
 }
 
@@ -136,10 +124,6 @@ const highlightedPaths: Record<string, string> = {
 ${hlPathMap}
 };
 
-const highlightedClassicPaths: Record<string, string> = {
-${hlClassicPathMap}
-};
-
 async function fetchSource(stem: string): Promise<string> {
   const url = scriptPaths[stem];
   if (!url) throw new Error(\`Unknown script: \${stem}\`);
@@ -153,14 +137,6 @@ async function fetchHighlighted(stem: string): Promise<string> {
   if (!url) throw new Error(\`Unknown script: \${stem}\`);
   const res = await fetch(url);
   if (!res.ok) throw new Error(\`Failed to load highlighted \${stem}\`);
-  return res.text();
-}
-
-async function fetchHighlightedClassic(stem: string): Promise<string> {
-  const url = highlightedClassicPaths[stem];
-  if (!url) throw new Error(\`Unknown script: \${stem}\`);
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(\`Failed to load classic highlighted \${stem}\`);
   return res.text();
 }
 

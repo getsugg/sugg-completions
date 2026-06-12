@@ -178,30 +178,21 @@ body {
   display: none;
 }
 
-/* ───────── Source code viewer ───────── */
+/* ───────── Source code viewer (virtual scroll) ───────── */
 .source-viewer {
-  counter-reset: line-counter;
-}
-.source-viewer > pre.shiki {
-  line-height: 1.35;
-}
-.source-viewer > pre.shiki > code {
-  display: flex;
-  flex-direction: column;
   font-size: 13px;
   font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+  line-height: 1.35;
 }
-.source-viewer > pre.shiki > code > span.line {
+.source-viewer .line-row {
   display: flex;
   align-items: stretch;
   border-left: 3px solid transparent;
-  transition: opacity 0.15s;
-  padding: 0;
   margin-bottom: 3px;
+  position: relative;
 }
-.source-viewer > pre.shiki > code > span.line::before {
-  counter-increment: line-counter;
-  content: counter(line-counter);
+.source-viewer .line-row::before {
+  content: attr(data-line-number);
   width: 32px;
   flex-shrink: 0;
   text-align: right;
@@ -213,28 +204,32 @@ body {
   border-right: 1px solid hsl(var(--border));
   user-select: none;
 }
-.source-viewer > pre.shiki > code > span.line.line-danger {
+.source-viewer .line-row > span.line {
+  display: inline;
+  white-space: pre-wrap;
+}
+.source-viewer .line-row.line-danger {
   background: #ef444408;
 }
-.source-viewer > pre.shiki > code > span.line.line-danger::before {
+.source-viewer .line-row.line-danger::before {
   border-right-color: #ef4444;
   color: #ef4444;
 }
-.source-viewer > pre.shiki > code > span.line.line-dynamic {
+.source-viewer .line-row.line-dynamic {
   background: #f59e0b08;
 }
-.source-viewer > pre.shiki > code > span.line.line-dynamic::before {
+.source-viewer .line-row.line-dynamic::before {
   border-right-color: #f59e0b;
   color: #f59e0b;
 }
-.source-viewer > pre.shiki > code > span.line.line-safe {
+.source-viewer .line-row.line-safe {
   background: #22c55e08;
 }
-.source-viewer > pre.shiki > code > span.line.line-safe::before {
+.source-viewer .line-row.line-safe::before {
   border-right-color: #22c55e;
   color: #22c55e;
 }
-.source-viewer > pre.shiki > code > span.line.line-muted {
+.source-viewer .line-row.line-muted {
   opacity: 0.15;
 }
 
@@ -249,4 +244,10 @@ body {
 }
 pre.twoslash {
   line-height: 1.7;
+}
+.twoslash .twoslash-popup-container {
+  white-space: pre;
+}
+.twoslash .twoslash-popup-code {
+  white-space: pre;
 }
