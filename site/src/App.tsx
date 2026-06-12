@@ -1,39 +1,17 @@
 import { createResource, createSignal, Show, createEffect, createMemo, For } from "solid-js";
+import { createStore } from "solid-js/store";
 import type { Component } from "solid-js";
 import { useParams, useNavigate } from "@solidjs/router";
 import { createVirtualizer } from "@tanstack/solid-virtual";
 import "@shikijs/twoslash/style-rich.css";
 import "./App.css";
-import scripts, { getScript, type ScriptInfo } from "./scripts";
+import scripts, { getScript } from "./scripts";
 import { ensureWasm, extract, analyzeApis } from "./parser";
-import type { ExtractResult, ApiUsage } from "./parser";
 import { scanSource } from "./scan";
-import type { LineAnnotation } from "./scan";
-import { highlightPlain } from "./shiki";
-import { Card, CardContent } from "~/components/ui/card";
+import { Resizable, ResizablePanel, ResizableHandle } from "~/components/ui/resizable";
+import { DetailArea, type AnalysisData, type FilterType } from "./DetailArea";
 
-interface AnalysisData {
-  stem: string;
-  anns: LineAnnotation[];
-  r: ExtractResult;
-  apis: ApiUsage[];
-}
-
-type FilterType = "all" | "danger" | "dynamic" | "safe";
-
-const FILTER_LABELS: Record<FilterType, string> = {
-  all: "全部",
-  danger: "危险",
-  dynamic: "动态",
-  safe: "安全",
-};
-const FILTER_COLORS: Record<FilterType, string> = {
-  all: "#8b949e",
-  danger: "#ef4444",
-  dynamic: "#f59e0b",
-  safe: "#22c55e",
-};
-const TYPE_DOT: Record<string, string> = { danger: "#ef4444", dynamic: "#f59e0b", safe: "#22c55e" };
+const INITIAL_SIZES = [0.92, 0.08];
 
 const App: Component = () => {
   document.documentElement.classList.add("dark");
@@ -94,25 +72,19 @@ const App: Component = () => {
     overscan: 10,
   });
 
-  // ——— Per-script state, saved/restored on switch ———
-  interface ScriptUIState {
-    filteredType: FilterType;
-    panelOpen: boolean;
-    activeTab: "summary" | "dynamic" | "static";
-    searchQuery: string;
-    focusIdx: number;
-    scrollTop: number;
-  }
+  // ——— Per-script UI state (natural per-stem partitioning via store) ———
+  const [scriptUI, setScriptUI] = createStore<
+    Record<string, { scrollTop: number; focusIdx: number }>
+  >({});
+  const focusIdx = createMemo(() => scriptUI[selectedStem() ?? ""]?.focusIdx ?? -1);
+  const setFocusIdx = (v: number) => {
+    const stem = selectedStem();
+    if (stem) setScriptUI(stem, "focusIdx", v);
+  };
 
   const [filteredType, setFilteredType] = createSignal<FilterType>("all");
-  const [panelOpen, setPanelOpen] = createSignal(false);
-  const [activeTab, setActiveTab] = createSignal<"summary" | "dynamic" | "static">("summary");
-  const [searchQuery, setSearchQuery] = createSignal("");
-  const [focusIdx, setFocusIdx] = createSignal(-1);
 
-  let prevScript: (ScriptInfo & { ui?: ScriptUIState }) | null = null;
-
-  // ——— Analysis (runs AFTER highlighted content is visible) ———
+  // ——— Analysis ———
   const analysisCache = new Map<string, AnalysisData>();
   const [analysis] = createResource(
     () => selectedStem(),
@@ -148,63 +120,13 @@ const App: Component = () => {
     return classes;
   });
 
-  // Matched lines for ◀▶ navigation
-  const matchedLines = createMemo(() => {
-    const filter = filteredType();
-    if (filter === "all") return [];
-    return (analysis()?.anns ?? [])
-      .filter((a) => a.type === filter)
-      .map((a) => a.line)
-      .sort((a, b) => a - b);
-  });
-  // Save/restore on script switch
-  createEffect(() => {
-    const stem = selectedStem();
-    if (!stem) {
-      prevScript = null;
-      return;
-    }
-    const script = getScript(stem) as (ScriptInfo & { ui?: ScriptUIState }) | undefined;
-    if (!script) {
-      prevScript = null;
-      return;
-    }
-
-    if (prevScript && scrollEl) {
-      prevScript.ui = {
-        filteredType: filteredType(),
-        panelOpen: panelOpen(),
-        activeTab: activeTab(),
-        searchQuery: searchQuery(),
-        focusIdx: focusIdx(),
-        scrollTop: Math.max(0, scrollEl.scrollTop),
-      };
-    }
-    prevScript = script;
-
-    const s = script.ui;
-    if (s) {
-      setFilteredType(s.filteredType);
-      setPanelOpen(s.panelOpen);
-      setActiveTab(s.activeTab);
-      setSearchQuery(s.searchQuery);
-      setFocusIdx(s.focusIdx);
-    } else {
-      setPanelOpen(false);
-      setFilteredType("all");
-      setFocusIdx(-1);
-      setSearchQuery("");
-    }
-  });
-
   // Restore scroll position after new content renders
   createEffect(() => {
     const lines = rawLines();
     if (!lines.length || !scrollEl) return;
     const stem = selectedStem();
     if (!stem) return;
-    const script = getScript(stem) as (ScriptInfo & { ui?: ScriptUIState }) | undefined;
-    const saved = script?.ui;
+    const saved = scriptUI[stem];
     requestAnimationFrame(() => {
       if (!scrollEl) return;
       scrollEl.scrollTop = saved && saved.scrollTop > 0 ? saved.scrollTop : 0;
@@ -228,36 +150,6 @@ const App: Component = () => {
       safe: anns.filter((a) => a.type === "safe").length,
     };
   });
-
-  const groupedAnns = createMemo(() => {
-    const anns = analysis()?.anns ?? [];
-    const src = source();
-    const q = searchQuery().toLowerCase();
-    const groups: { type: FilterType; label: string; items: LineAnnotation[] }[] = [
-      { type: "danger", label: "危险", items: [] },
-      { type: "dynamic", label: "动态函数", items: [] },
-      { type: "safe", label: "安全", items: [] },
-    ];
-    for (const a of anns) {
-      const g = groups.find((g) => g.type === a.type);
-      if (!g) continue;
-      if (q) {
-        const line = src?.split("\n")[a.line] ?? "";
-        if (!line.toLowerCase().includes(q)) continue;
-      }
-      g.items.push(a);
-    }
-    return groups.filter((g) => g.items.length > 0);
-  });
-
-  const [highlightedDynamic] = createResource(
-    () => analysis()?.r ?? null,
-    (r) => (r?.dynamic ? highlightPlain(r.dynamic) : ""),
-  );
-  const [highlightedModified] = createResource(
-    () => analysis()?.r ?? null,
-    (r) => (r?.modified ? highlightPlain(r.modified) : ""),
-  );
 
   return (
     <div class="min-h-screen bg-background text-foreground">
@@ -351,14 +243,18 @@ const App: Component = () => {
               </Show>
             </div>
 
-            <div
-              ref={(el) => {
-                scrollEl = el;
-              }}
-              class="flex-1 min-h-0 overflow-auto"
-            >
-              <Card class="m-0 rounded-none border-0 border-b border-border shadow-none">
-                <CardContent class="p-0">
+            <Resizable orientation="vertical" initialSizes={INITIAL_SIZES} class="flex-1">
+              <ResizablePanel>
+                <div
+                  ref={(el) => {
+                    scrollEl = el;
+                  }}
+                  class="h-full overflow-auto"
+                  onScroll={(e) => {
+                    const stem = selectedStem();
+                    if (stem) setScriptUI(stem, "scrollTop", e.currentTarget.scrollTop);
+                  }}
+                >
                   <div class="source-viewer twoslash p-4 text-sm leading-relaxed">
                     <div
                       style={{
@@ -387,173 +283,23 @@ const App: Component = () => {
                       </For>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            <Show when={analysis()}>
-              <div class="flex shrink-0 items-center gap-2 border-t border-border bg-card px-5 py-1.5 text-[10px]">
-                {(Object.keys(FILTER_LABELS) as FilterType[]).map((k) => (
-                  <button
-                    type="button"
-                    class={`flex cursor-pointer items-center gap-1 rounded px-2 py-0.5 font-medium transition-none ${
-                      filteredType() === k ? "outline-1 outline-current" : ""
-                    }`}
-                    style={{ color: FILTER_COLORS[k] }}
-                    onClick={() => {
-                      setFilteredType(k);
-                      setFocusIdx(-1);
-                    }}
-                  >
-                    <span
-                      class="inline-block size-1.5 rounded-full"
-                      style={`background:${FILTER_COLORS[k]}`}
-                    />
-                    {FILTER_LABELS[k]}
-                    <span class="ml-0.5 text-muted-foreground">
-                      {k === "all" ? counts().total : counts()[k]}
-                    </span>
-                  </button>
-                ))}
-                <div class="w-px h-3 bg-border mx-1" />
-                <button
-                  type="button"
-                  class="cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed text-muted-foreground hover:text-foreground px-1"
-                  disabled={filteredType() === "all" || matchedLines().length === 0}
-                  onClick={() => {
-                    const lines = matchedLines();
-                    const cur = focusIdx();
-                    const next = cur < 0 ? lines.length - 1 : Math.max(0, cur - 1);
-                    setFocusIdx(next);
-                    scrollToLine(lines[next]);
-                  }}
-                >
-                  ◀
-                </button>
-                <button
-                  type="button"
-                  class="cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed text-muted-foreground hover:text-foreground px-1"
-                  disabled={filteredType() === "all" || matchedLines().length === 0}
-                  onClick={() => {
-                    const lines = matchedLines();
-                    const cur = focusIdx();
-                    const next = cur < 0 ? 0 : Math.min(lines.length - 1, cur + 1);
-                    setFocusIdx(next);
-                    scrollToLine(lines[next]);
-                  }}
-                >
-                  ▶
-                </button>
-                <div class="flex-1" />
-                <button
-                  type="button"
-                  class="cursor-pointer text-muted-foreground hover:text-foreground"
-                  onClick={() => setPanelOpen(!panelOpen())}
-                >
-                  {panelOpen() ? "▾ 收起详情" : "▴ 详情"}
-                </button>
-              </div>
-            </Show>
-
-            <Show when={panelOpen() && analysis()}>
-              <div class="flex shrink-0 flex-col border-t border-border bg-card">
-                <div class="flex shrink-0 border-b border-border">
-                  {(["summary", "dynamic", "static"] as const).map((t) => (
-                    <button
-                      type="button"
-                      class={`cursor-pointer border-b-2 px-3.5 py-1.5 text-[11px] font-medium transition-none ${
-                        activeTab() === t
-                          ? "border-amber-500 text-amber-500"
-                          : "border-transparent text-muted-foreground hover:text-foreground"
-                      }`}
-                      onClick={() => setActiveTab(t)}
-                    >
-                      {t === "summary" ? "汇总" : t === "dynamic" ? "动态代码" : "标记后源码"}
-                    </button>
-                  ))}
                 </div>
-
-                <div class="max-h-65 overflow-auto px-4 py-3 text-xs">
-                  <Show when={activeTab() === "summary"}>
-                    <div class="mb-2">
-                      <input
-                        type="text"
-                        placeholder="搜索标注项..."
-                        class="w-full rounded border border-border bg-background px-2.5 py-1 text-[11px] text-foreground outline-none placeholder:text-muted-foreground"
-                        onInput={(e) => setSearchQuery(e.currentTarget.value)}
-                      />
-                    </div>
-                    <div class="space-y-2.5">
-                      {groupedAnns().map((g) => (
-                        <div>
-                          <div class="mb-1 flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-muted-foreground">
-                            <span
-                              class="inline-block size-1.5 rounded-full"
-                              style={`background:${TYPE_DOT[g.type]}`}
-                            />
-                            {g.label}
-                            <span class="ml-auto text-border">{g.items.length}</span>
-                          </div>
-                          <ul class="space-y-px">
-                            {g.items.map((a) => (
-                              <li>
-                                <button
-                                  type="button"
-                                  class="flex w-full cursor-pointer items-center gap-2 rounded px-2 py-1 text-left font-mono text-[11px] text-muted-foreground hover:bg-accent hover:text-foreground"
-                                  onClick={() => scrollToLine(a.line)}
-                                >
-                                  <span class="w-7 shrink-0 text-border">L{a.line + 1}</span>
-                                  {a.api && (
-                                    <span
-                                      class={`shrink-0 rounded px-1.5 py-px text-[9px] font-semibold ${
-                                        a.type === "danger"
-                                          ? "bg-red-500/15 text-red-500"
-                                          : a.type === "safe"
-                                            ? "bg-green-500/15 text-green-500"
-                                            : "bg-amber-500/15 text-amber-500"
-                                      }`}
-                                    >
-                                      {a.api}
-                                    </span>
-                                  )}
-                                  <span class="truncate">
-                                    {source()?.split("\n")[a.line]?.trim()}
-                                  </span>
-                                </button>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
-                    </div>
-                  </Show>
-
-                  <Show when={activeTab() === "dynamic"}>
-                    <Show
-                      when={highlightedDynamic()}
-                      fallback={<div class="text-muted-foreground">无动态代码</div>}
-                    >
-                      <div
-                        class="overflow-auto rounded bg-muted p-3 leading-relaxed [&_pre]:text-[11px]"
-                        innerHTML={highlightedDynamic()}
-                      />
-                    </Show>
-                  </Show>
-
-                  <Show when={activeTab() === "static"}>
-                    <Show
-                      when={highlightedModified()}
-                      fallback={<div class="text-muted-foreground">无修改</div>}
-                    >
-                      <div
-                        class="overflow-auto rounded bg-muted p-3 leading-relaxed [&_pre]:text-[11px]"
-                        innerHTML={highlightedModified()}
-                      />
-                    </Show>
-                  </Show>
-                </div>
-              </div>
-            </Show>
+              </ResizablePanel>
+              <ResizableHandle withHandle />
+              <ResizablePanel>
+                <DetailArea
+                  analysis={analysis}
+                  analysisLoading={() => analysis.loading}
+                  source={() => source() ?? ""}
+                  scrollToLine={scrollToLine}
+                  filteredType={filteredType}
+                  setFilteredType={setFilteredType}
+                  focusIdx={focusIdx}
+                  setFocusIdx={setFocusIdx}
+                  counts={counts}
+                />
+              </ResizablePanel>
+            </Resizable>
           </Show>
         </main>
       </div>

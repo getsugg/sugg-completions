@@ -178,6 +178,21 @@ body {
   display: none;
 }
 
+/* ───────── Resizable panels ───────── */
+[data-corvu-resizable-panel] {
+  min-height: 0;
+  overflow: hidden;
+}
+[data-corvu-resizable-handle] {
+  min-height: 8px;
+  background: hsl(var(--border));
+  transition: background 0.15s;
+}
+[data-corvu-resizable-handle]:hover,
+[data-corvu-resizable-handle][data-dragging] {
+  background: hsl(var(--accent));
+}
+
 /* ───────── Source code viewer (virtual scroll) ───────── */
 .source-viewer {
   font-size: 13px;
@@ -206,7 +221,7 @@ body {
 }
 .source-viewer .line-row > span.line {
   display: inline;
-  white-space: pre-wrap;
+  white-space: pre;
 }
 .source-viewer .line-row.line-danger {
   background: #ef444408;
