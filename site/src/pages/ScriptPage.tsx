@@ -40,10 +40,7 @@ export default function ScriptPage() {
     const lines = rawLines();
     const s = stem();
     if (!lines.length || !s) return;
-    const saved = scrollPositions.get(s);
-    if (saved != null && saved > 0) {
-      setRestoreScrollTop(saved);
-    }
+    setRestoreScrollTop(scrollPositions.get(s) ?? 0);
   });
 
   const lineClasses = createMemo(() => {

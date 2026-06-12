@@ -201,12 +201,14 @@ body {
 }
 .source-viewer .line-row {
   display: flex;
-  align-items: stretch;
+  align-items: center;
   border-left: 3px solid transparent;
-  margin-bottom: 3px;
   position: relative;
 }
 .source-viewer .line-row::before {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
   content: attr(data-line-number);
   width: 32px;
   flex-shrink: 0;
