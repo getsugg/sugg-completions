@@ -1,4 +1,4 @@
-import { Show, createSignal, createMemo, createEffect, onMount } from "solid-js";
+import { Show, createSignal, createMemo, createEffect } from "solid-js";
 import ResizablePrimitive from "@corvu/resizable";
 import { createResizeObserver } from "@solid-primitives/resize-observer";
 import type { AnalysisData, FilterType } from "../types";
@@ -8,6 +8,7 @@ import { DynamicCodePanel } from "./DynamicCodePanel";
 import { StaticCodePanel } from "./StaticCodePanel";
 
 export interface DetailAreaProps {
+  rootEl: () => HTMLElement | undefined;
   analysis: () => AnalysisData | undefined;
   analysisLoading: () => boolean;
   source: () => string;
@@ -25,11 +26,7 @@ export function DetailArea(props: DetailAreaProps) {
   const [lastExpandedRatio, setLastExpandedRatio] = createSignal(0.35);
   const [containerHeight, setContainerHeight] = createSignal(300);
 
-  const [rootEl, setRootEl] = createSignal<HTMLElement>();
-  createResizeObserver(rootEl, ({ height }) => setContainerHeight(height));
-  onMount(() => {
-    setRootEl(document.querySelector("[data-corvu-resizable-root]") as HTMLElement);
-  });
+  createResizeObserver(props.rootEl, ({ height }) => setContainerHeight(height));
 
   const [filterBarEl, setFilterBarEl] = createSignal<HTMLDivElement>();
   createResizeObserver(filterBarEl, ({ height }) => {

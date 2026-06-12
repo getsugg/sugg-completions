@@ -10,6 +10,7 @@ import {
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { platform } from "os";
+import { createHash } from "crypto";
 import { createHighlighter } from "shiki";
 import { createTransformerFactory, rendererRich } from "@shikijs/twoslash";
 import { createTwoslasher } from "twoslash";
@@ -21,6 +22,7 @@ const outFile = join(__dirname, "..", "src", "scripts.ts");
 const linkPath = join(__dirname, "..", "public", "completions");
 const linkTarget = join(__dirname, "..", "..", "completions");
 const highlightedDir = join(__dirname, "..", "public", "highlighted");
+const cacheFile = join(__dirname, ".generate-cache.json");
 
 if (!existsSync(linkPath)) {
   mkdirSync(dirname(linkPath), { recursive: true });
@@ -37,6 +39,30 @@ interface ScriptEntry {
   sourceUrl: string;
   highlightedUrl: string;
   analysis?: string;
+}
+
+function computeHash(filePaths: string[]): string {
+  const h = createHash("sha256");
+  for (const fp of filePaths.slice().sort()) {
+    h.update(readFileSync(fp));
+  }
+  return h.digest("hex");
+}
+
+function readCachedHash(): string | null {
+  try {
+    return JSON.parse(readFileSync(cacheFile, "utf-8")).hash;
+  } catch {
+    return null;
+  }
+}
+
+function allOutputsExist(entries: ScriptEntry[]): boolean {
+  if (!existsSync(outFile)) return false;
+  for (const entry of entries) {
+    if (!existsSync(join(highlightedDir, `${entry.stem}.html`))) return false;
+  }
+  return true;
 }
 
 const entries: ScriptEntry[] = [];
@@ -60,6 +86,20 @@ for (const name of readdirSync(completionsDir).sort()) {
   }
 }
 
+const inputFiles = entries.map((e) =>
+  join(completionsDir, e.sourceUrl.replace("./completions/", "")),
+);
+inputFiles.push(
+  join(completionsDir, ".sugg", "sugg.d.ts"),
+  join(completionsDir, ".sugg", "i18n.d.ts"),
+);
+const hash = computeHash(inputFiles);
+
+if (readCachedHash() === hash && allOutputsExist(entries)) {
+  console.log("Up to date, skipping generation");
+  process.exit(0);
+}
+
 console.log(`Generating highlighted HTML for ${entries.length} scripts...`);
 
 const suggDts = readFileSync(join(completionsDir, ".sugg", "sugg.d.ts"), "utf-8");
@@ -73,7 +113,6 @@ const twoslasher = createTwoslasher({
     target: 99,
     allowJs: true,
     skipDefaultLibCheck: true,
-    skipLibCheck: true,
     moduleDetection: 3,
     lib: ["lib.es2022.d.ts"],
   },
@@ -118,5 +157,7 @@ ${list}
 export default scripts;
 `,
 );
+
+writeFileSync(cacheFile, JSON.stringify({ hash }), "utf-8");
 
 console.log("Done!");

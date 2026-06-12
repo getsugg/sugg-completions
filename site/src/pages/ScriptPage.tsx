@@ -21,6 +21,7 @@ export default function ScriptPage() {
   const [filteredType, setFilteredType] = createSignal<FilterType>("all");
   const [focusIdx, setFocusIdx] = createSignal(-1);
 
+  const [resizableRoot, setResizableRoot] = createSignal<HTMLElement>();
   const [barHeight, setBarHeight] = createSignal(32);
   const [scrollToTarget, setScrollToTarget] = createSignal<number | null>(null);
   const [restoreScrollTop, setRestoreScrollTop] = createSignal<number | null>(null);
@@ -86,7 +87,12 @@ export default function ScriptPage() {
         </Show>
       </div>
 
-      <Resizable orientation="vertical" initialSizes={[1, 0]} class="flex-1 min-h-0">
+      <Resizable
+        ref={setResizableRoot}
+        orientation="vertical"
+        initialSizes={[1, 0]}
+        class="flex-1 min-h-0"
+      >
         <ResizablePanel>
           <SourceViewer
             rawLines={rawLines}
@@ -99,8 +105,9 @@ export default function ScriptPage() {
           />
         </ResizablePanel>
         <ResizableHandle withHandle />
-        <ResizablePanel minSize={`${barHeight()}px`} initialSize="40px">
+        <ResizablePanel minSize={`${barHeight()}px`} initialSize={`${barHeight()}px`}>
           <DetailArea
+            rootEl={resizableRoot}
             analysis={analysis}
             analysisLoading={() => analysis.loading}
             source={() => source() ?? ""}
