@@ -4,13 +4,18 @@ on:
   push:
     branches: [main]
 
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -20,27 +25,22 @@ jobs:
         working-directory: site
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: voidzero-dev/setup-vp@v1
         with:
-          vp-version: latest
-
-      - run: vp install
-
-      - name: Generate script list
-        run: node scripts/generate-scripts.js
+          cache: true
 
       - name: Build
         run: vp build
 
-      - uses: actions/configure-pages@v4
+      - uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: site/dist
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

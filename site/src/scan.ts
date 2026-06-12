@@ -1,8 +1,15 @@
-export interface LineAnnotation {
-  line: number;
-  type: "danger" | "dynamic" | "safe";
-  api?: string;
-}
+import type { LineAnnotation } from "./types";
+
+export const API_RISK_MAP: Record<string, "danger" | "safe"> = {
+  exec: "danger",
+  execFile: "danger",
+  fetch: "danger",
+  scanPath: "safe",
+  readFile: "safe",
+  readJson: "safe",
+  cache: "safe",
+  ui: "safe",
+};
 
 const DANGER_APIS = ["execFile", "exec", "fetch"];
 const SAFE_APIS = ["scanPath", "readFile", "readJson", "cache", "ui"];

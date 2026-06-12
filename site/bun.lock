@@ -8,6 +8,7 @@
         "@corvu/resizable": "^0.2.5",
         "@kobalte/core": "^0.13.11",
         "@shikijs/twoslash": "^4.2.0",
+        "@solid-primitives/resize-observer": "^2.1.5",
         "@solidjs/router": "^0.16.1",
         "@tanstack/solid-virtual": "^3.13.28",
         "class-variance-authority": "^0.7.1",

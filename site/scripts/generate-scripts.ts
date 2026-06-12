@@ -34,7 +34,8 @@ mkdirSync(highlightedDir, { recursive: true });
 
 interface ScriptEntry {
   stem: string;
-  path: string;
+  sourceUrl: string;
+  highlightedUrl: string;
   analysis?: string;
 }
 
@@ -45,9 +46,17 @@ for (const name of readdirSync(completionsDir).sort()) {
   const full = join(completionsDir, name);
   const stat = statSync(full);
   if (stat.isFile() && name.endsWith(".ts")) {
-    entries.push({ stem: name.replace(/\.ts$/, ""), path: `./completions/${name}` });
+    entries.push({
+      stem: name.replace(/\.ts$/, ""),
+      sourceUrl: `./completions/${name}`,
+      highlightedUrl: `./highlighted/${name.replace(/\.ts$/, "")}.html`,
+    });
   } else if (stat.isDirectory() && existsSync(join(full, "index.ts"))) {
-    entries.push({ stem: name, path: `./completions/${name}/index.ts` });
+    entries.push({
+      stem: name,
+      sourceUrl: `./completions/${name}/index.ts`,
+      highlightedUrl: `./highlighted/${name}.html`,
+    });
   }
 }
 
@@ -76,7 +85,7 @@ const twoslasher = createTwoslasher({
 const twoslashTransformerRich = createTransformerFactory(twoslasher, rendererRich())({});
 
 for (const entry of entries) {
-  const fullPath = join(completionsDir, entry.path.replace("./completions/", ""));
+  const fullPath = join(completionsDir, entry.sourceUrl.replace("./completions/", ""));
   const source = readFileSync(fullPath, "utf-8");
 
   entry.analysis = JSON.stringify(scanSource(source));
@@ -92,59 +101,21 @@ for (const entry of entries) {
 const list = entries
   .map(
     (e) =>
-      `  { stem: "${e.stem}", title: "${e.stem}", description: "${e.stem}", source: () => fetchSource("${e.stem}"), highlighted: () => fetchHighlighted("${e.stem}"), staticAnalysis: JSON.parse('${e.analysis}') },`,
+      `  { stem: "${e.stem}", title: "${e.stem}", description: "${e.stem}", sourceUrl: "${e.sourceUrl}", highlightedUrl: "${e.highlightedUrl}", staticAnalysis: JSON.parse('${e.analysis}') },`,
   )
   .join("\n");
-
-const pathMap = entries.map((e) => `  "${e.stem}": "${e.path}",`).join("\n");
-const hlPathMap = entries.map((e) => `  "${e.stem}": "./highlighted/${e.stem}.html",`).join("\n");
 
 writeFileSync(
   outFile,
   `/// <reference types="vite/client" />
 
-export interface ScriptInfo {
-  stem: string
-  title: string
-  description: string
-  source: () => Promise<string>
-  highlighted: () => Promise<string>
-  staticAnalysis: { line: number; type: "danger" | "dynamic" | "safe"; api?: string }[]
-}
+import type { ScriptInfo } from "./types";
 
 const scripts: ScriptInfo[] = [
 ${list}
 ];
 
-const scriptPaths: Record<string, string> = {
-${pathMap}
-};
-
-const highlightedPaths: Record<string, string> = {
-${hlPathMap}
-};
-
-async function fetchSource(stem: string): Promise<string> {
-  const url = scriptPaths[stem];
-  if (!url) throw new Error(\`Unknown script: \${stem}\`);
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(\`Failed to load \${stem}\`);
-  return res.text();
-}
-
-async function fetchHighlighted(stem: string): Promise<string> {
-  const url = highlightedPaths[stem];
-  if (!url) throw new Error(\`Unknown script: \${stem}\`);
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(\`Failed to load highlighted \${stem}\`);
-  return res.text();
-}
-
 export default scripts;
-
-export function getScript(stem: string): ScriptInfo | undefined {
-  return scripts.find(s => s.stem === stem);
-}
 `,
 );
 
