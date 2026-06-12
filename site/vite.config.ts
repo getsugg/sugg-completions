@@ -3,6 +3,7 @@ import { defineConfig } from "vite-plus";
 import tailwindcss from "@tailwindcss/vite";
 import solid from "vite-plugin-solid";
 import { execSync } from "child_process";
+import { playwright } from "@voidzero-dev/vite-plus-test/browser-playwright";
 
 export default defineConfig({
   staged: {
@@ -10,7 +11,7 @@ export default defineConfig({
   },
   fmt: {},
   lint: {
-    ignorePatterns: ["wasm/"],
+    ignorePatterns: ["wasm/", "tests/"],
     options: { typeAware: true, typeCheck: true },
   },
   resolve: {
@@ -34,5 +35,18 @@ export default defineConfig({
   },
   optimizeDeps: {
     exclude: ["wasm/sugg_wasm.js"],
+  },
+  test: {
+    browser: {
+      enabled: true,
+      provider: playwright(),
+      instances: [
+        {
+          browser: "chromium",
+          viewport: { width: 1280, height: 720 },
+        },
+      ],
+    },
+    include: ["tests/**/*.visual.test.{ts,tsx}"],
   },
 });
