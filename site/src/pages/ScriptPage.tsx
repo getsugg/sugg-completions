@@ -13,7 +13,6 @@ const scrollPositions = new Map<string, number>();
 export default function ScriptPage() {
   const params = useParams<{ script?: string }>();
   const stem = () => params.script ?? null;
-  const script = createMemo(() => (stem() ? getScript(stem()!) : undefined));
 
   const { source, rawLines } = useSourceLoader(stem);
   const { analysis, counts } = useAnalysis(stem);
@@ -63,23 +62,27 @@ export default function ScriptPage() {
 
   return (
     <div class="flex min-h-0 min-w-0 flex-1 flex-col">
-      <div class="flex items-center gap-3 border-b border-border px-5 py-2">
-        <h2 class="text-sm font-medium">{stem()}</h2>
-        <span class="text-xs text-muted-foreground">{script()?.description ?? ""}</span>
+      <div class="flex h-[40px] shrink-0 items-center gap-3 border-b border-border px-5 bg-[#110e14]">
+        <span class="text-sm font-semibold text-[#e8e4ea]">{stem()}</span>
+        <span class="truncate text-[11px] text-[#5a4b68]">
+          {getScript(stem()!)?.description ?? ""}
+        </span>
         <div class="flex-1" />
         <Show when={analysis.loading}>
-          <div class="flex items-center gap-1.5 rounded border border-amber-500/20 bg-amber-500/5 px-2.5 py-1 text-[10px] text-amber-400">
+          <div class="flex items-center gap-1.5 rounded border border-amber-500/20 bg-amber-500/5 px-2.5 py-1 text-[11px] text-amber-400">
             <span class="inline-block size-1.5 animate-pulse rounded-full bg-amber-500" />
-            分析中
+            Analyzing
           </div>
         </Show>
         <Show when={!analysis.loading && analysis()}>
-          <div class="flex items-center gap-1.5 rounded border border-[#30363d] bg-[#21262d] px-2.5 py-1 text-[10px] text-[#8b949e]">
-            <span class="text-green-500">✓</span>
-            自动分析
-            {counts().danger > 0 && (
-              <span class="ml-1 text-red-500">· {counts().danger} 项危险</span>
-            )}
+          {counts().danger > 0 && (
+            <span class="rounded-full border border-[#ef444430] bg-[#ef444420] px-2.5 py-0.5 text-[11px] font-bold text-[#ff5555]">
+              {counts().danger} danger
+            </span>
+          )}
+          <div class="flex items-center gap-1 text-[11px] text-[#6a5d78]">
+            <span class="text-green-500 text-[11px] font-bold">✓</span>
+            Auto Analysis
           </div>
         </Show>
       </div>

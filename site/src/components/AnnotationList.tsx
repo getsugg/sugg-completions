@@ -1,7 +1,23 @@
-import { createSignal, createMemo } from "solid-js";
-import type { LineAnnotation, FilterType } from "../types";
+import { For } from "solid-js";
+import type { LineAnnotation } from "../types";
 
-const TYPE_DOT: Record<string, string> = { danger: "#ef4444", dynamic: "#f59e0b", safe: "#22c55e" };
+const TYPE_STYLE: Record<string, { bar: string; badge: string; label: string }> = {
+  danger: {
+    bar: "#ef4444",
+    badge: "bg-[#ff335518] text-[#ff5555] border-[#ff335530]",
+    label: "DANGER",
+  },
+  dynamic: {
+    bar: "#f59e0b",
+    badge: "bg-[#f59e0b18] text-[#f59e0b] border-[#f59e0b30]",
+    label: "DYNAMIC",
+  },
+  safe: {
+    bar: "#22c55e",
+    badge: "bg-[#22c55e18] text-[#22c55e] border-[#22c55e30]",
+    label: "SAFE",
+  },
+};
 
 interface AnnotationListProps {
   anns: () => LineAnnotation[];
@@ -10,80 +26,36 @@ interface AnnotationListProps {
 }
 
 export function AnnotationList(props: AnnotationListProps) {
-  const [searchQuery, setSearchQuery] = createSignal("");
-
-  const groupedAnns = createMemo(() => {
-    const anns = props.anns();
-    const src = props.source();
-    const q = searchQuery().toLowerCase();
-    const groups: { type: FilterType; label: string; items: LineAnnotation[] }[] = [
-      { type: "danger", label: "危险", items: [] },
-      { type: "dynamic", label: "动态函数", items: [] },
-      { type: "safe", label: "安全", items: [] },
-    ];
-    for (const a of anns) {
-      const g = groups.find((g) => g.type === a.type);
-      if (!g) continue;
-      if (q) {
-        const line = src?.split("\n")[a.line] ?? "";
-        if (!line.toLowerCase().includes(q)) continue;
-      }
-      g.items.push(a);
-    }
-    return groups.filter((g) => g.items.length > 0);
-  });
-
   return (
-    <>
-      <div class="mb-2">
-        <input
-          type="text"
-          placeholder="搜索标注项..."
-          class="w-full rounded border border-border bg-background px-2.5 py-1 text-[11px] text-foreground outline-none placeholder:text-muted-foreground"
-          onInput={(e) => setSearchQuery(e.currentTarget.value)}
-        />
-      </div>
-      <div class="space-y-2.5">
-        {groupedAnns().map((g) => (
-          <div>
-            <div class="mb-1 flex items-center gap-1.5 text-[10px] uppercase tracking-wider text-muted-foreground">
+    <div class="flex flex-col gap-1">
+      <For each={props.anns()}>
+        {(a) => {
+          const style = TYPE_STYLE[a.type] ?? TYPE_STYLE.safe;
+          return (
+            <button
+              type="button"
+              class="relative flex items-center gap-3 w-full rounded-md border border-transparent px-3 py-1.5 text-left cursor-pointer transition-all hover:bg-[rgba(245,158,11,0.05)] hover:border-[rgba(245,158,11,0.1)]"
+              onClick={() => props.scrollToLine(a.line)}
+            >
               <span
-                class="inline-block size-1.5 rounded-full"
-                style={`background:${TYPE_DOT[g.type]}`}
+                class="absolute left-0 top-[3px] bottom-[3px] w-[3px] rounded-r-sm"
+                style={`background:${style.bar};${a.type === "danger" ? "box-shadow:0 0 8px rgba(239,68,68,0.3);" : ""}`}
               />
-              {g.label}
-              <span class="ml-auto text-border">{g.items.length}</span>
-            </div>
-            <ul class="space-y-px">
-              {g.items.map((a) => (
-                <li>
-                  <button
-                    type="button"
-                    class="flex w-full cursor-pointer items-center gap-2 rounded px-2 py-1 text-left font-mono text-[11px] text-muted-foreground hover:bg-accent hover:text-foreground"
-                    onClick={() => props.scrollToLine(a.line)}
-                  >
-                    <span class="w-7 shrink-0 text-border">L{a.line + 1}</span>
-                    {a.api && (
-                      <span
-                        class={`shrink-0 rounded px-1.5 py-px text-[9px] font-semibold ${
-                          a.type === "danger"
-                            ? "bg-red-500/15 text-red-500"
-                            : a.type === "safe"
-                              ? "bg-green-500/15 text-green-500"
-                              : "bg-amber-500/15 text-amber-500"
-                        }`}
-                      >
-                        {a.api}
-                      </span>
-                    )}
-                    <span class="truncate">{props.source().split("\n")[a.line]?.trim()}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-    </>
+              <span class="font-mono text-[11px] text-[#4a3f55] w-[36px] shrink-0 ml-3">
+                L{a.line + 1}
+              </span>
+              <span class="font-mono text-[12px] text-[#c8bdd4] flex-1 truncate">
+                {a.api ?? ""}
+              </span>
+              <span
+                class={`text-[10px] font-bold px-2 py-0.5 rounded-[4px] uppercase border ${style.badge}`}
+              >
+                {style.label}
+              </span>
+            </button>
+          );
+        }}
+      </For>
+    </div>
   );
 }

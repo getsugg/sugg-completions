@@ -12,7 +12,7 @@ export function StaticCodePanel(props: StaticCodePanelProps) {
   );
 
   return (
-    <Show when={highlighted()} fallback={<div class="text-muted-foreground">无修改</div>}>
+    <Show when={highlighted()} fallback={<div class="text-muted-foreground">No modifications</div>}>
       <div
         class="overflow-auto rounded bg-muted p-3 leading-relaxed [&_pre]:text-[11px]"
         innerHTML={highlighted()}

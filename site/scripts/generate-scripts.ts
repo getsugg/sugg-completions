@@ -6,6 +6,7 @@ import {
   mkdirSync,
   statSync,
   readFileSync,
+  copyFileSync,
   rmSync,
 } from "fs";
 import { join, dirname } from "path";
@@ -17,6 +18,7 @@ import { createHighlighter } from "shiki";
 import { createTransformerFactory, rendererRich } from "@shikijs/twoslash";
 import { createTwoslasher } from "twoslash";
 import { scanSource } from "../src/lib/scan.js";
+import { suggTheme } from "../src/lib/shiki-theme.js";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const completionsDir = join(__dirname, "..", "..", "completions");
@@ -81,6 +83,31 @@ function allOutputsExist(entries: ScriptEntry[]): boolean {
   return true;
 }
 
+// Regenerate sugg.d.ts in a temp dir, copy the single file we need
+const initTmpDir = join(__dirname, "..", "tmp", "sugg-dts", "completions");
+try {
+  mkdirSync(initTmpDir, { recursive: true });
+  execSync(`sugg dev init --completions-dir "${initTmpDir}"`, {
+    stdio: "inherit",
+    timeout: 15000,
+  });
+  copyFileSync(join(initTmpDir, ".sugg", "sugg.d.ts"), join(completionsDir, ".sugg", "sugg.d.ts"));
+} catch {
+  console.warn("sugg dev init failed, sugg.d.ts may be stale");
+} finally {
+  rmSync(join(initTmpDir, ".."), { recursive: true, force: true });
+}
+
+// Keep i18n.d.ts in sync with i18n JSON files
+try {
+  execSync(`sugg dev i18n --lang en --completions-dir "${completionsDir}"`, {
+    stdio: "inherit",
+    timeout: 15000,
+  });
+} catch {
+  console.warn("sugg dev i18n failed, i18n.d.ts may be stale");
+}
+
 const entries: ScriptEntry[] = [];
 
 for (const name of readdirSync(completionsDir).sort()) {
@@ -108,6 +135,7 @@ const inputFiles = entries.map((e) =>
 inputFiles.push(
   join(completionsDir, ".sugg", "sugg.d.ts"),
   join(completionsDir, ".sugg", "i18n.d.ts"),
+  join(__dirname, ".sugg-version"),
 );
 // i18n JSON files affect description output via sugg reload
 for (const stem of entries.map((e) => e.stem)) {
@@ -143,7 +171,7 @@ try {
 const suggDts = readFileSync(join(completionsDir, ".sugg", "sugg.d.ts"), "utf-8");
 const i18nDts = readFileSync(join(completionsDir, ".sugg", "i18n.d.ts"), "utf-8");
 
-const highlighter = await createHighlighter({ langs: ["ts"], themes: ["dark-plus"] });
+const highlighter = await createHighlighter({ langs: ["ts"], themes: [suggTheme] });
 const twoslasher = createTwoslasher({
   compilerOptions: {
     strict: true,
@@ -170,7 +198,7 @@ for (const entry of entries) {
 
   const htmlRich = highlighter.codeToHtml(source, {
     lang: "ts",
-    theme: "dark-plus",
+    theme: "sugg-dark",
     transformers: [twoslashTransformerRich],
   });
   writeFileSync(join(highlightedDir, `${entry.stem}.html`), htmlRich, "utf-8");

@@ -17,15 +17,17 @@ function App() {
 
   return (
     <div class="min-h-screen bg-background text-foreground">
-      <header class="flex items-center gap-3 border-b border-border px-5 py-0 h-12 bg-card">
-        <h1 class="text-base font-semibold text-primary before:content-['❯_'] before:text-green-500">
-          Sugg Completions
-        </h1>
-        <span class="text-xs text-muted-foreground">补全脚本仓库 · 安全分析</span>
+      <header class="relative flex h-12 items-center gap-3 border-b-2 border-amber-500 px-5 py-0 bg-[#1a1420]">
+        <div class="absolute bottom-[-2px] left-0 right-0 h-[2px] bg-gradient-to-r from-amber-500 via-amber-300 to-amber-700" />
+        <div class="flex size-6 items-center justify-center rounded-md bg-gradient-to-br from-amber-300 to-amber-600 text-[11px] font-extrabold text-[#0c0a0e] shadow-[0_0_12px_rgba(245,158,11,0.3)]">
+          S
+        </div>
+        <h1 class="text-sm font-extrabold tracking-tight text-amber-300">Sugg Completions</h1>
+        <span class="text-[10px] text-[#6a5d78]">Completion Scripts · Security Audit</span>
         <div class="flex-1" />
-        <div class="flex items-center gap-2 text-[10px] text-muted-foreground">
-          <span class="inline-block size-1.5 rounded-full bg-green-500 shadow-[0_0_6px_#22c55e66]" />
-          WASM · {scripts.length} 个脚本
+        <div class="flex items-center gap-1.5 text-[10px] text-[#6a5d78]">
+          <span class="inline-block size-[7px] rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]" />
+          <span class="text-[#b8a9c8] font-medium">WASM</span>· {scripts.length} scripts
         </div>
       </header>
       <div class="flex h-[calc(100vh-48px)]">

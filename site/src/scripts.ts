@@ -10,7 +10,7 @@ const scripts: ScriptInfo[] = [
     sourceUrl: "./completions/bun/index.ts",
     highlightedUrl: "./highlighted/bun.html",
     staticAnalysis: JSON.parse(
-      '[{"line":5,"type":"danger","api":"execFile"},{"line":31,"type":"safe","api":"scanPath"},{"line":40,"type":"safe","api":"scanPath"},{"line":50,"type":"safe","api":"readJson"},{"line":63,"type":"danger","api":"execFile"},{"line":80,"type":"danger","api":"execFile"},{"line":391,"type":"dynamic"},{"line":431,"type":"dynamic"},{"line":441,"type":"dynamic"},{"line":465,"type":"dynamic"},{"line":486,"type":"dynamic"},{"line":492,"type":"dynamic"},{"line":498,"type":"dynamic"},{"line":509,"type":"dynamic"},{"line":564,"type":"dynamic"},{"line":573,"type":"dynamic"}]',
+      '[{"line":5,"type":"danger","api":"execFile"},{"line":31,"type":"safe","api":"scanPath"},{"line":40,"type":"safe","api":"scanPath"},{"line":50,"type":"safe","api":"readJson"},{"line":63,"type":"danger","api":"execFile"},{"line":80,"type":"danger","api":"execFile"},{"line":390,"type":"dynamic"},{"line":430,"type":"dynamic"},{"line":440,"type":"dynamic"},{"line":464,"type":"dynamic"},{"line":485,"type":"dynamic"},{"line":491,"type":"dynamic"},{"line":497,"type":"dynamic"},{"line":508,"type":"dynamic"},{"line":563,"type":"dynamic"},{"line":572,"type":"dynamic"}]',
     ),
   },
   {

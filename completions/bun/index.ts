@@ -86,7 +86,6 @@ async function getAddPackages(ctx: CompletionContext): Promise<Suggestion[]> {
   }));
 }
 
-// ---------- 全局选项 ----------
 const commonGlobalOpts: OptionNode[] = [
   { labels: ["--watch"], description: t.option_watch },
   { labels: ["--hot"], description: t.option_hot },

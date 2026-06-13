@@ -89,7 +89,7 @@ export function DetailArea(props: DetailAreaProps) {
                 }`}
                 onClick={() => setActiveTab(t)}
               >
-                {t === "summary" ? "汇总" : t === "dynamic" ? "动态代码" : "标记后源码"}
+                {t === "summary" ? "Summary" : t === "dynamic" ? "Dynamic" : "Static"}
               </button>
             ))}
           </div>

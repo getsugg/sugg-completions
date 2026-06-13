@@ -12,7 +12,7 @@ export function DynamicCodePanel(props: DynamicCodePanelProps) {
   );
 
   return (
-    <Show when={highlighted()} fallback={<div class="text-muted-foreground">无动态代码</div>}>
+    <Show when={highlighted()} fallback={<div class="text-muted-foreground">No dynamic code</div>}>
       <div
         class="overflow-auto rounded bg-muted p-3 leading-relaxed [&_pre]:text-[11px]"
         innerHTML={highlighted()}

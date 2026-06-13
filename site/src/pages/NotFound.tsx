@@ -5,14 +5,14 @@ export default function NotFound() {
   return (
     <div class="mt-20 text-center">
       <div class="mb-3 text-3xl text-muted-foreground">404</div>
-      <h2 class="text-base font-semibold text-foreground">脚本未找到</h2>
-      <p class="mt-1 text-xs text-muted-foreground">请从左侧列表选择有效脚本。</p>
+      <h2 class="text-base font-semibold text-foreground">Script not found</h2>
+      <p class="mt-1 text-xs text-muted-foreground">Select a valid script from the sidebar.</p>
       <button
         type="button"
         class="mt-4 text-xs text-amber-500 hover:underline cursor-pointer"
         onClick={() => navigate("/")}
       >
-        返回首页
+        Back to Home
       </button>
     </div>
   );

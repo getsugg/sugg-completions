@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- 终端提示符 ❯ -->
+  <text x="12" y="82" font-family="system-ui" font-size="78" font-weight="900" fill="#6a5d78">❯</text>
+  <!-- 光标 -->
+  <rect x="70" y="12" width="9" height="80" rx="2" fill="#f59e0b">
+    <animate attributeName="opacity" values="0.4;1;0.4" dur="1.2s" repeatCount="indefinite"/>
+  </rect>
+  <!-- 补全行 -->
+  <rect x="90" y="65" width="8" height="5" rx="1.5" fill="#f59e0b" opacity="0.2"/>
+  <rect x="90" y="75" width="10" height="5" rx="1.5" fill="#f59e0b" opacity="0.35"/>
+  <rect x="90" y="85" width="6" height="5" rx="1.5" fill="#f59e0b" opacity="0.2"/>
+  <!-- 选中行背景 -->
+  <rect x="88" y="73" width="14" height="9" rx="2.5" fill="#f59e0b" opacity="0.08"/>
+</svg>
