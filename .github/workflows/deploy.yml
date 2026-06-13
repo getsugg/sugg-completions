@@ -31,6 +31,12 @@ jobs:
         with:
           cache: true
 
+      - name: Install sugg
+        working-directory: /tmp
+        run: |
+          curl -fsSL https://github.com/axuj/sugg/releases/latest/download/sugg-x86_64-unknown-linux-musl.tar.gz | tar xz
+          sudo mv sugg /usr/local/bin/
+
       - name: Build
         run: vp build
 

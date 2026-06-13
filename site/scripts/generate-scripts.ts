@@ -6,11 +6,13 @@ import {
   mkdirSync,
   statSync,
   readFileSync,
+  rmSync,
 } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 import { platform } from "os";
 import { createHash } from "crypto";
+import { execSync } from "child_process";
 import { createHighlighter } from "shiki";
 import { createTransformerFactory, rendererRich } from "@shikijs/twoslash";
 import { createTwoslasher } from "twoslash";
@@ -39,6 +41,20 @@ interface ScriptEntry {
   sourceUrl: string;
   highlightedUrl: string;
   analysis?: string;
+  desc?: string;
+}
+
+function getDescription(stem: string, cacheDir: string): string {
+  try {
+    const out = execSync(`sugg complete nushell --cache-dir "${cacheDir}" -- ${stem}`, {
+      encoding: "utf-8",
+      timeout: 10000,
+    });
+    const items = JSON.parse(out);
+    return items[0]?.description ?? stem;
+  } catch {
+    return stem;
+  }
 }
 
 function computeHash(filePaths: string[]): string {
@@ -93,6 +109,15 @@ inputFiles.push(
   join(completionsDir, ".sugg", "sugg.d.ts"),
   join(completionsDir, ".sugg", "i18n.d.ts"),
 );
+// i18n JSON files affect description output via sugg reload
+for (const stem of entries.map((e) => e.stem)) {
+  const i18nDir = join(completionsDir, stem, "i18n");
+  if (existsSync(i18nDir)) {
+    for (const f of readdirSync(i18nDir).sort()) {
+      inputFiles.push(join(i18nDir, f));
+    }
+  }
+}
 const hash = computeHash(inputFiles);
 
 if (readCachedHash() === hash && allOutputsExist(entries)) {
@@ -101,6 +126,19 @@ if (readCachedHash() === hash && allOutputsExist(entries)) {
 }
 
 console.log(`Generating highlighted HTML for ${entries.length} scripts...`);
+
+const suggCacheDir = join(__dirname, "..", "tmp", ".sugg-cache");
+try {
+  execSync(
+    `sugg reload --lang en --cache-dir "${suggCacheDir}" --completions-dir "${completionsDir}"`,
+    {
+      stdio: "inherit",
+      timeout: 30000,
+    },
+  );
+} catch {
+  console.warn("sugg reload failed, descriptions will fall back to stem names");
+}
 
 const suggDts = readFileSync(join(completionsDir, ".sugg", "sugg.d.ts"), "utf-8");
 const i18nDts = readFileSync(join(completionsDir, ".sugg", "i18n.d.ts"), "utf-8");
@@ -128,6 +166,7 @@ for (const entry of entries) {
   const source = readFileSync(fullPath, "utf-8");
 
   entry.analysis = JSON.stringify(scanSource(source));
+  entry.desc = getDescription(entry.stem, suggCacheDir);
 
   const htmlRich = highlighter.codeToHtml(source, {
     lang: "ts",
@@ -140,7 +179,7 @@ for (const entry of entries) {
 const list = entries
   .map(
     (e) =>
-      `  { stem: "${e.stem}", title: "${e.stem}", description: "${e.stem}", sourceUrl: "${e.sourceUrl}", highlightedUrl: "${e.highlightedUrl}", staticAnalysis: JSON.parse('${e.analysis}') },`,
+      `  { stem: "${e.stem}", title: "${e.stem}", description: ${JSON.stringify(e.desc ?? e.stem)}, sourceUrl: "${e.sourceUrl}", highlightedUrl: "${e.highlightedUrl}", staticAnalysis: JSON.parse('${e.analysis}') },`,
   )
   .join("\n");
 
@@ -160,4 +199,5 @@ export default scripts;
 
 writeFileSync(cacheFile, JSON.stringify({ hash }), "utf-8");
 
+rmSync(suggCacheDir, { recursive: true, force: true });
 console.log("Done!");

@@ -6,7 +6,7 @@ const scripts: ScriptInfo[] = [
   {
     stem: "bun",
     title: "bun",
-    description: "bun",
+    description: "Fast JavaScript runtime, package manager, bundler, and test runner.",
     sourceUrl: "./completions/bun/index.ts",
     highlightedUrl: "./highlighted/bun.html",
     staticAnalysis: JSON.parse(
@@ -16,7 +16,7 @@ const scripts: ScriptInfo[] = [
   {
     stem: "git",
     title: "git",
-    description: "git",
+    description: "Distributed version control system",
     sourceUrl: "./completions/git/index.ts",
     highlightedUrl: "./highlighted/git.html",
     staticAnalysis: JSON.parse(
@@ -26,7 +26,7 @@ const scripts: ScriptInfo[] = [
   {
     stem: "npm",
     title: "npm",
-    description: "npm",
+    description: "Node package manager",
     sourceUrl: "./completions/npm/index.ts",
     highlightedUrl: "./highlighted/npm.html",
     staticAnalysis: JSON.parse(
@@ -36,7 +36,7 @@ const scripts: ScriptInfo[] = [
   {
     stem: "scoop",
     title: "scoop",
-    description: "scoop",
+    description: "Scoop command-line installer — Windows package manager",
     sourceUrl: "./completions/scoop/index.ts",
     highlightedUrl: "./highlighted/scoop.html",
     staticAnalysis: JSON.parse(
@@ -46,7 +46,7 @@ const scripts: ScriptInfo[] = [
   {
     stem: "sugg",
     title: "sugg",
-    description: "sugg",
+    description: "Shell completion engine",
     sourceUrl: "./completions/sugg/index.ts",
     highlightedUrl: "./highlighted/sugg.html",
     staticAnalysis: JSON.parse("[]"),
@@ -54,7 +54,7 @@ const scripts: ScriptInfo[] = [
   {
     stem: "winget",
     title: "winget",
-    description: "winget",
+    description: "WinGet 命令行实用工具可从命令行安装应用程序和其他程序包",
     sourceUrl: "./completions/winget.ts",
     highlightedUrl: "./highlighted/winget.html",
     staticAnalysis: JSON.parse(
