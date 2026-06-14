@@ -3,127 +3,99 @@ import * as t from "virtual:i18n/git";
 // ---------- 动态补全辅助 ----------
 
 async function getBranches(): Promise<Suggestion[]> {
-  try {
-    const out = await execFile("git", ["branch", "--format=%(refname:short)"]);
-    return out
-      .trim()
-      .split("\n")
-      .filter(Boolean)
-      .map((b) => ({ display: b }));
-  } catch {
-    return [];
-  }
+  const out = await execFile("git", ["branch", "--format=%(refname:short)"]);
+  return out
+    .trim()
+    .split("\n")
+    .filter(Boolean)
+    .map((b) => ({ display: b }));
 }
 
 async function getAllBranches(): Promise<Suggestion[]> {
-  try {
-    const out = await execFile("git", ["branch", "-a", "--format=%(refname:short)"]);
-    return out
-      .trim()
-      .split("\n")
-      .filter(Boolean)
-      .map((b) => ({ display: b }));
-  } catch {
-    return [];
-  }
+  const out = await execFile("git", ["branch", "-a", "--format=%(refname:short)"]);
+  return out
+    .trim()
+    .split("\n")
+    .filter(Boolean)
+    .map((b) => ({ display: b }));
 }
 
 async function getRemoteBranches(): Promise<Suggestion[]> {
-  try {
-    const out = await execFile("git", ["branch", "-r", "--format=%(refname:short)"]);
-    return out
-      .trim()
-      .split("\n")
-      .filter(Boolean)
-      .map((b) => ({ display: b }));
-  } catch {
-    return [];
-  }
+  const out = await execFile("git", ["branch", "-r", "--format=%(refname:short)"]);
+  return out
+    .trim()
+    .split("\n")
+    .filter(Boolean)
+    .map((b) => ({ display: b }));
 }
 
 async function getTags(): Promise<Suggestion[]> {
-  try {
-    const out = await execFile("git", ["tag"]);
-    return out
-      .trim()
-      .split("\n")
-      .filter(Boolean)
-      .map((t) => ({ display: t }));
-  } catch {
-    return [];
-  }
+  const out = await execFile("git", ["tag"]);
+  return out
+    .trim()
+    .split("\n")
+    .filter(Boolean)
+    .map((t) => ({ display: t }));
 }
 
 async function getRemotes(): Promise<Suggestion[]> {
-  try {
-    const out = await execFile("git", ["remote"]);
-    return out
-      .trim()
-      .split("\n")
-      .filter(Boolean)
-      .map((r) => ({ display: r }));
-  } catch {
-    return [];
-  }
+  const out = await execFile("git", ["remote"]);
+  return out
+    .trim()
+    .split("\n")
+    .filter(Boolean)
+    .map((r) => ({ display: r }));
 }
 
 async function getStashes(): Promise<Suggestion[]> {
-  try {
-    const out = await execFile("git", ["stash", "list", "--format=%gd: %s"]);
-    return out
-      .trim()
-      .split("\n")
-      .filter(Boolean)
-      .map((line) => {
-        const [ref, ...rest] = line.split(": ");
-        return { display: ref, description: rest.join(": ") };
-      });
-  } catch {
-    return [];
-  }
+  const out = await execFile("git", ["stash", "list", "--format=%gd: %s"]);
+  return out
+    .trim()
+    .split("\n")
+    .filter(Boolean)
+    .map((line) => {
+      const [ref, ...rest] = line.split(": ");
+      return { display: ref, description: rest.join(": ") };
+    });
 }
 
 async function getModifiedFiles(): Promise<Suggestion[]> {
-  try {
-    const out = await execFile("git", ["diff", "--name-only"]);
-    return out
-      .trim()
-      .split("\n")
-      .filter(Boolean)
-      .map((f) => ({ display: f }));
-  } catch {
-    return [];
-  }
+  const out = await execFile("git", ["diff", "--name-only"]);
+  return out
+    .trim()
+    .split("\n")
+    .filter(Boolean)
+    .map((f) => ({ display: f }));
 }
 
 async function getStagedFiles(): Promise<Suggestion[]> {
-  try {
-    const out = await execFile("git", ["diff", "--cached", "--name-only"]);
-    return out
-      .trim()
-      .split("\n")
-      .filter(Boolean)
-      .map((f) => ({ display: f }));
-  } catch {
-    return [];
-  }
+  const out = await execFile("git", ["diff", "--cached", "--name-only"]);
+  return out
+    .trim()
+    .split("\n")
+    .filter(Boolean)
+    .map((f) => ({ display: f }));
 }
 
 async function getCommits(): Promise<Suggestion[]> {
-  try {
-    const out = await execFile("git", ["log", "--oneline", "-20"]);
-    return out
-      .trim()
-      .split("\n")
-      .filter(Boolean)
-      .map((line) => {
-        const [hash, ...rest] = line.split(" ");
-        return { display: hash, description: rest.join(" ") };
-      });
-  } catch {
-    return [];
-  }
+  const out = await execFile("git", ["log", "--oneline", "-20"]);
+  return out
+    .trim()
+    .split("\n")
+    .filter(Boolean)
+    .map((line) => {
+      const [hash, ...rest] = line.split(" ");
+      return { display: hash, description: rest.join(" ") };
+    });
 }
+
+// ---------- 动态补全省略 ----------
+
+const allBranches = dynamic(getAllBranches);
+const branches = dynamic(getBranches);
+const commits = dynamic(getCommits);
+const stashes = dynamic(getStashes);
+const remotes = dynamic(getRemotes);
 
 // ---------- 常用选项 ----------
 
@@ -200,7 +172,7 @@ const restoreCmd: CommandNode = {
     {
       labels: ["-s", "--source"],
       description: t.opt_source,
-      args: dynamic(async () => getAllBranches()),
+      args: allBranches,
     },
     { labels: ["-S", "--staged"], description: t.opt_staged },
     { labels: ["-W", "--worktree"], description: t.opt_worktree_restore },
@@ -318,14 +290,14 @@ const branchCmd: CommandNode = {
     {
       labels: ["--set-upstream-to", "-u"],
       description: t.opt_set_upstream,
-      args: dynamic(async () => getAllBranches()),
+      args: allBranches,
     },
     { labels: ["--unset-upstream"], description: t.opt_unset_upstream },
     { labels: ["--show-current"], description: t.opt_show_current },
     { labels: ["--merged"], description: t.opt_merged },
     { labels: ["--no-merged"], description: t.opt_no_merged },
   ],
-  args: dynamic(async () => getBranches()),
+  args: branches,
 };
 
 const commitCmd: CommandNode = {
@@ -350,10 +322,10 @@ const commitCmd: CommandNode = {
     {
       labels: ["-C", "--reuse-message"],
       description: t.opt_reuse_message,
-      args: dynamic(async () => getCommits()),
+      args: commits,
     },
-    { labels: ["--fixup"], description: t.opt_fixup, args: dynamic(async () => getCommits()) },
-    { labels: ["--squash"], description: t.opt_squash, args: dynamic(async () => getCommits()) },
+    { labels: ["--fixup"], description: t.opt_fixup, args: commits },
+    { labels: ["--squash"], description: t.opt_squash, args: commits },
   ],
 };
 
@@ -374,14 +346,14 @@ const mergeCmd: CommandNode = {
     { labels: ["--autostash"], description: t.opt_autostash },
     { labels: ["-s", "--strategy"], description: t.opt_strategy, args: [] },
   ],
-  args: dynamic(async () => getAllBranches()),
+  args: allBranches,
 };
 
 const rebaseCmd: CommandNode = {
   description: t.cmd_rebase,
   options: [
     { labels: ["-i", "--interactive"], description: t.opt_interactive_rebase },
-    { labels: ["--onto"], description: t.opt_onto, args: dynamic(async () => getAllBranches()) },
+    { labels: ["--onto"], description: t.opt_onto, args: allBranches },
     { labels: ["--abort"], description: t.opt_abort },
     { labels: ["--continue"], description: t.opt_continue },
     { labels: ["--skip"], description: t.opt_skip },
@@ -392,7 +364,7 @@ const rebaseCmd: CommandNode = {
     { labels: ["-m", "--merge"], description: t.opt_merge_strategy },
     { labels: ["--update-refs"], description: t.opt_update_refs },
   ],
-  args: dynamic(async () => getAllBranches()),
+  args: allBranches,
 };
 
 const resetCmd: CommandNode = {
@@ -427,7 +399,7 @@ const switchCmd: CommandNode = {
     { labels: ["-m", "--merge"], description: t.opt_merge_3way },
     { labels: ["--orphan"], description: t.opt_orphan, args: [] },
   ],
-  args: dynamic(async () => getAllBranches()),
+  args: allBranches,
 };
 
 const tagCmd: CommandNode = {
@@ -542,22 +514,22 @@ const stashCmd: CommandNode = {
     show: {
       description: t.cmd_stash_show,
       options: [{ labels: ["-u", "--include-untracked"], description: t.opt_include_untracked }],
-      args: dynamic(async () => getStashes()),
+      args: stashes,
     },
-    drop: { description: t.cmd_stash_drop, args: dynamic(async () => getStashes()) },
+    drop: { description: t.cmd_stash_drop, args: stashes },
     pop: {
       description: t.cmd_stash_pop,
       options: [{ labels: ["--index"], description: t.opt_index }, quietOpt],
-      args: dynamic(async () => getStashes()),
+      args: stashes,
     },
     apply: {
       description: t.cmd_stash_apply,
       options: [{ labels: ["--index"], description: t.opt_index }, quietOpt],
-      args: dynamic(async () => getStashes()),
+      args: stashes,
     },
     branch: {
       description: t.cmd_stash_branch,
-      args: dynamic(async () => getStashes()),
+      args: stashes,
     },
     push: {
       description: t.cmd_stash_push,
@@ -588,7 +560,7 @@ const cherryPickCmd: CommandNode = {
     { labels: ["--skip"], description: t.opt_skip },
     { labels: ["--ff"], description: t.opt_allow_ff },
   ],
-  args: dynamic(async () => getCommits()),
+  args: commits,
 };
 
 const revertCmd: CommandNode = {
@@ -602,17 +574,17 @@ const revertCmd: CommandNode = {
     { labels: ["--skip"], description: t.opt_skip },
     { labels: ["-m", "--mainline"], description: t.opt_mainline, args: [] },
   ],
-  args: dynamic(async () => getCommits()),
+  args: commits,
 };
 
 const bisectCmd: CommandNode = {
   description: t.cmd_bisect,
   commands: {
     start: { description: t.cmd_bisect_start },
-    bad: { description: t.cmd_bisect_bad, args: dynamic(async () => getCommits()) },
-    good: { description: t.cmd_bisect_good, args: dynamic(async () => getCommits()) },
-    skip: { description: t.cmd_bisect_skip, args: dynamic(async () => getCommits()) },
-    reset: { description: t.cmd_bisect_reset, args: dynamic(async () => getBranches()) },
+    bad: { description: t.cmd_bisect_bad, args: commits },
+    good: { description: t.cmd_bisect_good, args: commits },
+    skip: { description: t.cmd_bisect_skip, args: commits },
+    reset: { description: t.cmd_bisect_reset, args: branches },
     log: { description: t.cmd_bisect_log },
     run: { description: t.cmd_bisect_run, args: [] },
   },
@@ -665,25 +637,25 @@ const remoteCmd: CommandNode = {
         }),
       },
     },
-    rename: { description: t.cmd_remote_rename, args: dynamic(async () => getRemotes()) },
-    remove: { description: t.cmd_remote_remove, args: dynamic(async () => getRemotes()) },
-    "set-head": { description: t.cmd_remote_set_head, args: dynamic(async () => getRemotes()) },
-    show: { description: t.cmd_remote_show, args: dynamic(async () => getRemotes()) },
+    rename: { description: t.cmd_remote_rename, args: remotes },
+    remove: { description: t.cmd_remote_remove, args: remotes },
+    "set-head": { description: t.cmd_remote_set_head, args: remotes },
+    show: { description: t.cmd_remote_show, args: remotes },
     prune: {
       description: t.cmd_remote_prune,
       options: [dryRunOpt],
-      args: dynamic(async () => getRemotes()),
+      args: remotes,
     },
     update: {
       description: t.cmd_remote_update,
       options: [{ labels: ["-p", "--prune"], description: t.opt_prune }],
-      args: dynamic(async () => getRemotes()),
+      args: remotes,
     },
     "set-branches": {
       description: t.cmd_remote_set_branches,
-      args: dynamic(async () => getRemotes()),
+      args: remotes,
     },
-    "get-url": { description: t.cmd_remote_get_url, args: dynamic(async () => getRemotes()) },
+    "get-url": { description: t.cmd_remote_get_url, args: remotes },
     "set-url": {
       description: t.cmd_remote_set_url,
       options: [
@@ -691,7 +663,7 @@ const remoteCmd: CommandNode = {
         { labels: ["--add"], description: t.opt_add_url },
         { labels: ["--delete"], description: t.opt_delete_url },
       ],
-      args: dynamic(async () => getRemotes()),
+      args: remotes,
     },
   },
 };

@@ -51,11 +51,16 @@ export function DetailArea(props: DetailAreaProps) {
   const displayAnalysis = createMemo((prev: AnalysisData | undefined) => props.analysis() ?? prev);
   const [activeTab, setActiveTab] = createSignal<"summary" | "dynamic" | "static">("summary");
 
+  const filteredAnns = createMemo(() => {
+    const filter = props.filteredType();
+    const all = displayAnalysis()?.anns ?? [];
+    return filter === "all" ? all : all.filter((a) => a.type === filter);
+  });
+
   const matchedLines = createMemo(() => {
     const filter = props.filteredType();
     if (filter === "all") return [];
-    return (displayAnalysis()?.anns ?? [])
-      .filter((a) => a.type === filter)
+    return filteredAnns()
       .map((a) => a.line)
       .sort((a, b) => a - b);
   });
@@ -96,7 +101,7 @@ export function DetailArea(props: DetailAreaProps) {
           <div class="flex-1 overflow-auto px-4 py-3 text-xs">
             <Show when={activeTab() === "summary"}>
               <AnnotationList
-                anns={() => displayAnalysis()?.anns ?? []}
+                anns={filteredAnns}
                 source={props.source}
                 scrollToLine={props.scrollToLine}
               />
