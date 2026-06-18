@@ -28,8 +28,7 @@ export function useAnalysis(stem: () => string | null) {
     const anns: LineAnnotation[] = data()?.anns ?? [];
     return {
       total: anns.length,
-      danger: anns.filter((a) => a.type === "danger").length,
-      dynamic: anns.filter((a) => a.type === "dynamic").length,
+      unsafe: anns.filter((a) => a.type === "unsafe").length,
       safe: anns.filter((a) => a.type === "safe").length,
     };
   });

@@ -1,8 +1,8 @@
 import { useNavigate, useParams } from "@solidjs/router";
 import scripts from "../scripts";
 
-function dangerCount(s: (typeof scripts)[number]): number {
-  return s.staticAnalysis.filter((a) => a.type === "danger").length;
+function unsafeCount(s: (typeof scripts)[number]): number {
+  return s.staticAnalysis.filter((a) => a.type === "unsafe").length;
 }
 
 export function ScriptList() {
@@ -17,7 +17,7 @@ export function ScriptList() {
       </div>
       <ul class="flex flex-col px-2">
         {scripts.map((s) => {
-          const dc = dangerCount(s);
+          const dc = unsafeCount(s);
           return (
             <li>
               <button

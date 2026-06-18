@@ -243,19 +243,12 @@ body {
 .source-viewer .line-row:hover {
   background: rgba(245, 158, 11, 0.03);
 }
-.source-viewer .line-row.line-danger {
+.source-viewer .line-row.line-unsafe {
   background: #ef444408;
 }
-.source-viewer .line-row.line-danger::after {
+.source-viewer .line-row.line-unsafe::after {
   background: #ef4444;
   box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
-}
-.source-viewer .line-row.line-dynamic {
-  background: #f59e0b08;
-}
-.source-viewer .line-row.line-dynamic::after {
-  background: #f59e0b;
-  box-shadow: 0 0 8px rgba(245, 158, 11, 0.25);
 }
 .source-viewer .line-row.line-safe {
   background: #22c55e08;

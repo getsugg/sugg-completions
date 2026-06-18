@@ -2,15 +2,10 @@ import { For } from "solid-js";
 import type { LineAnnotation } from "../types";
 
 const TYPE_STYLE: Record<string, { bar: string; badge: string; label: string }> = {
-  danger: {
+  unsafe: {
     bar: "#ef4444",
     badge: "bg-[#ff335518] text-[#ff5555] border-[#ff335530]",
-    label: "DANGER",
-  },
-  dynamic: {
-    bar: "#f59e0b",
-    badge: "bg-[#f59e0b18] text-[#f59e0b] border-[#f59e0b30]",
-    label: "DYNAMIC",
+    label: "UNSAFE",
   },
   safe: {
     bar: "#22c55e",
@@ -20,15 +15,15 @@ const TYPE_STYLE: Record<string, { bar: string; badge: string; label: string }> 
 };
 
 interface AnnotationListProps {
-  anns: () => LineAnnotation[];
-  source: () => string;
+  anns: LineAnnotation[];
+  source: string;
   scrollToLine: (line: number) => void;
 }
 
 export function AnnotationList(props: AnnotationListProps) {
   return (
     <div class="flex flex-col gap-1">
-      <For each={props.anns()}>
+      <For each={props.anns}>
         {(a) => {
           const style = TYPE_STYLE[a.type] ?? TYPE_STYLE.safe;
           return (
@@ -39,7 +34,7 @@ export function AnnotationList(props: AnnotationListProps) {
             >
               <span
                 class="absolute left-0 top-[3px] bottom-[3px] w-[3px] rounded-r-sm"
-                style={`background:${style.bar};${a.type === "danger" ? "box-shadow:0 0 8px rgba(239,68,68,0.3);" : ""}`}
+                style={`background:${style.bar};${a.type === "unsafe" ? "box-shadow:0 0 8px rgba(239,68,68,0.3);" : ""}`}
               />
               <span class="font-mono text-[11px] text-[#4a3f55] w-[36px] shrink-0 ml-3">
                 L{a.line + 1}

@@ -8,16 +8,15 @@ import { DynamicCodePanel } from "./DynamicCodePanel";
 import { StaticCodePanel } from "./StaticCodePanel";
 
 export interface DetailAreaProps {
-  rootEl: () => HTMLElement | undefined;
-  analysis: () => AnalysisData | undefined;
-  analysisLoading: () => boolean;
-  source: () => string;
+  rootEl: HTMLElement | undefined;
+  analysis: AnalysisData | undefined;
+  source: string;
   scrollToLine: (line: number) => void;
-  filteredType: () => FilterType;
+  filteredType: FilterType;
   setFilteredType: (v: FilterType) => void;
-  focusIdx: () => number;
+  focusIdx: number;
   setFocusIdx: (v: number) => void;
-  counts: () => { total: number; danger: number; dynamic: number; safe: number };
+  counts: { total: number; unsafe: number; safe: number };
   onBarHeightChange?: (px: number) => void;
 }
 
@@ -26,7 +25,10 @@ export function DetailArea(props: DetailAreaProps) {
   const [lastExpandedRatio, setLastExpandedRatio] = createSignal(0.35);
   const [containerHeight, setContainerHeight] = createSignal(300);
 
-  createResizeObserver(props.rootEl, ({ height }) => setContainerHeight(height));
+  createResizeObserver(
+    () => props.rootEl,
+    ({ height }) => setContainerHeight(height),
+  );
 
   const [filterBarEl, setFilterBarEl] = createSignal<HTMLDivElement>();
   createResizeObserver(filterBarEl, ({ height }) => {
@@ -48,18 +50,16 @@ export function DetailArea(props: DetailAreaProps) {
     }
   };
 
-  const displayAnalysis = createMemo((prev: AnalysisData | undefined) => props.analysis() ?? prev);
+  const displayAnalysis = createMemo((prev: AnalysisData | undefined) => props.analysis ?? prev);
   const [activeTab, setActiveTab] = createSignal<"summary" | "dynamic" | "static">("summary");
 
   const filteredAnns = createMemo(() => {
-    const filter = props.filteredType();
     const all = displayAnalysis()?.anns ?? [];
-    return filter === "all" ? all : all.filter((a) => a.type === filter);
+    return props.filteredType === "all" ? all : all.filter((a) => a.type === props.filteredType);
   });
 
   const matchedLines = createMemo(() => {
-    const filter = props.filteredType();
-    if (filter === "all") return [];
+    if (props.filteredType === "all") return [];
     return filteredAnns()
       .map((a) => a.line)
       .sort((a, b) => a - b);
@@ -73,12 +73,12 @@ export function DetailArea(props: DetailAreaProps) {
           filteredType={props.filteredType}
           setFilteredType={props.setFilteredType}
           counts={props.counts}
-          matchedLines={matchedLines}
+          matchedLines={matchedLines()}
           focusIdx={props.focusIdx}
           setFocusIdx={props.setFocusIdx}
           scrollToLine={props.scrollToLine}
           onToggle={toggle}
-          isExpanded={isExpanded}
+          isExpanded={isExpanded()}
         />
       </Show>
       <Show when={isExpanded() && displayAnalysis()}>
@@ -101,7 +101,7 @@ export function DetailArea(props: DetailAreaProps) {
           <div class="flex-1 overflow-auto px-4 py-3 text-xs">
             <Show when={activeTab() === "summary"}>
               <AnnotationList
-                anns={filteredAnns}
+                anns={filteredAnns()}
                 source={props.source}
                 scrollToLine={props.scrollToLine}
               />

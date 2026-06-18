@@ -1,9 +1,9 @@
 import type { LineAnnotation } from "../types";
 
-export const API_RISK_MAP: Record<string, "danger" | "safe"> = {
-  exec: "danger",
-  execFile: "danger",
-  fetch: "danger",
+export const API_RISK_MAP: Record<string, "unsafe" | "safe"> = {
+  exec: "unsafe",
+  execFile: "unsafe",
+  fetch: "unsafe",
   scanPath: "safe",
   readFile: "safe",
   readJson: "safe",
@@ -11,7 +11,7 @@ export const API_RISK_MAP: Record<string, "danger" | "safe"> = {
   ui: "safe",
 };
 
-const DANGER_APIS = ["execFile", "exec", "fetch"];
+const UNSAFE_APIS = ["execFile", "exec", "fetch"];
 const SAFE_APIS = ["scanPath", "readFile", "readJson", "cache", "ui"];
 
 export function scanSource(src: string): LineAnnotation[] {
@@ -19,13 +19,9 @@ export function scanSource(src: string): LineAnnotation[] {
   const lines = src.split("\n");
   for (let i = 0; i < lines.length; i++) {
     const l = lines[i];
-    const danger = DANGER_APIS.find((a) => l.includes(a + "("));
-    if (danger) {
-      anns.push({ line: i, type: "danger", api: danger });
-      continue;
-    }
-    if (l.includes("dynamic(")) {
-      anns.push({ line: i, type: "dynamic" });
+    const unsafe = UNSAFE_APIS.find((a) => l.includes(a + "("));
+    if (unsafe) {
+      anns.push({ line: i, type: "unsafe", api: unsafe });
       continue;
     }
     const safe = SAFE_APIS.find((a) => l.includes(a + "("));

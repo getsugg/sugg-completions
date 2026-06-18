@@ -4,6 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import solid from "vite-plugin-solid";
 import { execSync } from "child_process";
 import { playwright } from "@voidzero-dev/vite-plus-test/browser-playwright";
+import devtools from "solid-devtools/vite";
 
 export default defineConfig({
   staged: {
@@ -20,6 +21,13 @@ export default defineConfig({
     },
   },
   plugins: [
+    devtools({
+      locator: {
+        targetIDE: "vscode",
+        jsxLocation: true,
+        componentLocation: true,
+      },
+    }),
     tailwindcss(),
     solid(),
     {

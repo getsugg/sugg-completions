@@ -75,9 +75,9 @@ export default function ScriptPage() {
           </div>
         </Show>
         <Show when={!analysis.loading && analysis()}>
-          {counts().danger > 0 && (
+          {counts().unsafe > 0 && (
             <span class="rounded-full border border-[#ef444430] bg-[#ef444420] px-2.5 py-0.5 text-[11px] font-bold text-[#ff5555]">
-              {counts().danger} danger
+              {counts().unsafe} unsafe
             </span>
           )}
           <div class="flex items-center gap-1 text-[11px] text-[#6a5d78]">
@@ -107,16 +107,15 @@ export default function ScriptPage() {
         <ResizableHandle withHandle />
         <ResizablePanel minSize={`${barHeight()}px`} initialSize={`${barHeight()}px`}>
           <DetailArea
-            rootEl={resizableRoot}
-            analysis={analysis}
-            analysisLoading={() => analysis.loading}
-            source={() => source() ?? ""}
+            rootEl={resizableRoot()}
+            analysis={analysis()}
+            source={source() ?? ""}
             scrollToLine={scrollToLine}
-            filteredType={filteredType}
+            filteredType={filteredType()}
             setFilteredType={setFilteredType}
-            focusIdx={focusIdx}
+            focusIdx={focusIdx()}
             setFocusIdx={setFocusIdx}
-            counts={counts}
+            counts={counts()}
             onBarHeightChange={setBarHeight}
           />
         </ResizablePanel>

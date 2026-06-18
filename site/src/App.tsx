@@ -8,6 +8,10 @@ import scripts from "./scripts";
 import { getScript } from "./lib/scripts-utils";
 import "@shikijs/twoslash/style-rich.css";
 import "./App.css";
+import { attachDevtoolsOverlay } from "@solid-devtools/overlay";
+import "solid-devtools";
+
+attachDevtoolsOverlay();
 
 function App() {
   document.documentElement.classList.add("dark");

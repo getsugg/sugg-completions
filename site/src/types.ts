@@ -1,10 +1,10 @@
 export interface LineAnnotation {
   line: number;
-  type: "danger" | "dynamic" | "safe";
+  type: "unsafe" | "safe";
   api?: string;
 }
 
-export type FilterType = "all" | "danger" | "dynamic" | "safe";
+export type FilterType = "all" | "unsafe" | "safe";
 
 export interface ExtractResult {
   modified: string;
