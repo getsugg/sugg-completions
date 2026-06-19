@@ -10,9 +10,11 @@ export default defineConfig({
   staged: {
     "*": "vp check --fix",
   },
-  fmt: {},
+  fmt: {
+    ignorePatterns: ["src/components/ui/**"],
+  },
   lint: {
-    ignorePatterns: ["wasm/", "tests/"],
+    ignorePatterns: ["wasm/", "tests/", "src/components/ui/"],
     options: { typeAware: true, typeCheck: true },
     jsPlugins: ["oxlint-tailwindcss"],
     settings: {
