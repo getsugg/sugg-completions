@@ -62,7 +62,7 @@ export default function ScriptPage() {
 
   return (
     <div class="flex min-h-0 min-w-0 flex-1 flex-col">
-      <div class="flex h-[40px] shrink-0 items-center gap-3 border-b border-border px-5 bg-[#110e14]">
+      <div class="flex h-10 shrink-0 items-center gap-3 border-b border-border px-5 bg-[#110e14]">
         <span class="text-sm font-semibold text-[#e8e4ea]">{stem()}</span>
         <span class="truncate text-[11px] text-[#5a4b68]">
           {getScript(stem()!)?.description ?? ""}

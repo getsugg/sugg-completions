@@ -33,17 +33,15 @@ export function AnnotationList(props: AnnotationListProps) {
               onClick={() => props.scrollToLine(a.line)}
             >
               <span
-                class="absolute left-0 top-[3px] bottom-[3px] w-[3px] rounded-r-sm"
+                class="absolute left-0 top-0.75 bottom-0.75 w-0.75 rounded-r-sm"
                 style={`background:${style.bar};${a.type === "unsafe" ? "box-shadow:0 0 8px rgba(239,68,68,0.3);" : ""}`}
               />
-              <span class="font-mono text-[11px] text-[#4a3f55] w-[36px] shrink-0 ml-3">
+              <span class="font-mono text-[11px] text-[#4a3f55] w-9 shrink-0 ml-3">
                 L{a.line + 1}
               </span>
-              <span class="font-mono text-[12px] text-[#c8bdd4] flex-1 truncate">
-                {a.api ?? ""}
-              </span>
+              <span class="font-mono text-xs text-[#c8bdd4] flex-1 truncate">{a.api ?? ""}</span>
               <span
-                class={`text-[10px] font-bold px-2 py-0.5 rounded-[4px] uppercase border ${style.badge}`}
+                class={`text-[10px] font-bold px-2 py-0.5 rounded uppercase border ${style.badge}`}
               >
                 {style.label}
               </span>

@@ -31,7 +31,7 @@ export function ScriptList() {
               >
                 <span class="flex-1 truncate">{s.title}</span>
                 {dc > 0 && (
-                  <span class="font-mono text-[9px] font-semibold leading-none px-1.5 py-[2px] rounded-sm bg-[#ef444420] text-[#ff5555]">
+                  <span class="font-mono text-[9px] font-semibold leading-none px-1.5 py-0.5 rounded-sm bg-[#ef444420] text-[#ff5555]">
                     {dc}
                   </span>
                 )}

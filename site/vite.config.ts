@@ -14,6 +14,18 @@ export default defineConfig({
   lint: {
     ignorePatterns: ["wasm/", "tests/"],
     options: { typeAware: true, typeCheck: true },
+    jsPlugins: ["oxlint-tailwindcss"],
+    settings: {
+      tailwindcss: {
+        entryPoint: "src/App.css",
+      },
+    },
+    rules: {
+      "tailwindcss/enforce-canonical": "warn",
+      "tailwindcss/no-unknown-classes": "error",
+      "tailwindcss/no-deprecated-classes": "error",
+      "tailwindcss/no-conflicting-classes": "error",
+    },
   },
   resolve: {
     alias: {

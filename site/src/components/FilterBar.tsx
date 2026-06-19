@@ -42,7 +42,7 @@ export function FilterBar(props: FilterBarProps) {
         {(Object.keys(FILTER_LABELS) as FilterType[]).map((k) => (
           <button
             type="button"
-            class={`cursor-pointer rounded-[4px] border px-2 py-0.5 text-[11px] font-medium whitespace-nowrap transition-none ${
+            class={`cursor-pointer rounded-lg border px-2 py-0.5 text-[11px] font-medium whitespace-nowrap transition-none ${
               props.filteredType === k
                 ? "bg-amber-500 border-amber-500 text-[#0c0a0e] font-bold"
                 : "border-[#2f2840] text-[#6a5d78] hover:border-[#4a3f55] hover:text-[#c8bdd4]"
