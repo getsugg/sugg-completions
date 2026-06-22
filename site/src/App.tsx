@@ -8,13 +8,9 @@ import scripts from "./scripts";
 import { getScript } from "./lib/scripts-utils";
 import "@shikijs/twoslash/style-rich.css";
 import "./App.css";
-import { attachDevtoolsOverlay } from "@solid-devtools/overlay";
 import "solid-devtools";
 
-attachDevtoolsOverlay();
-
 function App() {
-  document.documentElement.classList.add("dark");
   const params = useParams<{ script?: string }>();
   const stem = () => params.script || null;
   const validScript = createMemo(() => (stem() ? getScript(stem()!) : null));
@@ -34,13 +30,10 @@ function App() {
       <div class="flex h-[calc(100vh-48px)]">
         <ScriptList />
         <main class="flex min-w-0 flex-1 flex-col">
-          <Show when={stem()}>
+          <Show when={stem()} fallback={<HomePage />}>
             <Show when={validScript()} fallback={<NotFound />}>
               <ScriptPage />
             </Show>
-          </Show>
-          <Show when={!stem()}>
-            <HomePage />
           </Show>
         </main>
       </div>

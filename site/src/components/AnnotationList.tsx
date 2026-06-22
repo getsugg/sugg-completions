@@ -1,4 +1,5 @@
 import { For } from "solid-js";
+import { useScriptContext } from "../contexts/ScriptContext";
 import type { LineAnnotation } from "../types";
 
 const TYPE_STYLE: Record<string, { bar: string; badge: string; label: string }> = {
@@ -16,11 +17,11 @@ const TYPE_STYLE: Record<string, { bar: string; badge: string; label: string }> 
 
 interface AnnotationListProps {
   anns: LineAnnotation[];
-  source: string;
-  scrollToLine: (line: number) => void;
 }
 
 export function AnnotationList(props: AnnotationListProps) {
+  const { scrollToLine } = useScriptContext();
+
   return (
     <div class="flex flex-col gap-1">
       <For each={props.anns}>
@@ -30,7 +31,7 @@ export function AnnotationList(props: AnnotationListProps) {
             <button
               type="button"
               class="relative flex items-center gap-3 w-full rounded-md border border-transparent px-3 py-1.5 text-left cursor-pointer transition-all hover:bg-[rgba(245,158,11,0.05)] hover:border-[rgba(245,158,11,0.1)]"
-              onClick={() => props.scrollToLine(a.line)}
+              onClick={() => scrollToLine(a.line)}
             >
               <span
                 class="absolute left-0 top-0.75 bottom-0.75 w-0.75 rounded-r-sm"

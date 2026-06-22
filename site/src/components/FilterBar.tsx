@@ -1,3 +1,6 @@
+import { createMemo, createSignal, type JSX } from "solid-js";
+import { useScriptContext } from "../contexts/ScriptContext";
+import { LINE_HEIGHT } from "./SourceViewer";
 import type { FilterType } from "../types";
 
 const FILTER_LABELS: Record<FilterType, string> = {
@@ -7,25 +10,42 @@ const FILTER_LABELS: Record<FilterType, string> = {
 };
 
 interface FilterBarProps {
-  barRef?: (el: HTMLDivElement) => void;
-  filteredType: FilterType;
-  setFilteredType: (v: FilterType) => void;
-  counts: { total: number; unsafe: number; safe: number };
-  matchedLines: number[];
-  focusIdx: number;
-  setFocusIdx: (v: number) => void;
-  scrollToLine: (line: number) => void;
+  ref?: JSX.HTMLAttributes<HTMLDivElement>["ref"];
   onToggle: () => void;
   isExpanded: boolean;
 }
 
 export function FilterBar(props: FilterBarProps) {
-  const countFor = (k: FilterType) =>
-    k === "all" ? props.counts.total : k === "unsafe" ? props.counts.unsafe : props.counts.safe;
+  const {
+    displayAnalysis,
+    counts,
+    filteredType,
+    setFilteredType,
+    scrollToLine,
+    scrollTop,
+    viewportHeight,
+  } = useScriptContext();
+  const [focusIdx, setFocusIdx] = createSignal(-1);
+
+  const matchedLines = createMemo(() => {
+    if (filteredType() === "all") return [];
+    const anns = displayAnalysis()?.anns ?? [];
+    return anns
+      .filter((a) => a.type === filteredType())
+      .map((a) => a.line)
+      .sort((a, b) => a - b);
+  });
+
+  const centerLine = () => (scrollTop() + viewportHeight() / 2) / LINE_HEIGHT;
+
+  const countFor = (k: FilterType) => {
+    const c = counts();
+    return k === "all" ? c.total : k === "unsafe" ? c.unsafe : c.safe;
+  };
 
   return (
     <div
-      ref={props.barRef}
+      ref={props.ref}
       class="flex shrink-0 items-center border-t border-border bg-card px-3 py-1 text-[11px]"
     >
       <button
@@ -35,7 +55,7 @@ export function FilterBar(props: FilterBarProps) {
       >
         <span class="text-xs text-amber-400 w-3">{props.isExpanded ? "▾" : "▸"}</span>
         <span class="text-[11px] font-semibold text-foreground">Annotations</span>
-        <span class="text-muted-foreground font-mono">{props.counts.total}</span>
+        <span class="text-muted-foreground font-mono">{counts().total}</span>
       </button>
       <div class="flex-1" />
       <div class="flex items-center gap-1">
@@ -43,13 +63,13 @@ export function FilterBar(props: FilterBarProps) {
           <button
             type="button"
             class={`cursor-pointer rounded-lg border px-2 py-0.5 text-[11px] font-medium whitespace-nowrap transition-none ${
-              props.filteredType === k
+              filteredType() === k
                 ? "bg-amber-500 border-amber-500 text-[#0c0a0e] font-bold"
                 : "border-[#2f2840] text-[#6a5d78] hover:border-[#4a3f55] hover:text-[#c8bdd4]"
             }`}
             onClick={() => {
-              props.setFilteredType(k);
-              props.setFocusIdx(-1);
+              setFilteredType(k);
+              setFocusIdx(-1);
             }}
           >
             {FILTER_LABELS[k]} {countFor(k)}
@@ -61,13 +81,18 @@ export function FilterBar(props: FilterBarProps) {
         <button
           type="button"
           class="cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed text-muted-foreground hover:text-foreground px-0.5"
-          disabled={props.filteredType === "all" || props.matchedLines.length === 0}
+          disabled={filteredType() === "all" || matchedLines().length === 0}
           onClick={() => {
-            const lines = props.matchedLines;
-            const cur = props.focusIdx;
-            const next = cur < 0 ? lines.length - 1 : Math.max(0, cur - 1);
-            props.setFocusIdx(next);
-            props.scrollToLine(lines[next]);
+            const lines = matchedLines();
+            if (!lines.length) return;
+            const cur = focusIdx();
+            const center = centerLine();
+            const far = cur < 0 || Math.abs(lines[cur] - center) > 20;
+            const idx = far
+              ? (lines.findLastIndex((l) => l < center) + lines.length) % lines.length
+              : (cur - 1 + lines.length) % lines.length;
+            setFocusIdx(idx);
+            scrollToLine(lines[idx]);
           }}
         >
           ◀
@@ -75,13 +100,21 @@ export function FilterBar(props: FilterBarProps) {
         <button
           type="button"
           class="cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed text-muted-foreground hover:text-foreground px-0.5"
-          disabled={props.filteredType === "all" || props.matchedLines.length === 0}
+          disabled={filteredType() === "all" || matchedLines().length === 0}
           onClick={() => {
-            const lines = props.matchedLines;
-            const cur = props.focusIdx;
-            const next = cur < 0 ? 0 : Math.min(lines.length - 1, cur + 1);
-            props.setFocusIdx(next);
-            props.scrollToLine(lines[next]);
+            const lines = matchedLines();
+            if (!lines.length) return;
+            const cur = focusIdx();
+            const center = centerLine();
+            const far = cur < 0 || Math.abs(lines[cur] - center) > 20;
+            const idx = far
+              ? Math.max(
+                  lines.findIndex((l) => l > center),
+                  0,
+                )
+              : (cur + 1) % lines.length;
+            setFocusIdx(idx);
+            scrollToLine(lines[idx]);
           }}
         >
           ▶

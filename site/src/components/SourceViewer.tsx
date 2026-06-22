@@ -1,11 +1,13 @@
 import { For, createEffect } from "solid-js";
 import { createVirtualizer } from "@tanstack/solid-virtual";
 
+export const LINE_HEIGHT = 22;
+
 interface SourceViewerProps {
   rawLines: () => string[];
   lineClasses: () => string[];
   scrollToTarget: () => number | null;
-  onScrollChange: (top: number) => void;
+  onScrollChange: (top: number, viewportHeight: number) => void;
   restoreScrollTop: () => number | null;
 }
 
@@ -17,7 +19,7 @@ export function SourceViewer(props: SourceViewerProps) {
       return props.rawLines().length;
     },
     getScrollElement: () => scrollEl ?? null,
-    estimateSize: () => 22,
+    estimateSize: () => LINE_HEIGHT,
     overscan: 10,
   });
 
@@ -31,7 +33,7 @@ export function SourceViewer(props: SourceViewerProps) {
   createEffect(() => {
     const target = props.scrollToTarget();
     if (target == null || !scrollEl) return;
-    const top = target * 22 - scrollEl.clientHeight / 2 + 11;
+    const top = target * LINE_HEIGHT - scrollEl.clientHeight / 2 + LINE_HEIGHT / 2;
     scrollEl.scrollTop = Math.max(0, top);
   });
 
@@ -39,11 +41,14 @@ export function SourceViewer(props: SourceViewerProps) {
     <div
       ref={(el) => {
         scrollEl = el;
-        el.addEventListener("scroll", () => props.onScrollChange(el.scrollTop));
+        props.onScrollChange(el.scrollTop, el.clientHeight);
       }}
+      onScroll={(e) =>
+        props.onScrollChange(e.currentTarget.scrollTop, e.currentTarget.clientHeight)
+      }
       class="h-full overflow-auto"
     >
-      <div class="source-viewer twoslash p-4 text-sm leading-relaxed">
+      <div class="source-viewer twoslash p-4 text-sm leading-5.5">
         <div
           style={{
             height: `${virtualizer.getTotalSize()}px`,

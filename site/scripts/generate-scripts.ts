@@ -54,7 +54,8 @@ function getDescription(stem: string, cacheDir: string): string {
     });
     const items = JSON.parse(out);
     return items[0]?.description ?? stem;
-  } catch {
+  } catch (e) {
+    console.error(`[generate] sugg complete failed for "${stem}"`, e);
     return stem;
   }
 }
@@ -70,7 +71,8 @@ function computeHash(filePaths: string[]): string {
 function readCachedHash(): string | null {
   try {
     return JSON.parse(readFileSync(cacheFile, "utf-8")).hash;
-  } catch {
+  } catch (e) {
+    console.error("[generate] failed to read cache", e);
     return null;
   }
 }
@@ -92,8 +94,8 @@ try {
     timeout: 15000,
   });
   copyFileSync(join(initTmpDir, ".sugg", "sugg.d.ts"), join(completionsDir, ".sugg", "sugg.d.ts"));
-} catch {
-  console.warn("sugg dev init failed, sugg.d.ts may be stale");
+} catch (e) {
+  console.error("[generate] sugg dev init failed, sugg.d.ts may be stale", e);
 } finally {
   rmSync(join(initTmpDir, ".."), { recursive: true, force: true });
 }
@@ -104,8 +106,8 @@ try {
     stdio: "inherit",
     timeout: 15000,
   });
-} catch {
-  console.warn("sugg dev i18n failed, i18n.d.ts may be stale");
+} catch (e) {
+  console.error("[generate] sugg dev i18n failed, i18n.d.ts may be stale", e);
 }
 
 const entries: ScriptEntry[] = [];
@@ -164,8 +166,8 @@ try {
       timeout: 30000,
     },
   );
-} catch {
-  console.warn("sugg reload failed, descriptions will fall back to stem names");
+} catch (e) {
+  console.error("[generate] sugg reload failed, descriptions will fall back to stem names", e);
 }
 
 const suggDts = readFileSync(join(completionsDir, ".sugg", "sugg.d.ts"), "utf-8");
