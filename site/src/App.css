@@ -226,9 +226,9 @@ body {
   font-family: "JetBrains Mono", "Fira Code", monospace;
   user-select: none;
 }
-.source-viewer .line-row > span.line {
-  display: inline;
+.source-viewer .line-row > .line-content {
   white-space: pre;
+  min-width: 0;
 }
 .source-viewer .line-row::after {
   content: "";
@@ -260,21 +260,28 @@ body {
   opacity: 0.15;
 }
 
-/* ───────── Twoslash overrides ───────── */
-.twoslash {
-  --twoslash-popup-bg: hsl(var(--popover));
-  --twoslash-popup-color: hsl(var(--popover-foreground));
-  --twoslash-border-color: hsl(var(--border));
-  --twoslash-docs-color: hsl(var(--muted-foreground));
-  --twoslash-code-font: "JetBrains Mono", "Fira Code", monospace;
-  --twoslash-docs-font: inherit;
+/* ───────── Search highlight ───────── */
+.source-viewer .line-row.line-search-match {
+  background: rgba(245, 158, 11, 0.15);
 }
-pre.twoslash {
-  line-height: 1.7;
+.source-viewer .line-row.line-search-match::after {
+  background: #f59e0b;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+  opacity: 1;
 }
-.twoslash .twoslash-popup-container {
-  white-space: pre;
+
+.hover-anchor {
+  display: inline;
+  padding: 0;
+  border: none;
+  border-bottom: 1px dashed transparent;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
 }
-.twoslash .twoslash-popup-code {
-  white-space: pre;
+
+.source-viewer:hover .hover-anchor {
+  border-bottom-color: hsl(var(--muted-foreground));
 }

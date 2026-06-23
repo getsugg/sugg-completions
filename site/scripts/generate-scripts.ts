@@ -15,7 +15,6 @@ import { platform } from "os";
 import { createHash } from "crypto";
 import { execSync } from "child_process";
 import { createHighlighter } from "shiki";
-import { createTransformerFactory, rendererRich } from "@shikijs/twoslash";
 import { createTwoslasher } from "twoslash";
 import { scanSource } from "../src/lib/scan.js";
 import { suggTheme } from "../src/lib/shiki-theme.js";
@@ -41,7 +40,7 @@ mkdirSync(highlightedDir, { recursive: true });
 interface ScriptEntry {
   stem: string;
   sourceUrl: string;
-  highlightedUrl: string;
+  linesUrl: string;
   analysis?: string;
   desc?: string;
 }
@@ -80,7 +79,7 @@ function readCachedHash(): string | null {
 function allOutputsExist(entries: ScriptEntry[]): boolean {
   if (!existsSync(outFile)) return false;
   for (const entry of entries) {
-    if (!existsSync(join(highlightedDir, `${entry.stem}.html`))) return false;
+    if (!existsSync(join(highlightedDir, `${entry.stem}.json`))) return false;
   }
   return true;
 }
@@ -120,13 +119,13 @@ for (const name of readdirSync(completionsDir).sort()) {
     entries.push({
       stem: name.replace(/\.ts$/, ""),
       sourceUrl: `./completions/${name}`,
-      highlightedUrl: `./highlighted/${name.replace(/\.ts$/, "")}.html`,
+      linesUrl: `./highlighted/${name.replace(/\.ts$/, "")}.json`,
     });
   } else if (stat.isDirectory() && existsSync(join(full, "index.ts"))) {
     entries.push({
       stem: name,
       sourceUrl: `./completions/${name}/index.ts`,
-      highlightedUrl: `./highlighted/${name}.html`,
+      linesUrl: `./highlighted/${name}.json`,
     });
   }
 }
@@ -183,13 +182,31 @@ const twoslasher = createTwoslasher({
     skipDefaultLibCheck: true,
     moduleDetection: 3,
     lib: ["lib.es2022.d.ts"],
+    types: [],
+    typeRoots: ["node_modules/@types"],
   },
   extraFiles: {
-    "node_modules/sugg/index.d.ts": suggDts,
-    "node_modules/virtual-i18n-bun/index.d.ts": i18nDts,
+    "node_modules/@types/sugg/index.d.ts": suggDts,
+    "node_modules/@types/sugg-i18n/index.d.ts": i18nDts,
   },
 });
-const twoslashTransformerRich = createTransformerFactory(twoslasher, rendererRich())({});
+
+interface TokenSpan {
+  content: string;
+  color?: string;
+  fontStyle?: number;
+  hover?: {
+    text: string;
+    docs?: string;
+    tags?: [string, string | undefined][];
+    textTokens?: { content: string; color?: string; fontStyle?: number }[][];
+  };
+}
+
+interface LineData {
+  text: string;
+  tokens: TokenSpan[];
+}
 
 for (const entry of entries) {
   const fullPath = join(completionsDir, entry.sourceUrl.replace("./completions/", ""));
@@ -198,18 +215,129 @@ for (const entry of entries) {
   entry.analysis = JSON.stringify(scanSource(source));
   entry.desc = getDescription(entry.stem, suggCacheDir);
 
-  const htmlRich = highlighter.codeToHtml(source, {
+  // Get syntax tokens
+  const tokenLines = highlighter.codeToTokensBase(source, {
     lang: "ts",
-    theme: "sugg-dark",
-    transformers: [twoslashTransformerRich],
+    theme: suggTheme,
   });
-  writeFileSync(join(highlightedDir, `${entry.stem}.html`), htmlRich, "utf-8");
+
+  function cleanDocs(docs: string | undefined): string | undefined {
+    if (!docs) return docs;
+    return docs
+      .replace(/\{@linkcode\s+([^|}]+)(?:\|([^}]+))?\}/g, (_, _target, text) => text || _target)
+      .replace(/\{@link\s+([^|}]+)(?:\|([^}]+))?\}/g, (_, _target, text) => text || _target)
+      .replace(/\{@linkplain\s+([^|}]+)(?:\|([^}]+))?\}/g, (_, _target, text) => text || _target)
+      .replace(/\{@inheritDoc\}/g, "");
+  }
+
+  // Get hover data from twoslasher
+  const twResult = twoslasher(source, "ts");
+  console.log(
+    `[generate] ${entry.stem}: ${twResult.hovers.length} hovers, ${twResult.errors.length} errors`,
+  );
+  for (const e of twResult.errors) {
+    console.log(`  Error[${e.line}]: ${e.text}`);
+  }
+  const hovers: Map<
+    number,
+    {
+      character: number;
+      length: number;
+      text: string;
+      docs?: string;
+      tags?: [string, string | undefined][];
+    }[]
+  > = new Map();
+  for (const h of twResult.hovers) {
+    const list = hovers.get(h.line) ?? [];
+    list.push({
+      character: h.character,
+      length: h.length,
+      text: h.text,
+      docs: cleanDocs(h.docs),
+      tags: h.tags as [string, string | undefined][] | undefined,
+    });
+    hovers.set(h.line, list);
+  }
+
+  // Build LineData — hover-aware token splitting
+  const lines: LineData[] = [];
+  for (let i = 0; i < tokenLines.length; i++) {
+    const tokens = tokenLines[i];
+    const lineHovers = hovers.get(i) ?? [];
+    const text = tokens.map((t) => t.content).join("");
+    const tokenSpans: TokenSpan[] = [];
+    let currentColumn = 0;
+
+    for (const t of tokens) {
+      const colStart = currentColumn;
+      currentColumn += t.content.length;
+
+      const validHovers = lineHovers
+        .filter((h) => h.character >= colStart && h.character < colStart + t.content.length)
+        .sort((a, b) => a.character - b.character);
+
+      if (!validHovers.length) {
+        tokenSpans.push({ content: t.content, color: t.color, fontStyle: t.fontStyle });
+        continue;
+      }
+
+      let tokenStr = t.content;
+      let localCol = colStart;
+
+      for (const matching of validHovers) {
+        const hoverStart = matching.character - localCol;
+        if (hoverStart < 0) continue;
+        const before = tokenStr.slice(0, hoverStart);
+        const hoverLen = Math.min(matching.length, tokenStr.length - hoverStart);
+        const hovered = tokenStr.slice(hoverStart, hoverStart + hoverLen);
+
+        if (before) {
+          tokenSpans.push({ content: before, color: t.color, fontStyle: t.fontStyle });
+        }
+        tokenSpans.push({
+          content: hovered,
+          color: t.color,
+          fontStyle: t.fontStyle,
+          hover: {
+            text: matching.text,
+            docs: matching.docs,
+            tags: matching.tags,
+            textTokens: highlighter
+              .codeToTokensBase(matching.text, {
+                lang: "ts",
+                theme: suggTheme,
+                includeExplanation: false,
+              })
+              .map((l) =>
+                l.map((tok) => ({
+                  content: tok.content,
+                  color: tok.color,
+                  fontStyle: tok.fontStyle,
+                })),
+              ),
+          },
+        });
+
+        tokenStr = tokenStr.slice(hoverStart + hoverLen);
+        localCol += hoverStart + hoverLen;
+      }
+
+      if (tokenStr) {
+        tokenSpans.push({ content: tokenStr, color: t.color, fontStyle: t.fontStyle });
+      }
+    }
+
+    lines.push({ text, tokens: tokenSpans });
+  }
+
+  writeFileSync(join(highlightedDir, `${entry.stem}.json`), JSON.stringify(lines), "utf-8");
 }
 
 const list = entries
   .map(
     (e) =>
-      `  { stem: "${e.stem}", title: "${e.stem}", description: ${JSON.stringify(e.desc ?? e.stem)}, sourceUrl: "${e.sourceUrl}", highlightedUrl: "${e.highlightedUrl}", staticAnalysis: JSON.parse('${e.analysis}') },`,
+      `  { stem: "${e.stem}", title: "${e.stem}", description: ${JSON.stringify(e.desc ?? e.stem)}, sourceUrl: "${e.sourceUrl}", linesUrl: "${e.linesUrl}", staticAnalysis: JSON.parse('${e.analysis}') },`,
   )
   .join("\n");
 

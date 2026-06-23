@@ -1,5 +1,6 @@
 import { createSignal, createMemo } from "solid-js";
 import { useNavigate, useParams } from "@solidjs/router";
+import { cn } from "../lib/utils";
 import { TextField, TextFieldInput } from "~/components/ui/text-field";
 import scripts from "../scripts";
 
@@ -45,11 +46,12 @@ export function ScriptList() {
             <li>
               <button
                 type="button"
-                class={`flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm transition-none ${
+                class={cn(
+                  "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm transition-none",
                   selectedStem() === s.stem
                     ? "bg-amber-700 text-white font-semibold"
-                    : "text-[#8b7d9a] hover:bg-[#ffffff08] hover:text-[#c8bdd4]"
-                }`}
+                    : "text-[#8b7d9a] hover:bg-[#ffffff08] hover:text-[#c8bdd4]",
+                )}
                 onClick={() => navigate(`/${s.stem}`)}
               >
                 <span class="flex-1 truncate">{s.title}</span>

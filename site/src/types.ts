@@ -24,11 +24,30 @@ export interface AnalysisData {
   apis: ApiUsage[];
 }
 
+export interface TokenSpan {
+  content: string;
+  color?: string;
+  fontStyle?: number;
+  hover?: HoverInfo;
+}
+
+export interface HoverInfo {
+  text: string;
+  docs?: string;
+  tags?: [name: string, text: string | undefined][];
+  textTokens?: { content: string; color?: string; fontStyle?: number }[][];
+}
+
+export interface LineData {
+  text: string;
+  tokens: TokenSpan[];
+}
+
 export interface ScriptInfo {
   stem: string;
   title: string;
   description: string;
   sourceUrl: string;
-  highlightedUrl: string;
+  linesUrl: string;
   staticAnalysis: LineAnnotation[];
 }

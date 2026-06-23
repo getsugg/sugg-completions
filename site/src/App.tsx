@@ -6,7 +6,6 @@ import ScriptPage from "./pages/ScriptPage";
 import NotFound from "./pages/NotFound";
 import scripts from "./scripts";
 import { getScript } from "./lib/scripts-utils";
-import "@shikijs/twoslash/style-rich.css";
 import "./App.css";
 import "solid-devtools";
 

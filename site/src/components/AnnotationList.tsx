@@ -1,5 +1,6 @@
 import { For } from "solid-js";
 import { useScriptContext } from "../contexts/ScriptContext";
+import { cn } from "../lib/utils";
 import type { LineAnnotation } from "../types";
 
 const TYPE_STYLE: Record<string, { bar: string; badge: string; label: string }> = {
@@ -35,14 +36,20 @@ export function AnnotationList(props: AnnotationListProps) {
             >
               <span
                 class="absolute left-0 top-0.75 bottom-0.75 w-0.75 rounded-r-sm"
-                style={`background:${style.bar};${a.type === "unsafe" ? "box-shadow:0 0 8px rgba(239,68,68,0.3);" : ""}`}
+                style={{
+                  background: style.bar,
+                  ...(a.type === "unsafe" && { boxShadow: "0 0 8px rgba(239,68,68,0.3)" }),
+                }}
               />
               <span class="font-mono text-[11px] text-[#4a3f55] w-9 shrink-0 ml-3">
                 L{a.line + 1}
               </span>
               <span class="font-mono text-xs text-[#c8bdd4] flex-1 truncate">{a.api ?? ""}</span>
               <span
-                class={`text-[10px] font-bold px-2 py-0.5 rounded uppercase border ${style.badge}`}
+                class={cn(
+                  "text-[10px] font-bold px-2 py-0.5 rounded uppercase border",
+                  style.badge,
+                )}
               >
                 {style.label}
               </span>

@@ -7,6 +7,7 @@ import { ScriptContext } from "../contexts/ScriptContext";
 import { Resizable, ResizablePanel, ResizableHandle } from "~/components/ui/resizable";
 import { SourceViewer } from "../components/SourceViewer";
 import { DetailArea } from "../components/DetailArea";
+import { CodeSearch } from "../components/CodeSearch";
 import type { AnalysisData, FilterType, LineAnnotation } from "../types";
 
 const scrollPositions = new Map<string, number>();
@@ -19,6 +20,7 @@ export default function ScriptPage() {
   const { analysis, counts } = useAnalysis(stem);
 
   const [filteredType, setFilteredType] = createSignal<FilterType>("all");
+  const [searchMatches, setSearchMatches] = createSignal(new Set<number>());
 
   const [resizableRoot, setResizableRoot] = createSignal<HTMLElement>();
   const [barHeight, setBarHeight] = createSignal(32);
@@ -56,6 +58,16 @@ export default function ScriptPage() {
       if (filter !== "all" && (!ann || ann.type !== filter))
         cls = cls ? cls + " line-muted" : "line-muted";
       classes[i] = cls;
+    }
+    const sm = searchMatches();
+    if (sm.size > 0) {
+      for (const line of sm) {
+        if (line >= 0 && line < n) {
+          classes[line] = classes[line]
+            ? classes[line] + " line-search-match"
+            : "line-search-match";
+        }
+      }
     }
     return classes;
   });
@@ -109,17 +121,24 @@ export default function ScriptPage() {
           class="flex-1 min-h-0"
         >
           <ResizablePanel>
-            <SourceViewer
-              rawLines={rawLines}
-              lineClasses={lineClasses}
-              scrollToTarget={scrollToTarget}
-              onScrollChange={(top, vh) => {
-                setScrollTop(top);
-                setViewportHeight(vh);
-                currentScrollTop = top;
-              }}
-              restoreScrollTop={restoreScrollTop}
-            />
+            <div class="relative h-full">
+              <SourceViewer
+                rawLines={rawLines}
+                lineClasses={lineClasses}
+                scrollToTarget={scrollToTarget}
+                onScrollChange={(top, vh) => {
+                  setScrollTop(top);
+                  setViewportHeight(vh);
+                  currentScrollTop = top;
+                }}
+                restoreScrollTop={restoreScrollTop}
+              />
+              <CodeSearch
+                rawLines={rawLines}
+                onScrollToLine={scrollToLine}
+                onSearchUpdate={setSearchMatches}
+              />
+            </div>
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel minSize={`${barHeight()}px`} initialSize={`${barHeight()}px`}>
