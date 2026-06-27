@@ -7,11 +7,11 @@ import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/ui/tooltip
 export const LINE_HEIGHT = 22;
 
 interface SourceViewerProps {
-  rawLines: () => LineData[];
-  lineClasses: () => string[];
-  scrollToTarget: () => number | null;
+  rawLines: LineData[];
+  lineClasses: string[];
+  scrollToTarget: number | null;
   onScrollChange: (top: number, viewportHeight: number) => void;
-  restoreScrollTop: () => number | null;
+  restoreScrollTop: number | null;
 }
 
 export function SourceViewer(props: SourceViewerProps) {
@@ -19,7 +19,7 @@ export function SourceViewer(props: SourceViewerProps) {
 
   const virtualizer = createVirtualizer({
     get count() {
-      return props.rawLines().length;
+      return props.rawLines.length;
     },
     getScrollElement: () => scrollEl ?? null,
     estimateSize: () => LINE_HEIGHT,
@@ -27,14 +27,14 @@ export function SourceViewer(props: SourceViewerProps) {
   });
 
   createEffect(() => {
-    const lines = props.rawLines();
-    const top = props.restoreScrollTop();
+    const lines = props.rawLines;
+    const top = props.restoreScrollTop;
     if (!lines.length || top == null || !scrollEl) return;
     scrollEl.scrollTop = top;
   });
 
   createEffect(() => {
-    const target = props.scrollToTarget();
+    const target = props.scrollToTarget;
     if (target == null || !scrollEl) return;
     const top = target * LINE_HEIGHT - scrollEl.clientHeight / 2 + LINE_HEIGHT / 2;
     scrollEl.scrollTop = Math.max(0, top);
@@ -63,7 +63,7 @@ export function SourceViewer(props: SourceViewerProps) {
               return (
                 <div
                   data-line-number={v.index + 1}
-                  class={cn("line-row", props.lineClasses()[v.index])}
+                  class={cn("line-row", props.lineClasses[v.index])}
                   style={{
                     position: "absolute",
                     top: `${v.start}px`,
@@ -73,7 +73,7 @@ export function SourceViewer(props: SourceViewerProps) {
                   }}
                 >
                   <span class="line-content whitespace-pre">
-                    <For each={props.rawLines()[v.index]?.tokens ?? []}>
+                    <For each={props.rawLines[v.index]?.tokens ?? []}>
                       {(t) => {
                         if (!t.hover) {
                           return <span style={tokenStyle(t)}>{t.content}</span>;
@@ -120,7 +120,7 @@ export function SourceViewer(props: SourceViewerProps) {
                               ) : (
                                 <code
                                   class="font-mono text-xs wrap-break-word"
-                                  style="white-space:pre-wrap"
+                                  style={{ "white-space": "pre-wrap" }}
                                 >
                                   {t.hover.text}
                                 </code>

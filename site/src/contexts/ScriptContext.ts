@@ -1,11 +1,11 @@
-import { createContext, useContext, type Accessor } from "solid-js";
+import { createContext, useContext, type Accessor, type Setter } from "solid-js";
 import type { AnalysisData, FilterType } from "../types";
 
 export interface ScriptContextValue {
   displayAnalysis: Accessor<AnalysisData | undefined>;
   counts: Accessor<{ total: number; unsafe: number; safe: number }>;
   filteredType: Accessor<FilterType>;
-  setFilteredType: (v: FilterType) => void;
+  setFilteredType: Setter<FilterType>;
   scrollToLine: (line: number) => void;
   scrollTop: Accessor<number>;
   viewportHeight: Accessor<number>;

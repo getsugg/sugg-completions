@@ -1,4 +1,4 @@
-import { createMemo, createSignal, type JSX } from "solid-js";
+import { For, createMemo, createSignal, type JSX } from "solid-js";
 import { useScriptContext } from "../contexts/ScriptContext";
 import { cn } from "../lib/utils";
 import { LINE_HEIGHT } from "./SourceViewer";
@@ -52,7 +52,7 @@ export function FilterBar(props: FilterBarProps) {
       <button
         type="button"
         class="flex cursor-pointer items-center gap-1.5 px-1.5 py-1 text-left hover:bg-[#ffffff08] rounded"
-        onClick={props.onToggle}
+        onClick={() => props.onToggle()}
       >
         <span class="text-xs text-amber-400 w-3">{props.isExpanded ? "▾" : "▸"}</span>
         <span class="text-[11px] font-semibold text-foreground">Annotations</span>
@@ -60,23 +60,25 @@ export function FilterBar(props: FilterBarProps) {
       </button>
       <div class="flex-1" />
       <div class="flex items-center gap-1">
-        {(Object.keys(FILTER_LABELS) as FilterType[]).map((k) => (
-          <button
-            type="button"
-            class={cn(
-              "cursor-pointer rounded-lg border px-2 py-0.5 text-[11px] font-medium whitespace-nowrap transition-none",
-              filteredType() === k
-                ? "bg-amber-500 border-amber-500 text-[#0c0a0e] font-bold"
-                : "border-[#2f2840] text-[#6a5d78] hover:border-[#4a3f55] hover:text-[#c8bdd4]",
-            )}
-            onClick={() => {
-              setFilteredType(k);
-              setFocusIdx(-1);
-            }}
-          >
-            {FILTER_LABELS[k]} {countFor(k)}
-          </button>
-        ))}
+        <For each={Object.keys(FILTER_LABELS) as FilterType[]}>
+          {(k) => (
+            <button
+              type="button"
+              class={cn(
+                "cursor-pointer rounded-lg border px-2 py-0.5 text-[11px] font-medium whitespace-nowrap transition-none",
+                filteredType() === k
+                  ? "bg-amber-500 border-amber-500 text-[#0c0a0e] font-bold"
+                  : "border-[#2f2840] text-[#6a5d78] hover:border-[#4a3f55] hover:text-[#c8bdd4]",
+              )}
+              onClick={() => {
+                setFilteredType(k);
+                setFocusIdx(-1);
+              }}
+            >
+              {FILTER_LABELS[k]} {countFor(k)}
+            </button>
+          )}
+        </For>
       </div>
       <div class="w-px h-3 bg-border mx-1.5" />
       <div class="flex items-center gap-0.5">

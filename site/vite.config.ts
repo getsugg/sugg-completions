@@ -5,6 +5,7 @@ import solid from "vite-plugin-solid";
 import { execSync } from "child_process";
 import { playwright } from "@voidzero-dev/vite-plus-test/browser-playwright";
 import devtools from "solid-devtools/vite";
+import lint from "./oxlint.config";
 
 export default defineConfig({
   staged: {
@@ -13,22 +14,7 @@ export default defineConfig({
   fmt: {
     ignorePatterns: ["src/components/ui/**"],
   },
-  lint: {
-    ignorePatterns: ["wasm/", "tests/", "src/components/ui/"],
-    options: { typeAware: true, typeCheck: true },
-    jsPlugins: ["oxlint-tailwindcss"],
-    settings: {
-      tailwindcss: {
-        entryPoint: "src/App.css",
-      },
-    },
-    rules: {
-      "tailwindcss/enforce-canonical": "warn",
-      "tailwindcss/no-unknown-classes": "error",
-      "tailwindcss/no-deprecated-classes": "error",
-      "tailwindcss/no-conflicting-classes": "error",
-    },
-  },
+  lint,
   resolve: {
     alias: {
       "~": path.resolve(__dirname, "./src"),

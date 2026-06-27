@@ -123,18 +123,18 @@ export default function ScriptPage() {
           <ResizablePanel>
             <div class="relative h-full">
               <SourceViewer
-                rawLines={rawLines}
-                lineClasses={lineClasses}
-                scrollToTarget={scrollToTarget}
+                rawLines={rawLines()}
+                lineClasses={lineClasses()}
+                scrollToTarget={scrollToTarget()}
                 onScrollChange={(top, vh) => {
                   setScrollTop(top);
                   setViewportHeight(vh);
                   currentScrollTop = top;
                 }}
-                restoreScrollTop={restoreScrollTop}
+                restoreScrollTop={restoreScrollTop()}
               />
               <CodeSearch
-                rawLines={rawLines}
+                rawLines={rawLines()}
                 onScrollToLine={scrollToLine}
                 onSearchUpdate={setSearchMatches}
               />

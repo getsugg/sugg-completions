@@ -1,4 +1,9 @@
-import { createSignal, createMemo, createEffect, onCleanup, Show, For } from "solid-js";
+import { createSignal, createMemo, createEffect, Show, For, on, type Setter } from "solid-js";
+import { createEventListener } from "@solid-primitives/event-listener";
+import {
+  createViewportObserver,
+  type EntryCallback,
+} from "@solid-primitives/intersection-observer";
 import {
   Command,
   CommandInput,
@@ -10,12 +15,12 @@ import type { LineData } from "../types";
 import { tokenStyle } from "../lib/utils";
 
 interface CodeSearchProps {
-  rawLines: () => LineData[];
+  rawLines: LineData[];
   onScrollToLine: (n: number) => void;
-  onSearchUpdate: (matches: Set<number>) => void;
+  onSearchUpdate: Setter<Set<number>>;
 }
 
-const MAX_VISIBLE = 50;
+const PAGE_SIZE = 50;
 
 const isMac = () => navigator.platform.toLowerCase().includes("mac");
 const shortcutKey = () => (isMac() ? "⌘F" : "Ctrl+F");
@@ -24,17 +29,24 @@ export function CodeSearch(props: CodeSearchProps) {
   const [open, setOpen] = createSignal(false);
   const [query, setQuery] = createSignal("");
   const [selectedValue, setSelectedValue] = createSignal("");
-  // eslint-disable-next-line no-unassigned-vars
+  const [visibleCount, setVisibleCount] = createSignal(PAGE_SIZE);
   let panelRef: HTMLDivElement | undefined;
-  // eslint-disable-next-line no-unassigned-vars
   let inputRef: HTMLInputElement | undefined;
+
+  const [intersectionObserver] = createViewportObserver({ rootMargin: "200px" });
+
+  const handleIntersect: EntryCallback = (entry) => {
+    if (entry.isIntersecting) {
+      setVisibleCount((c) => Math.min(c + PAGE_SIZE, matches().length));
+    }
+  };
 
   const matches = createMemo(() => {
     const q = query().toLowerCase();
     if (!q) return [];
     const result: { line: number; text: string; lineData: LineData }[] = [];
-    for (let i = 0; i < props.rawLines().length; i++) {
-      const ld = props.rawLines()[i];
+    for (let i = 0; i < props.rawLines.length; i++) {
+      const ld = props.rawLines[i];
       if (ld.text.toLowerCase().includes(q)) {
         result.push({
           line: i,
@@ -46,9 +58,8 @@ export function CodeSearch(props: CodeSearchProps) {
     return result;
   });
 
-  const visibleMatches = createMemo(() => matches().slice(0, MAX_VISIBLE));
+  const visibleMatches = createMemo(() => matches().slice(0, visibleCount()));
   const matchCount = () => matches().length;
-  const hiddenCount = () => Math.max(0, matches().length - MAX_VISIBLE);
 
   const currentIdx = createMemo(() => {
     const v = selectedValue();
@@ -58,7 +69,7 @@ export function CodeSearch(props: CodeSearchProps) {
 
   createEffect(() => {
     if (!open() || !query()) {
-      props.onSearchUpdate(new Set());
+      props.onSearchUpdate(new Set<number>());
       return;
     }
     const v = selectedValue();
@@ -69,7 +80,7 @@ export function CodeSearch(props: CodeSearchProps) {
         return;
       }
     }
-    props.onSearchUpdate(new Set());
+    props.onSearchUpdate(new Set<number>());
   });
 
   createEffect((prev: string | undefined) => {
@@ -84,6 +95,12 @@ export function CodeSearch(props: CodeSearchProps) {
     if (open()) requestAnimationFrame(() => inputRef?.focus());
   });
 
+  createEffect(
+    on(query, () => {
+      setVisibleCount(PAGE_SIZE);
+    }),
+  );
+
   createEffect(() => {
     if (!open()) {
       setQuery("");
@@ -91,7 +108,7 @@ export function CodeSearch(props: CodeSearchProps) {
     }
   });
 
-  const handleKeyDown = (e: KeyboardEvent) => {
+  createEventListener(document, "keydown", (e) => {
     if (e.key === "f" && (e.metaKey || e.ctrlKey)) {
       e.preventDefault();
       setOpen(true);
@@ -100,20 +117,15 @@ export function CodeSearch(props: CodeSearchProps) {
     if (e.key === "Escape" && open()) {
       setOpen(false);
     }
-  };
-
-  document.addEventListener("keydown", handleKeyDown);
-  onCleanup(() => document.removeEventListener("keydown", handleKeyDown));
+  });
 
   createEffect(() => {
     if (!open()) return;
-    const handleClick = (e: MouseEvent) => {
+    createEventListener(document, "mousedown", (e) => {
       if (!panelRef) return;
       const target = e.target as Node;
       if (!panelRef.contains(target)) setOpen(false);
-    };
-    document.addEventListener("mousedown", handleClick);
-    onCleanup(() => document.removeEventListener("mousedown", handleClick));
+    });
   });
 
   const handleSelect = (line: number) => {
@@ -149,12 +161,16 @@ export function CodeSearch(props: CodeSearchProps) {
 
       <Show when={open()}>
         <div
-          ref={panelRef}
+          ref={(el) => {
+            panelRef = el;
+          }}
           class="absolute top-12 right-3 z-30 w-80 rounded-lg border border-border bg-popover shadow-xl"
         >
           <Command shouldFilter={false} value={selectedValue()} onValueChange={setSelectedValue}>
             <CommandInput
-              ref={inputRef}
+              ref={(el) => {
+                inputRef = el;
+              }}
               placeholder="Search in file…"
               value={query()}
               onValueChange={setQuery}
@@ -166,7 +182,7 @@ export function CodeSearch(props: CodeSearchProps) {
                     <span class="mr-2 w-8 shrink-0 text-right font-mono text-[10px] text-muted-foreground">
                       {match.line + 1}
                     </span>
-                    <span class="flex-1 truncate font-mono text-[12px] leading-5 [&_span]:!whitespace-nowrap">
+                    <span class="flex-1 truncate font-mono text-[12px] leading-5 [&_span]:whitespace-nowrap!">
                       <For each={match.lineData.tokens}>
                         {(t) => <span style={tokenStyle(t) ?? ""}>{t.content}</span>}
                       </For>
@@ -177,13 +193,16 @@ export function CodeSearch(props: CodeSearchProps) {
               <Show when={query() && matchCount() === 0}>
                 <CommandEmpty>No results found</CommandEmpty>
               </Show>
+              <Show when={visibleCount() < matchCount()}>
+                <div ref={(el) => intersectionObserver(el, handleIntersect)} class="h-2" />
+              </Show>
             </CommandList>
             <Show when={query() && matchCount() > 0}>
               <div class="flex items-center justify-between border-t border-border px-3 py-1.5 text-[10px] text-muted-foreground">
                 <span>
                   {currentIdx() + 1} / {matchCount()} matches
-                  <Show when={hiddenCount() > 0}>
-                    <span class="ml-1 text-[9px]">({hiddenCount()} more)</span>
+                  <Show when={visibleCount() < matchCount()}>
+                    <span class="ml-1 text-[9px]">· scroll for more</span>
                   </Show>
                 </span>
                 <span class="flex items-center gap-2">

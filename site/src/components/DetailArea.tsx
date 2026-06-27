@@ -1,4 +1,13 @@
-import { Show, Switch, Match, createSignal, createMemo, createEffect } from "solid-js";
+import {
+  For,
+  Show,
+  Switch,
+  Match,
+  createSignal,
+  createMemo,
+  createEffect,
+  type Setter,
+} from "solid-js";
 import ResizablePrimitive from "@corvu/resizable";
 import { createResizeObserver } from "@solid-primitives/resize-observer";
 import { useScriptContext } from "../contexts/ScriptContext";
@@ -9,7 +18,7 @@ import { StaticCodePanel } from "./StaticCodePanel";
 
 export interface DetailAreaProps {
   rootEl: HTMLElement | undefined;
-  onBarHeightChange?: (px: number) => void;
+  onBarHeightChange?: Setter<number>;
 }
 
 export function DetailArea(props: DetailAreaProps) {
@@ -65,20 +74,22 @@ export function DetailArea(props: DetailAreaProps) {
         <Show when={isExpanded()}>
           <div class="flex flex-1 flex-col min-h-0 border-t border-border bg-card">
             <div class="flex shrink-0 border-b border-border">
-              {TABS.map((t) => (
-                <button
-                  type="button"
-                  class="cursor-pointer border-b-2 px-3.5 py-1.5 text-[11px] font-medium transition-none"
-                  classList={{
-                    "border-amber-500 text-amber-500": activeTab() === t,
-                    "border-transparent text-muted-foreground hover:text-foreground":
-                      activeTab() !== t,
-                  }}
-                  onClick={() => setActiveTab(t)}
-                >
-                  {t === "summary" ? "Summary" : t === "dynamic" ? "Dynamic" : "Static"}
-                </button>
-              ))}
+              <For each={TABS}>
+                {(t) => (
+                  <button
+                    type="button"
+                    class="cursor-pointer border-b-2 px-3.5 py-1.5 text-[11px] font-medium transition-none"
+                    classList={{
+                      "border-amber-500 text-amber-500": activeTab() === t,
+                      "border-transparent text-muted-foreground hover:text-foreground":
+                        activeTab() !== t,
+                    }}
+                    onClick={() => setActiveTab(t)}
+                  >
+                    {t === "summary" ? "Summary" : t === "dynamic" ? "Dynamic" : "Static"}
+                  </button>
+                )}
+              </For>
             </div>
             <div class="flex-1 overflow-auto px-4 py-3 text-xs">
               <Switch>
