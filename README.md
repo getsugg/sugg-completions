@@ -17,4 +17,6 @@ Add a `.ts` file to `completions/` and submit a PR. The script list is regenerat
 
 ## Web App
 
+🌐 **Live**: https://getsugg.github.io/sugg-completions/
+
 See [site/README.md](site/README.md) for development setup and deployment instructions.
