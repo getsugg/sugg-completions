@@ -3,7 +3,7 @@ import { defineConfig } from "vite-plus";
 import tailwindcss from "@tailwindcss/vite";
 import solid from "vite-plugin-solid";
 import { execSync } from "child_process";
-import { playwright } from "@voidzero-dev/vite-plus-test/browser-playwright";
+import { playwright } from "vitest/browser-playwright";
 import devtools from "solid-devtools/vite";
 import lint from "./oxlint.config";
 
