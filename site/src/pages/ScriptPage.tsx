@@ -1,14 +1,14 @@
 import { Show, createSignal, createMemo, createEffect } from "solid-js";
 import { useParams } from "@solidjs/router";
-import { useSourceLoader } from "../hooks/useSourceLoader";
-import { useAnalysis } from "../hooks/useAnalysis";
-import { getScript } from "../lib/scripts-utils";
-import { ScriptContext } from "../contexts/ScriptContext";
+import { useSourceLoader } from "~/hooks/useSourceLoader";
+import { useAnalysis } from "~/hooks/useAnalysis";
+import { getScript } from "~/lib/scripts-utils";
+import { ScriptContext } from "~/contexts/ScriptContext";
 import { Resizable, ResizablePanel, ResizableHandle } from "~/components/ui/resizable";
-import { SourceViewer } from "../components/SourceViewer";
-import { DetailArea } from "../components/DetailArea";
-import { CodeSearch } from "../components/CodeSearch";
-import type { AnalysisData, FilterType, LineAnnotation } from "../types";
+import { SourceViewer } from "~/components/SourceViewer";
+import { DetailArea } from "~/components/DetailArea";
+import { CodeSearch } from "~/components/CodeSearch";
+import type { AnalysisData, FilterType, LineAnnotation } from "~/types";
 
 const scrollPositions = new Map<string, number>();
 

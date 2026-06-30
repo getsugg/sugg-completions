@@ -34,7 +34,7 @@ jobs:
       - name: Install sugg
         working-directory: /tmp
         run: |
-          VERSION=$(cat ${{ github.workspace }}/site/scripts/.sugg-version)
+          VERSION=$(cat ${{ github.workspace }}/.sugg-version)
           curl -fsSL "https://github.com/axuj/sugg/releases/download/$VERSION/sugg-x86_64-unknown-linux-musl.tar.gz" | tar xz
           sudo mv sugg /usr/local/bin/
 

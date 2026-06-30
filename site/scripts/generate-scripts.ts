@@ -10,22 +10,27 @@ import {
   rmSync,
 } from "fs";
 import { join, dirname } from "path";
-import { fileURLToPath } from "url";
+
 import { platform } from "os";
 import { createHash } from "crypto";
 import { execSync } from "child_process";
 import { createHighlighter } from "shiki";
 import { createTwoslasher } from "twoslash";
-import { scanSource } from "../src/lib/scan.js";
-import { suggTheme } from "../src/lib/shiki-theme.js";
+import { scanSource } from "~/lib/scan";
+import { suggTheme } from "~/lib/shiki-theme";
 
-const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const __dirname = import.meta.dirname!;
+
 const completionsDir = join(__dirname, "..", "..", "completions");
-const outFile = join(__dirname, "..", "src", "scripts.ts");
-const linkPath = join(__dirname, "..", "public", "completions");
-const linkTarget = join(__dirname, "..", "..", "completions");
+
+const generatedDir = join(__dirname, "..", "src", "generated");
+const outFile = join(generatedDir, "scripts.ts");
+const cacheFile = join(generatedDir, ".generate-cache.json");
+
 const highlightedDir = join(__dirname, "..", "public", "highlighted");
-const cacheFile = join(__dirname, ".generate-cache.json");
+
+const linkTarget = join(__dirname, "..", "..", "completions");
+const linkPath = join(__dirname, "..", "public", "completions");
 
 if (!existsSync(linkPath)) {
   mkdirSync(dirname(linkPath), { recursive: true });
@@ -35,6 +40,7 @@ if (!existsSync(linkPath)) {
     symlinkSync(linkTarget, linkPath, "dir");
   }
 }
+mkdirSync(generatedDir, { recursive: true });
 mkdirSync(highlightedDir, { recursive: true });
 
 interface ScriptEntry {
@@ -71,6 +77,7 @@ function readCachedHash(): string | null {
   try {
     return JSON.parse(readFileSync(cacheFile, "utf-8")).hash;
   } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === "ENOENT") return null;
     console.error("[generate] failed to read cache", e);
     return null;
   }
@@ -136,7 +143,7 @@ const inputFiles = entries.map((e) =>
 inputFiles.push(
   join(completionsDir, ".sugg", "sugg.d.ts"),
   join(completionsDir, ".sugg", "i18n.d.ts"),
-  join(__dirname, ".sugg-version"),
+  join(__dirname, "..", "..", ".sugg-version"),
 );
 // i18n JSON files affect description output via sugg reload
 for (const stem of entries.map((e) => e.stem)) {
@@ -345,7 +352,7 @@ writeFileSync(
   outFile,
   `/// <reference types="vite/client" />
 
-import type { ScriptInfo } from "./types";
+import type { ScriptInfo } from "../types";
 
 const scripts: ScriptInfo[] = [
 ${list}

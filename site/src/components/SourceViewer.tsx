@@ -1,7 +1,7 @@
 import { For, Show, createEffect } from "solid-js";
 import { createVirtualizer } from "@tanstack/solid-virtual";
-import type { LineData } from "../types";
-import { cn, tokenStyle } from "../lib/utils";
+import type { LineData } from "~/types";
+import { cn, tokenStyle } from "~/lib/utils";
 import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/ui/tooltip";
 
 export const LINE_HEIGHT = 22;

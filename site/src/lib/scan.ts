@@ -1,4 +1,4 @@
-import type { LineAnnotation } from "../types";
+import type { LineAnnotation } from "~/types";
 
 export const API_RISK_MAP: Record<string, "unsafe" | "safe"> = {
   exec: "unsafe",

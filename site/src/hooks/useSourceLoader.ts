@@ -1,5 +1,5 @@
 import { createResource, createMemo } from "solid-js";
-import { getScript, fetchLines } from "../lib/scripts-utils";
+import { getScript, fetchLines } from "~/lib/scripts-utils";
 
 export function useSourceLoader(stem: () => string | null) {
   const [linesData] = createResource(stem, async (s) => {

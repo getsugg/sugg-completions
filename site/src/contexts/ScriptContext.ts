@@ -1,5 +1,5 @@
 import { createContext, useContext, type Accessor, type Setter } from "solid-js";
-import type { AnalysisData, FilterType } from "../types";
+import type { AnalysisData, FilterType } from "~/types";
 
 export interface ScriptContextValue {
   displayAnalysis: Accessor<AnalysisData | undefined>;

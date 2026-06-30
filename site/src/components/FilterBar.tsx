@@ -1,8 +1,8 @@
 import { For, createMemo, createSignal, type JSX } from "solid-js";
-import { useScriptContext } from "../contexts/ScriptContext";
-import { cn } from "../lib/utils";
+import { useScriptContext } from "~/contexts/ScriptContext";
+import { cn } from "~/lib/utils";
 import { LINE_HEIGHT } from "./SourceViewer";
-import type { FilterType } from "../types";
+import type { FilterType } from "~/types";
 
 const FILTER_LABELS: Record<FilterType, string> = {
   all: "All",

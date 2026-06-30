@@ -10,7 +10,7 @@ import {
 } from "solid-js";
 import ResizablePrimitive from "@corvu/resizable";
 import { createResizeObserver } from "@solid-primitives/resize-observer";
-import { useScriptContext } from "../contexts/ScriptContext";
+import { useScriptContext } from "~/contexts/ScriptContext";
 import { FilterBar } from "./FilterBar";
 import { AnnotationList } from "./AnnotationList";
 import { DynamicCodePanel } from "./DynamicCodePanel";

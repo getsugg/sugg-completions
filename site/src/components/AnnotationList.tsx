@@ -1,7 +1,7 @@
 import { For } from "solid-js";
-import { useScriptContext } from "../contexts/ScriptContext";
-import { cn } from "../lib/utils";
-import type { LineAnnotation } from "../types";
+import { useScriptContext } from "~/contexts/ScriptContext";
+import { cn } from "~/lib/utils";
+import type { LineAnnotation } from "~/types";
 
 const TYPE_STYLE: Record<string, { bar: string; badge: string; label: string }> = {
   unsafe: {

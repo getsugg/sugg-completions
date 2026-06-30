@@ -1,5 +1,5 @@
 import { createResource, Show } from "solid-js";
-import { highlightPlain } from "../lib/shiki";
+import { highlightPlain } from "~/lib/shiki";
 
 interface StaticCodePanelProps {
   modified: string | undefined;

@@ -1,8 +1,8 @@
 import { createResource, createMemo } from "solid-js";
-import { ensureWasm, extract, analyzeApis } from "../lib/parser";
-import { scanSource } from "../lib/scan";
-import type { AnalysisData, LineAnnotation } from "../types";
-import { getScript, fetchSource } from "../lib/scripts-utils";
+import { ensureWasm, extract, analyzeApis } from "~/lib/parser";
+import { scanSource } from "~/lib/scan";
+import type { AnalysisData, LineAnnotation } from "~/types";
+import { getScript, fetchSource } from "~/lib/scripts-utils";
 
 const analysisCache = new Map<string, AnalysisData>();
 

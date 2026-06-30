@@ -11,8 +11,8 @@ import {
   CommandItem,
   CommandEmpty,
 } from "~/components/ui/command";
-import type { LineData } from "../types";
-import { tokenStyle } from "../lib/utils";
+import type { LineData } from "~/types";
+import { tokenStyle } from "~/lib/utils";
 
 interface CodeSearchProps {
   rawLines: LineData[];

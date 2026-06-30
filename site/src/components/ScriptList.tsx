@@ -1,8 +1,8 @@
 import { For, createSignal, createMemo } from "solid-js";
 import { useNavigate, useParams } from "@solidjs/router";
-import { cn } from "../lib/utils";
+import { cn } from "~/lib/utils";
 import { TextField, TextFieldInput } from "~/components/ui/text-field";
-import scripts from "../scripts";
+import scripts from "~/generated/scripts";
 
 function unsafeCount(s: (typeof scripts)[number]): number {
   return s.staticAnalysis.filter((a) => a.type === "unsafe").length;

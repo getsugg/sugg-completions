@@ -11,3 +11,4 @@ site/.vitest-attachments/
 __screenshots__/
 .vitest-attachments/
 site/public/completions/
+site/src/generated/
