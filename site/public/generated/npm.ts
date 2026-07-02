@@ -1,6 +1,30 @@
 import { readJson, scanPath, cache, exec } from "sugg";
 import * as t from "virtual:i18n/npm";
-import { getPkgScripts, getPkgDeps } from "../_npm-utils";
+export async function readPkg(): Promise<Record<string, any>> {
+  try {
+    return await readJson("package.json");
+  } catch {
+    return {};
+  }
+}
+
+export async function getPkgScripts(): Promise<string[]> {
+  const pkg = await readPkg();
+  return Object.keys(pkg.scripts || {});
+}
+
+export async function getPkgDeps(): Promise<string[]> {
+  const pkg = await readPkg();
+  return Object.keys({ ...pkg.dependencies, ...pkg.devDependencies });
+}
+
+export async function getPkgTestFiles(ctx: CompletionContext): Promise<Suggestion[]> {
+  const all = await scanPath(ctx.prefix);
+  return all.filter(
+    (f) => /\.(test|spec)\.(ts|js|tsx|jsx)$/i.test(f.display) || (ctx.prefix !== "" && f.isDir),
+  );
+}
+
 
 async function getScripts(): Promise<Suggestion[]> {
   const names = await getPkgScripts();

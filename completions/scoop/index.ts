@@ -1,7 +1,6 @@
 import { exec, scanPath, cache } from "sugg";
 import * as t from "virtual:i18n/scoop";
 
-// ─── 动态补全辅助 ─────────────────────────────────────
 
 function stripAnsi(s: string): string {
   // eslint-disable-next-line no-control-regex
@@ -67,7 +66,6 @@ const installedApps = dynamic(async (ctx) => {
   return apps ?? [];
 });
 
-// ─── 全局选项 ─────────────────────────────────────────
 
 const globalOpts: OptionNode[] = [{ labels: ["-h", "--help"], description: t.opt_help }];
 
@@ -111,7 +109,6 @@ const forceOpt: OptionNode = {
   description: t.opt_force,
 };
 
-// ─── 顶级命令 ─────────────────────────────────────────
 
 export default createCompletion({
   scoop: {
@@ -129,7 +126,7 @@ export default createCompletion({
           noUpdateScoopOpt,
           archOpt,
         ],
-        args: allApps,
+        args: { count: Infinity, items: allApps },
       },
 
       uninstall: {
@@ -139,7 +136,7 @@ export default createCompletion({
           globalOpt,
           { labels: ["-p", "--purge"], description: t.opt_purge },
         ],
-        args: installedApps,
+        args: { count: Infinity, items: installedApps },
       },
 
       update: {
@@ -154,10 +151,10 @@ export default createCompletion({
           { labels: ["-q", "--quiet"], description: t.opt_quiet },
           { labels: ["-a", "--all"], description: t.opt_all },
         ],
-        args: dynamic(async (ctx) => {
+        args: { count: Infinity, items: dynamic(async (ctx) => {
           const installed = await cache.get(ctx, 30000, getInstalledApps);
           return [{ display: "*", description: t.arg_update_all }, ...(installed ?? [])];
-        }),
+        }) },
       },
 
       list: {
@@ -357,13 +354,13 @@ export default createCompletion({
       reset: {
         description: t.cmd_reset,
         options: [...globalOpts, { labels: ["-a", "--all"], description: t.opt_all }],
-        args: installedApps,
+        args: { count: Infinity, items: installedApps },
       },
 
       download: {
         description: t.cmd_download,
         options: [...globalOpts, forceOpt, skipHashOpt, noUpdateScoopOpt, archOpt],
-        args: allApps,
+        args: { count: Infinity, items: allApps },
       },
 
       export: {

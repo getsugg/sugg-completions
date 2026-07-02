@@ -1,7 +1,7 @@
-import { For, createMemo, createSignal, type JSX } from "solid-js";
+import { For, createMemo, type JSX } from "solid-js";
 import { useScriptContext } from "~/contexts/ScriptContext";
 import { cn } from "~/lib/utils";
-import { LINE_HEIGHT } from "./SourceViewer";
+import { useAnnotationNavigation } from "~/hooks/useAnnotationNavigation";
 import type { FilterType } from "~/types";
 
 const FILTER_LABELS: Record<FilterType, string> = {
@@ -14,30 +14,27 @@ interface FilterBarProps {
   ref?: JSX.HTMLAttributes<HTMLDivElement>["ref"];
   onToggle: () => void;
   isExpanded: boolean;
+  scrollToLine: (line: number, fileId?: string) => void;
+  getCenterLine: () => number;
 }
 
 export function FilterBar(props: FilterBarProps) {
-  const {
-    displayAnalysis,
-    counts,
-    filteredType,
-    setFilteredType,
-    scrollToLine,
-    scrollTop,
-    viewportHeight,
-  } = useScriptContext();
-  const [focusIdx, setFocusIdx] = createSignal(-1);
+  const { stem, activeFile, mergedAnnotations, counts, filteredType, setFilteredType } =
+    useScriptContext();
 
-  const matchedLines = createMemo(() => {
-    if (filteredType() === "all") return [];
-    const anns = displayAnalysis()?.anns ?? [];
-    return anns
-      .filter((a) => a.type === filteredType())
-      .map((a) => a.line)
-      .sort((a, b) => a - b);
+  const filteredAnns = createMemo(() => {
+    const t = filteredType();
+    const all = mergedAnnotations();
+    return t === "all" ? all : all.filter((a) => a.type === t);
   });
 
-  const centerLine = () => (scrollTop() + viewportHeight() / 2) / LINE_HEIGHT;
+  const { goNext, goPrev } = useAnnotationNavigation({
+    stem,
+    activeFile,
+    filteredAnns,
+    getCenterLine: () => props.getCenterLine(),
+    scrollToLine: (line, fileId) => props.scrollToLine(line, fileId),
+  });
 
   const countFor = (k: FilterType) => {
     const c = counts();
@@ -72,7 +69,6 @@ export function FilterBar(props: FilterBarProps) {
               )}
               onClick={() => {
                 setFilteredType(k);
-                setFocusIdx(-1);
               }}
             >
               {FILTER_LABELS[k]} {countFor(k)}
@@ -85,41 +81,16 @@ export function FilterBar(props: FilterBarProps) {
         <button
           type="button"
           class="cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed text-muted-foreground hover:text-foreground px-0.5"
-          disabled={filteredType() === "all" || matchedLines().length === 0}
-          onClick={() => {
-            const lines = matchedLines();
-            if (!lines.length) return;
-            const cur = focusIdx();
-            const center = centerLine();
-            const far = cur < 0 || Math.abs(lines[cur] - center) > 20;
-            const idx = far
-              ? (lines.findLastIndex((l) => l < center) + lines.length) % lines.length
-              : (cur - 1 + lines.length) % lines.length;
-            setFocusIdx(idx);
-            scrollToLine(lines[idx]);
-          }}
+          disabled={filteredAnns().length === 0}
+          onClick={goPrev}
         >
           ◀
         </button>
         <button
           type="button"
           class="cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed text-muted-foreground hover:text-foreground px-0.5"
-          disabled={filteredType() === "all" || matchedLines().length === 0}
-          onClick={() => {
-            const lines = matchedLines();
-            if (!lines.length) return;
-            const cur = focusIdx();
-            const center = centerLine();
-            const far = cur < 0 || Math.abs(lines[cur] - center) > 20;
-            const idx = far
-              ? Math.max(
-                  lines.findIndex((l) => l > center),
-                  0,
-                )
-              : (cur + 1) % lines.length;
-            setFocusIdx(idx);
-            scrollToLine(lines[idx]);
-          }}
+          disabled={filteredAnns().length === 0}
+          onClick={goNext}
         >
           ▶
         </button>

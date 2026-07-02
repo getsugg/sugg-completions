@@ -5,6 +5,7 @@
     "module": "ESNext",
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "moduleResolution": "bundler",
+    "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
@@ -22,5 +23,5 @@
     }
   },
   "include": ["src", "scripts", "tests"],
-  "exclude": ["public/completions"]
+  "exclude": ["public/completions", "public/generated"]
 }

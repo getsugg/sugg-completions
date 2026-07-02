@@ -4,7 +4,7 @@ import path from "node:path";
 const dir = import.meta.dirname;
 
 export default defineConfig({
-  ignorePatterns: ["wasm/", "tests/", "src/components/ui/"],
+  ignorePatterns: ["wasm/", "tests/", "src/components/ui/", "public/generated/"],
   options: { typeAware: true, typeCheck: true },
   jsPlugins: ["oxlint-tailwindcss", "eslint-plugin-solid"],
   settings: {

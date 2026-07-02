@@ -11,6 +11,8 @@
 
   "cmd_adduser": "添加注册表用户帐户",
   "cmd_audit": "运行安全审计",
+  "cmd_audit_fix": "修复漏洞",
+  "cmd_audit_signatures": "验证包签名",
   "cmd_bugs": "在浏览器中报告包的 Bug",
   "cmd_cache": "操作包和 npx 缓存",
   "cmd_cache_add": "添加包规范",
@@ -51,7 +53,12 @@
   "cmd_get": "从 npm 配置中获取值",
   "cmd_help": "获取 npm 帮助",
   "cmd_helpSearch": "搜索 npm 帮助文档",
-  "cmd_init": "创建 package_json 文件",
+  "cmd_hook": "管理注册表钩子",
+  "cmd_hook_add": "添加钩子",
+  "cmd_hook_ls": "列出钩子",
+  "cmd_hook_rm": "删除钩子",
+  "cmd_hook_update": "更新钩子",
+  "cmd_init": "创建 package.json 文件",
   "cmd_install": "安装包",
   "cmd_installCiTest": "纯净安装项目并运行测试",
   "cmd_installTest": "安装包并运行测试",
@@ -244,10 +251,11 @@
   "arg_auditLevel_moderate": "中",
   "arg_auditLevel_high": "高",
   "arg_auditLevel_critical": "严重",
-  "pkg_react": "React 库",
-  "pkg_vue": "Vue.js",
-  "pkg_typescript": "TypeScript",
-  "pkg_eslint": "ESLint",
-  "pkg_prettier": "Prettier",
-  "arg_auditLevel_none": "无"
+  "arg_auditLevel_none": "无",
+
+  "suggestion_script": "npm 脚本",
+  "suggestion_installed": "已安装的包",
+  "suggestion_workspace": "工作区",
+  "suggestion_global": "全局包",
+  "suggestion_packageJsonField": "package.json 字段"
 }

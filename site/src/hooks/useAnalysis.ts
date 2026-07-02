@@ -1,28 +1,25 @@
-import { createResource, createMemo } from "solid-js";
-import { ensureWasm, extract, analyzeApis } from "~/lib/parser";
-import { scanSource } from "~/lib/scan";
-import type { AnalysisData, LineAnnotation } from "~/types";
-import { getScript, fetchSource } from "~/lib/scripts-utils";
+import { createResource, createMemo, type Accessor } from "solid-js";
+import type { LineAnnotation } from "~/types";
+import { getScript, getFile, fetchAnalysis } from "~/lib/scripts-utils";
 
-const analysisCache = new Map<string, AnalysisData>();
+export function useAnalysis(stem: () => string | null, fileId?: Accessor<string | null>) {
+  const [data] = createResource(
+    () => ({ stem: stem(), fileId: fileId?.() }),
+    async ({ stem, fileId }) => {
+      if (!stem) return undefined;
+      const script = getScript(stem);
+      if (!script) return undefined;
 
-export function useAnalysis(stem: () => string | null) {
-  const [data] = createResource(stem, async (s) => {
-    if (!s) return undefined;
-    const cached = analysisCache.get(s);
-    if (cached) return cached;
-    const script = getScript(s);
-    if (!script) return undefined;
-    const src = await fetchSource(script);
-    const anns: LineAnnotation[] =
-      script.staticAnalysis.length > 0 ? script.staticAnalysis : scanSource(src);
-    await ensureWasm();
-    const r = extract(src, "script.ts");
-    const apis = r.dynamic.trim() ? analyzeApis(r.dynamic) : [];
-    const result: AnalysisData = { stem: s, anns, r, apis };
-    analysisCache.set(s, result);
-    return result;
-  });
+      // Fetch base analysis data (dynamic analysis is script-level)
+      const base = await fetchAnalysis(stem);
+
+      // Get annotations from the specific file
+      const file = fileId ? getFile(stem, fileId) : script.files[0];
+      const anns: LineAnnotation[] = file?.anns ?? base.anns;
+
+      return { ...base, stem, anns };
+    },
+  );
 
   const counts = createMemo(() => {
     const anns: LineAnnotation[] = data()?.anns ?? [];

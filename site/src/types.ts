@@ -22,6 +22,18 @@ export interface AnalysisData {
   anns: LineAnnotation[];
   r: ExtractResult;
   apis: ApiUsage[];
+  staticHtml: string;
+  dynamicHtml: string;
+}
+
+export interface ScriptAnalysis {
+  staticAnalysis: LineAnnotation[];
+  dynamicAnalysis?: {
+    extractResult: ExtractResult;
+    apis: ApiUsage[];
+  };
+  staticHtml: string;
+  dynamicHtml: string;
 }
 
 export interface TokenSpan {
@@ -43,11 +55,19 @@ export interface LineData {
   tokens: TokenSpan[];
 }
 
+export interface FileState {
+  id: string;
+  filename: string;
+  linesUrl: string;
+  anns: LineAnnotation[];
+}
+
 export interface ScriptInfo {
   stem: string;
   title: string;
   description: string;
   sourceUrl: string;
   linesUrl: string;
-  staticAnalysis: LineAnnotation[];
+  unsafeCount: number;
+  files: FileState[];
 }

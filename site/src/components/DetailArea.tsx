@@ -19,10 +19,12 @@ import { StaticCodePanel } from "./StaticCodePanel";
 export interface DetailAreaProps {
   rootEl: HTMLElement | undefined;
   onBarHeightChange?: Setter<number>;
+  scrollToLine: (line: number, fileId?: string) => void;
+  getCenterLine: () => number;
 }
 
 export function DetailArea(props: DetailAreaProps) {
-  const { displayAnalysis, filteredType } = useScriptContext();
+  const { displayAnalysis, mergedAnnotations, filteredType } = useScriptContext();
   const resizableCtx = ResizablePrimitive.useContext();
   const [containerHeight, setContainerHeight] = createSignal(300);
 
@@ -58,10 +60,14 @@ export function DetailArea(props: DetailAreaProps) {
 
   const [activeTab, setActiveTab] = createSignal<"summary" | "dynamic" | "static">("summary");
 
+  // Filter merged annotations by type
   const filteredAnns = createMemo(() => {
-    const all = displayAnalysis()?.anns ?? [];
     const t = filteredType();
-    return t === "all" ? all : all.filter((a) => a.type === t);
+    const allAnns = mergedAnnotations();
+    if (t !== "all") {
+      return allAnns.filter((a) => a.type === t);
+    }
+    return allAnns;
   });
 
   const TABS = ["summary", "dynamic", "static"] as const;
@@ -69,7 +75,13 @@ export function DetailArea(props: DetailAreaProps) {
   return (
     <div class="flex flex-col h-full">
       <Show when={displayAnalysis()}>
-        <FilterBar ref={setFilterBarEl} onToggle={toggle} isExpanded={isExpanded()} />
+        <FilterBar
+          ref={setFilterBarEl}
+          onToggle={toggle}
+          isExpanded={isExpanded()}
+          scrollToLine={props.scrollToLine}
+          getCenterLine={props.getCenterLine}
+        />
 
         <Show when={isExpanded()}>
           <div class="flex flex-1 flex-col min-h-0 border-t border-border bg-card">
@@ -94,13 +106,13 @@ export function DetailArea(props: DetailAreaProps) {
             <div class="flex-1 overflow-auto px-4 py-3 text-xs">
               <Switch>
                 <Match when={activeTab() === "summary"}>
-                  <AnnotationList anns={filteredAnns()} />
+                  <AnnotationList anns={filteredAnns()} scrollToLine={props.scrollToLine} />
                 </Match>
                 <Match when={activeTab() === "dynamic"}>
-                  <DynamicCodePanel dynamicJs={displayAnalysis()?.r.dynamic} />
+                  <DynamicCodePanel dynamicHtml={displayAnalysis()?.dynamicHtml} />
                 </Match>
                 <Match when={activeTab() === "static"}>
-                  <StaticCodePanel modified={displayAnalysis()?.r.modified} />
+                  <StaticCodePanel staticHtml={displayAnalysis()?.staticHtml} />
                 </Match>
               </Switch>
             </div>

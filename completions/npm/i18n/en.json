@@ -11,6 +11,8 @@
 
   "cmd_adduser": "Add a registry user account",
   "cmd_audit": "Run a security audit",
+  "cmd_audit_fix": "Fix vulnerabilities",
+  "cmd_audit_signatures": "Verify package signatures",
   "cmd_bugs": "Report bugs for a package in a web browser",
   "cmd_cache": "Manipulates packages and npx cache",
   "cmd_cache_add": "Add a package spec",
@@ -51,6 +53,11 @@
   "cmd_get": "Get a value from the npm configuration",
   "cmd_help": "Get help on npm",
   "cmd_helpSearch": "Search npm help documentation",
+  "cmd_hook": "Manage registry hooks",
+  "cmd_hook_add": "Add a hook",
+  "cmd_hook_ls": "List hooks",
+  "cmd_hook_rm": "Remove a hook",
+  "cmd_hook_update": "Update a hook",
   "cmd_init": "Create a package.json file",
   "cmd_install": "Install a package",
   "cmd_installCiTest": "Install a project with a clean slate and run tests",
@@ -244,10 +251,11 @@
   "arg_auditLevel_moderate": "moderate",
   "arg_auditLevel_high": "high",
   "arg_auditLevel_critical": "critical",
-  "pkg_react": "React library",
-  "pkg_vue": "Vue.js",
-  "pkg_typescript": "TypeScript",
-  "pkg_eslint": "ESLint",
-  "pkg_prettier": "Prettier",
-  "arg_auditLevel_none": "none"
+  "arg_auditLevel_none": "none",
+
+  "suggestion_script": "npm script",
+  "suggestion_installed": "installed package",
+  "suggestion_workspace": "workspace",
+  "suggestion_global": "global package",
+  "suggestion_packageJsonField": "package.json field"
 }

@@ -9,7 +9,7 @@ import {
   copyFileSync,
   rmSync,
 } from "fs";
-import { join, dirname } from "path";
+import { join, dirname, resolve } from "path";
 
 import { platform } from "os";
 import { createHash } from "crypto";
@@ -18,16 +18,23 @@ import { createHighlighter } from "shiki";
 import { createTwoslasher } from "twoslash";
 import { scanSource } from "~/lib/scan";
 import { suggTheme } from "~/lib/shiki-theme";
+import type { LineAnnotation, ExtractResult, ApiUsage } from "~/types";
 
 const __dirname = import.meta.dirname!;
+
+const wasmDir = join(__dirname, "..", "wasm");
+const wasmJsPath = join(wasmDir, "sugg_wasm.js");
+const wasmBgPath = join(wasmDir, "sugg_wasm_bg.wasm");
 
 const completionsDir = join(__dirname, "..", "..", "completions");
 
 const generatedDir = join(__dirname, "..", "src", "generated");
-const outFile = join(generatedDir, "scripts.ts");
+const scriptsJsonFile = join(generatedDir, "scripts.json");
 const cacheFile = join(generatedDir, ".generate-cache.json");
 
 const highlightedDir = join(__dirname, "..", "public", "highlighted");
+const analysisDir = join(__dirname, "..", "public", "analysis");
+const generatedSourceDir = join(__dirname, "..", "public", "generated");
 
 const linkTarget = join(__dirname, "..", "..", "completions");
 const linkPath = join(__dirname, "..", "public", "completions");
@@ -42,13 +49,26 @@ if (!existsSync(linkPath)) {
 }
 mkdirSync(generatedDir, { recursive: true });
 mkdirSync(highlightedDir, { recursive: true });
+mkdirSync(analysisDir, { recursive: true });
+mkdirSync(generatedSourceDir, { recursive: true });
+
+interface SharedModule {
+  id: string;
+  filename: string;
+  absPath: string;
+}
 
 interface ScriptEntry {
   stem: string;
   sourceUrl: string;
   linesUrl: string;
-  analysis?: string;
+  analysis?: LineAnnotation[];
   desc?: string;
+  dynamicAnalysis?: {
+    extractResult: ExtractResult;
+    apis: ApiUsage[];
+  };
+  sharedModules: SharedModule[];
 }
 
 function getDescription(stem: string, cacheDir: string): string {
@@ -84,9 +104,13 @@ function readCachedHash(): string | null {
 }
 
 function allOutputsExist(entries: ScriptEntry[]): boolean {
-  if (!existsSync(outFile)) return false;
+  if (!existsSync(scriptsJsonFile)) return false;
   for (const entry of entries) {
     if (!existsSync(join(highlightedDir, `${entry.stem}.json`))) return false;
+    if (!existsSync(join(analysisDir, `${entry.stem}.json`))) return false;
+    for (const sm of entry.sharedModules) {
+      if (!existsSync(join(highlightedDir, `${entry.stem}-${sm.id}.json`))) return false;
+    }
   }
   return true;
 }
@@ -122,17 +146,19 @@ for (const name of readdirSync(completionsDir).sort()) {
   if (name.startsWith(".") || name === "node_modules") continue;
   const full = join(completionsDir, name);
   const stat = statSync(full);
-  if (stat.isFile() && name.endsWith(".ts")) {
+  if (stat.isFile() && name.endsWith(".ts") && !name.startsWith("_")) {
     entries.push({
       stem: name.replace(/\.ts$/, ""),
       sourceUrl: `./completions/${name}`,
       linesUrl: `./highlighted/${name.replace(/\.ts$/, "")}.json`,
+      sharedModules: [],
     });
   } else if (stat.isDirectory() && existsSync(join(full, "index.ts"))) {
     entries.push({
       stem: name,
       sourceUrl: `./completions/${name}/index.ts`,
       linesUrl: `./highlighted/${name}.json`,
+      sharedModules: [],
     });
   }
 }
@@ -145,7 +171,12 @@ inputFiles.push(
   join(completionsDir, ".sugg", "i18n.d.ts"),
   join(__dirname, "..", "..", ".sugg-version"),
 );
-// i18n JSON files affect description output via sugg reload
+// Include shared modules in hash
+for (const f of readdirSync(completionsDir).sort()) {
+  if (f.startsWith("_") && f.endsWith(".ts")) {
+    inputFiles.push(join(completionsDir, f));
+  }
+}
 for (const stem of entries.map((e) => e.stem)) {
   const i18nDir = join(completionsDir, stem, "i18n");
   if (existsSync(i18nDir)) {
@@ -161,7 +192,7 @@ if (readCachedHash() === hash && allOutputsExist(entries)) {
   process.exit(0);
 }
 
-console.log(`Generating highlighted HTML for ${entries.length} scripts...`);
+console.log(`Generating for ${entries.length} scripts...`);
 
 const suggCacheDir = join(__dirname, "..", "tmp", ".sugg-cache");
 try {
@@ -176,10 +207,59 @@ try {
   console.error("[generate] sugg reload failed, descriptions will fall back to stem names", e);
 }
 
+// Detect shared module imports in source
+function findSharedModules(source: string, scriptDir: string): SharedModule[] {
+  const shared: SharedModule[] = [];
+  const importRe = /from\s*["'](\.\.\/_npm-utils(?:\.ts)?|\.\/_npm-utils(?:\.ts)?)["']/g;
+  let m;
+  while ((m = importRe.exec(source)) !== null) {
+    const sharedPath = resolve(scriptDir, m[1].replace(/\.ts$/, "") + ".ts");
+    if (existsSync(sharedPath)) {
+      shared.push({
+        id: "_npm-utils",
+        filename: "_npm-utils.ts",
+        absPath: sharedPath,
+      });
+    }
+  }
+  return shared;
+}
+
+// Pre-scan all entries to find shared modules for twoslasher
+const allSharedModules = new Map<string, string>(); // virtual path -> source
+for (const entry of entries) {
+  const fullPath = join(completionsDir, entry.sourceUrl.replace("./completions/", ""));
+  const source = readFileSync(fullPath, "utf-8");
+  const scriptDir = dirname(fullPath);
+  entry.sharedModules = findSharedModules(source, scriptDir);
+  for (const sm of entry.sharedModules) {
+    if (!allSharedModules.has(sm.filename)) {
+      allSharedModules.set(sm.filename, readFileSync(sm.absPath, "utf-8"));
+    }
+  }
+}
+
 const suggDts = readFileSync(join(completionsDir, ".sugg", "sugg.d.ts"), "utf-8");
 const i18nDts = readFileSync(join(completionsDir, ".sugg", "i18n.d.ts"), "utf-8");
 
+// Load WASM for build-time dynamic analysis
+console.log("[generate] Loading WASM for dynamic analysis...");
+const wasmModule = await WebAssembly.compile(readFileSync(wasmBgPath));
+const wasmExports = await import(wasmJsPath);
+await wasmExports.default({ module: wasmModule });
+const extract = wasmExports.extract;
+const analyzeApis = wasmExports.analyze_apis;
+console.log("[generate] WASM loaded successfully");
+
 const highlighter = await createHighlighter({ langs: ["ts"], themes: [suggTheme] });
+const extraFiles: Record<string, string> = {
+  "node_modules/@types/sugg/index.d.ts": suggDts,
+  "node_modules/@types/sugg-i18n/index.d.ts": i18nDts,
+};
+// Add shared modules so twoslasher can resolve imports
+for (const [filename, content] of allSharedModules) {
+  extraFiles[`completions/${filename}`] = content;
+}
 const twoslasher = createTwoslasher({
   compilerOptions: {
     strict: true,
@@ -192,10 +272,7 @@ const twoslasher = createTwoslasher({
     types: [],
     typeRoots: ["node_modules/@types"],
   },
-  extraFiles: {
-    "node_modules/@types/sugg/index.d.ts": suggDts,
-    "node_modules/@types/sugg-i18n/index.d.ts": i18nDts,
-  },
+  extraFiles,
 });
 
 interface TokenSpan {
@@ -215,36 +292,26 @@ interface LineData {
   tokens: TokenSpan[];
 }
 
-for (const entry of entries) {
-  const fullPath = join(completionsDir, entry.sourceUrl.replace("./completions/", ""));
-  const source = readFileSync(fullPath, "utf-8");
+function cleanDocs(docs: string | undefined): string | undefined {
+  if (!docs) return docs;
+  return docs
+    .replace(/\{@linkcode\s+([^|}]+)(?:\|([^}]+))?\}/g, (_, _target, text) => text || _target)
+    .replace(/\{@link\s+([^|}]+)(?:\|([^}]+))?\}/g, (_, _target, text) => text || _target)
+    .replace(/\{@linkplain\s+([^|}]+)(?:\|([^}]+))?\}/g, (_, _target, text) => text || _target)
+    .replace(/\{@inheritDoc\}/g, "");
+}
 
-  entry.analysis = JSON.stringify(scanSource(source));
-  entry.desc = getDescription(entry.stem, suggCacheDir);
-
-  // Get syntax tokens
-  const tokenLines = highlighter.codeToTokensBase(source, {
-    lang: "ts",
-    theme: suggTheme,
-  });
-
-  function cleanDocs(docs: string | undefined): string | undefined {
-    if (!docs) return docs;
-    return docs
-      .replace(/\{@linkcode\s+([^|}]+)(?:\|([^}]+))?\}/g, (_, _target, text) => text || _target)
-      .replace(/\{@link\s+([^|}]+)(?:\|([^}]+))?\}/g, (_, _target, text) => text || _target)
-      .replace(/\{@linkplain\s+([^|}]+)(?:\|([^}]+))?\}/g, (_, _target, text) => text || _target)
-      .replace(/\{@inheritDoc\}/g, "");
-  }
-
-  // Get hover data from twoslasher
-  const twResult = twoslasher(source, "ts");
+function generateHighlighted(source: string, stem: string, virtualPath?: string): LineData[] {
+  // twoslasher needs @filename to resolve relative imports
+  const codeForTwoslash = virtualPath ? `// @filename: ${virtualPath}\n${source}` : source;
+  const twResult = twoslasher(codeForTwoslash, "ts");
   console.log(
-    `[generate] ${entry.stem}: ${twResult.hovers.length} hovers, ${twResult.errors.length} errors`,
+    `[generate] ${stem}: ${twResult.hovers.length} hovers, ${twResult.errors.length} errors`,
   );
-  for (const e of twResult.errors) {
-    console.log(`  Error[${e.line}]: ${e.text}`);
-  }
+
+  // Token generation uses original source (no @filename comment)
+  const tokenLines = highlighter.codeToTokensBase(source, { lang: "ts", theme: suggTheme });
+
   const hovers: Map<
     number,
     {
@@ -267,7 +334,6 @@ for (const entry of entries) {
     hovers.set(h.line, list);
   }
 
-  // Build LineData — hover-aware token splitting
   const lines: LineData[] = [];
   for (let i = 0; i < tokenLines.length; i++) {
     const tokens = tokenLines[i];
@@ -279,29 +345,22 @@ for (const entry of entries) {
     for (const t of tokens) {
       const colStart = currentColumn;
       currentColumn += t.content.length;
-
       const validHovers = lineHovers
         .filter((h) => h.character >= colStart && h.character < colStart + t.content.length)
         .sort((a, b) => a.character - b.character);
-
       if (!validHovers.length) {
         tokenSpans.push({ content: t.content, color: t.color, fontStyle: t.fontStyle });
         continue;
       }
-
       let tokenStr = t.content;
       let localCol = colStart;
-
       for (const matching of validHovers) {
         const hoverStart = matching.character - localCol;
         if (hoverStart < 0) continue;
         const before = tokenStr.slice(0, hoverStart);
         const hoverLen = Math.min(matching.length, tokenStr.length - hoverStart);
         const hovered = tokenStr.slice(hoverStart, hoverStart + hoverLen);
-
-        if (before) {
-          tokenSpans.push({ content: before, color: t.color, fontStyle: t.fontStyle });
-        }
+        if (before) tokenSpans.push({ content: before, color: t.color, fontStyle: t.fontStyle });
         tokenSpans.push({
           content: hovered,
           color: t.color,
@@ -325,42 +384,114 @@ for (const entry of entries) {
               ),
           },
         });
-
         tokenStr = tokenStr.slice(hoverStart + hoverLen);
         localCol += hoverStart + hoverLen;
       }
-
-      if (tokenStr) {
-        tokenSpans.push({ content: tokenStr, color: t.color, fontStyle: t.fontStyle });
-      }
+      if (tokenStr) tokenSpans.push({ content: tokenStr, color: t.color, fontStyle: t.fontStyle });
     }
-
     lines.push({ text, tokens: tokenSpans });
   }
-
-  writeFileSync(join(highlightedDir, `${entry.stem}.json`), JSON.stringify(lines), "utf-8");
+  return lines;
 }
 
-const list = entries
-  .map(
-    (e) =>
-      `  { stem: "${e.stem}", title: "${e.stem}", description: ${JSON.stringify(e.desc ?? e.stem)}, sourceUrl: "${e.sourceUrl}", linesUrl: "${e.linesUrl}", staticAnalysis: JSON.parse('${e.analysis}') },`,
-  )
-  .join("\n");
+for (const entry of entries) {
+  const fullPath = join(completionsDir, entry.sourceUrl.replace("./completions/", ""));
+  const source = readFileSync(fullPath, "utf-8");
+  const scriptDir = dirname(fullPath);
 
-writeFileSync(
-  outFile,
-  `/// <reference types="vite/client" />
+  entry.analysis = scanSource(source);
+  entry.desc = getDescription(entry.stem, suggCacheDir);
 
-import type { ScriptInfo } from "../types";
+  // Find shared modules
+  entry.sharedModules = findSharedModules(source, scriptDir);
 
-const scripts: ScriptInfo[] = [
-${list}
-];
+  // Run dynamic analysis at build time
+  try {
+    const extractResult = extract(source, `${entry.stem}.ts`);
+    const apis = extractResult.dynamic.trim() ? analyzeApis(extractResult.dynamic) : [];
+    entry.dynamicAnalysis = { extractResult, apis };
+    console.log(
+      `[generate] ${entry.stem}: ${extractResult.func_ids.length} dynamic funcs, ${apis.length} API usages`,
+    );
+  } catch (e) {
+    console.error(`[generate] Dynamic analysis failed for "${entry.stem}"`, e);
+    entry.dynamicAnalysis = {
+      extractResult: { modified: source, dynamic: "", func_ids: [] },
+      apis: [],
+    };
+  }
 
-export default scripts;
-`,
-);
+  // Pre-generate HTML for static and dynamic panels
+  const staticHtml = entry.dynamicAnalysis.extractResult.modified
+    ? highlighter.codeToHtml(entry.dynamicAnalysis.extractResult.modified, {
+        lang: "ts",
+        theme: suggTheme,
+      })
+    : "";
+  const dynamicHtml = entry.dynamicAnalysis.extractResult.dynamic
+    ? highlighter.codeToHtml(entry.dynamicAnalysis.extractResult.dynamic, {
+        lang: "ts",
+        theme: suggTheme,
+      })
+    : "";
+
+  // Write analysis JSON
+  writeFileSync(
+    join(analysisDir, `${entry.stem}.json`),
+    JSON.stringify({
+      staticAnalysis: entry.analysis,
+      dynamicAnalysis: entry.dynamicAnalysis,
+      staticHtml,
+      dynamicHtml,
+    }),
+    "utf-8",
+  );
+
+  // Generate highlighted data for main file
+  const mainLines = generateHighlighted(source, entry.stem, entry.sourceUrl.replace("./", ""));
+  writeFileSync(join(highlightedDir, `${entry.stem}.json`), JSON.stringify(mainLines), "utf-8");
+
+  // Generate highlighted data for shared modules
+  for (const sm of entry.sharedModules) {
+    const sharedSource = readFileSync(sm.absPath, "utf-8");
+    const sharedLines = generateHighlighted(sharedSource, `${entry.stem}-${sm.id}`);
+    writeFileSync(
+      join(highlightedDir, `${entry.stem}-${sm.id}.json`),
+      JSON.stringify(sharedLines),
+      "utf-8",
+    );
+  }
+}
+
+// Write scripts.json with FileState data
+const scriptsList = entries.map((e) => {
+  const files = [
+    {
+      id: e.stem,
+      filename: e.sourceUrl.split("/").pop()!,
+      linesUrl: e.linesUrl,
+      anns: e.analysis ?? [],
+    },
+    ...e.sharedModules.map((sm) => ({
+      id: sm.id,
+      filename: sm.filename,
+      linesUrl: `./highlighted/${e.stem}-${sm.id}.json`,
+      anns: scanSource(readFileSync(sm.absPath, "utf-8")),
+    })),
+  ];
+
+  return {
+    stem: e.stem,
+    title: e.stem,
+    description: e.desc ?? e.stem,
+    sourceUrl: e.sourceUrl,
+    linesUrl: e.linesUrl,
+    unsafeCount: (e.analysis ?? []).filter((a) => a.type === "unsafe").length,
+    files,
+  };
+});
+
+writeFileSync(scriptsJsonFile, JSON.stringify(scriptsList, null, 2), "utf-8");
 
 writeFileSync(cacheFile, JSON.stringify({ hash }), "utf-8");
 

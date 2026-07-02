@@ -1,12 +1,19 @@
-import { createResource, createMemo } from "solid-js";
-import { getScript, fetchLines } from "~/lib/scripts-utils";
+import { createResource, createMemo, type Accessor } from "solid-js";
+import { getScript, getFile, fetchFileLines, fetchLines } from "~/lib/scripts-utils";
 
-export function useSourceLoader(stem: () => string | null) {
-  const [linesData] = createResource(stem, async (s) => {
-    if (!s) return [];
-    const script = getScript(s);
-    return script ? fetchLines(script) : [];
-  });
+export function useSourceLoader(stem: () => string | null, fileId?: Accessor<string | null>) {
+  const [linesData] = createResource(
+    () => ({ stem: stem(), fileId: fileId?.() }),
+    async ({ stem, fileId }) => {
+      if (!stem) return [];
+      if (fileId) {
+        const file = getFile(stem, fileId);
+        return file ? fetchFileLines(file) : [];
+      }
+      const script = getScript(stem);
+      return script ? fetchLines(script) : [];
+    },
+  );
 
   const rawLines = createMemo(() => linesData() ?? []);
 

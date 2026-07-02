@@ -41,17 +41,26 @@ export function CodeSearch(props: CodeSearchProps) {
     }
   };
 
+  const closeSearch = () => {
+    setOpen(false);
+    setQuery("");
+    setSelectedValue("");
+    props.onSearchUpdate(new Set<number>());
+  };
+
+  const searchableLines = createMemo(() => props.rawLines.map((ld) => ld.text.toLowerCase()));
+
   const matches = createMemo(() => {
     const q = query().toLowerCase();
     if (!q) return [];
+    const idx = searchableLines();
     const result: { line: number; text: string; lineData: LineData }[] = [];
     for (let i = 0; i < props.rawLines.length; i++) {
-      const ld = props.rawLines[i];
-      if (ld.text.toLowerCase().includes(q)) {
+      if (idx[i].includes(q)) {
         result.push({
           line: i,
-          text: ld.text.trim(),
-          lineData: ld,
+          text: props.rawLines[i].text.trim(),
+          lineData: props.rawLines[i],
         });
       }
     }
@@ -67,21 +76,17 @@ export function CodeSearch(props: CodeSearchProps) {
     return visibleMatches().findIndex((m) => `l${m.line}` === v);
   });
 
-  createEffect(() => {
-    if (!open() || !query()) {
-      props.onSearchUpdate(new Set<number>());
-      return;
-    }
+  const highlightedLines = createMemo(() => {
+    if (!open() || !query()) return new Set<number>();
     const v = selectedValue();
     if (v) {
       const line = parseInt(v.slice(1), 10);
-      if (!isNaN(line)) {
-        props.onSearchUpdate(new Set([line]));
-        return;
-      }
+      if (!isNaN(line)) return new Set([line]);
     }
-    props.onSearchUpdate(new Set<number>());
+    return new Set<number>();
   });
+
+  createEffect(() => props.onSearchUpdate(highlightedLines()));
 
   createEffect((prev: string | undefined) => {
     const v = selectedValue();
@@ -101,13 +106,6 @@ export function CodeSearch(props: CodeSearchProps) {
     }),
   );
 
-  createEffect(() => {
-    if (!open()) {
-      setQuery("");
-      setSelectedValue("");
-    }
-  });
-
   createEventListener(document, "keydown", (e) => {
     if (e.key === "f" && (e.metaKey || e.ctrlKey)) {
       e.preventDefault();
@@ -115,22 +113,19 @@ export function CodeSearch(props: CodeSearchProps) {
       return;
     }
     if (e.key === "Escape" && open()) {
-      setOpen(false);
+      closeSearch();
     }
   });
 
-  createEffect(() => {
-    if (!open()) return;
-    createEventListener(document, "mousedown", (e) => {
-      if (!panelRef) return;
-      const target = e.target as Node;
-      if (!panelRef.contains(target)) setOpen(false);
-    });
+  createEventListener(document, "mousedown", (e) => {
+    if (!open() || !panelRef) return;
+    const target = e.target as Node;
+    if (!panelRef.contains(target)) closeSearch();
   });
 
   const handleSelect = (line: number) => {
     props.onScrollToLine(line);
-    setOpen(false);
+    closeSearch();
   };
 
   return (

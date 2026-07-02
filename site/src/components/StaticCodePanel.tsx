@@ -1,22 +1,19 @@
-import { createResource, Show } from "solid-js";
-import { highlightPlain } from "~/lib/shiki";
+import { Show } from "solid-js";
 
 interface StaticCodePanelProps {
-  modified: string | undefined;
+  staticHtml: string | undefined;
 }
 
 export function StaticCodePanel(props: StaticCodePanelProps) {
-  const [highlighted] = createResource(
-    () => props.modified,
-    (code) => (code ? highlightPlain(code) : ""),
-  );
-
   return (
-    <Show when={highlighted()} fallback={<div class="text-muted-foreground">No modifications</div>}>
+    <Show
+      when={props.staticHtml}
+      fallback={<div class="text-muted-foreground">No modifications</div>}
+    >
       <div
         class="overflow-auto rounded bg-muted p-3 leading-relaxed [&_pre]:text-[11px]"
         // oxlint-disable-next-line solid/no-innerhtml
-        innerHTML={highlighted()}
+        innerHTML={props.staticHtml!}
       />
     </Show>
   );

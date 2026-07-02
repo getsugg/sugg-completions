@@ -12,7 +12,7 @@ export default defineConfig({
     "*": "vp check --fix",
   },
   fmt: {
-    ignorePatterns: ["src/components/ui/**"],
+    ignorePatterns: ["src/components/ui/**", "public/generated/**"],
   },
   lint,
   resolve: {

@@ -4,7 +4,7 @@ import { ScriptList } from "./components/ScriptList";
 import HomePage from "./pages/HomePage";
 import ScriptPage from "./pages/ScriptPage";
 import NotFound from "./pages/NotFound";
-import scripts from "./generated/scripts";
+import scripts from "./generated/scripts.json";
 import { getScript } from "./lib/scripts-utils";
 import "./App.css";
 import "solid-devtools";

@@ -1,6 +1,5 @@
 import { execFile, scanPath } from "sugg";
 import * as t from "virtual:i18n/git";
-// ---------- 动态补全辅助 ----------
 
 async function getBranches(): Promise<Suggestion[]> {
   const out = await execFile("git", ["branch", "--format=%(refname:short)"]);
@@ -89,15 +88,11 @@ async function getCommits(): Promise<Suggestion[]> {
     });
 }
 
-// ---------- 动态补全省略 ----------
-
 const allBranches = dynamic(getAllBranches);
 const branches = dynamic(getBranches);
 const commits = dynamic(getCommits);
 const stashes = dynamic(getStashes);
 const remotes = dynamic(getRemotes);
-
-// ---------- 常用选项 ----------
 
 const verboseOpt: OptionNode = { labels: ["-v", "--verbose"], description: t.opt_verbose };
 const quietOpt: OptionNode = { labels: ["-q", "--quiet"], description: t.opt_quiet };
@@ -110,8 +105,6 @@ const recurseSubmodulesOpt: OptionNode = {
   labels: ["--recurse-submodules"],
   description: t.opt_recurse_submodules,
 };
-
-// ---------- 命令定义 ----------
 
 const cloneCmd: CommandNode = {
   description: t.cmd_clone,
@@ -156,13 +149,13 @@ const addCmd: CommandNode = {
     { labels: ["-f", "--force"], description: t.opt_force },
     { labels: ["-N", "--intent-to-add"], description: t.opt_intent_to_add },
   ],
-  args: dynamic(async (ctx) => scanPath(ctx.prefix)),
+  args: { count: Infinity, items: dynamic(async (ctx) => scanPath(ctx.prefix)) },
 };
 
 const mvCmd: CommandNode = {
   description: t.cmd_mv,
   options: [verboseOpt, dryRunOpt, forceOpt],
-  args: dynamic(async (ctx) => scanPath(ctx.prefix)),
+  args: { count: Infinity, items: dynamic(async (ctx) => scanPath(ctx.prefix)) },
 };
 
 const restoreCmd: CommandNode = {
@@ -177,14 +170,14 @@ const restoreCmd: CommandNode = {
     { labels: ["-S", "--staged"], description: t.opt_staged },
     { labels: ["-W", "--worktree"], description: t.opt_worktree_restore },
   ],
-  args: dynamic(async (ctx) => {
+  args: { count: Infinity, items: dynamic(async (ctx) => {
     const [modified, staged, files] = await Promise.all([
       getModifiedFiles(),
       getStagedFiles(),
       scanPath(ctx.prefix),
     ]);
     return [...modified, ...staged, ...files];
-  }),
+  }) },
 };
 
 const rmCmd: CommandNode = {
@@ -196,7 +189,7 @@ const rmCmd: CommandNode = {
     { labels: ["--cached"], description: t.opt_cached },
     { labels: ["-r"], description: t.opt_recursive_remove },
   ],
-  args: dynamic(async (ctx) => scanPath(ctx.prefix)),
+  args: { count: Infinity, items: dynamic(async (ctx) => scanPath(ctx.prefix)) },
 };
 
 const statusCmd: CommandNode = {
@@ -443,7 +436,6 @@ const fetchCmd: CommandNode = {
   args: {
     count: Infinity,
     items: dynamic(async (ctx) => {
-      // git fetch [<remote> [<refspec>...]]：任意多 refspec
       if (ctx.positionals.length === 0) return getRemotes();
       if (ctx.positionals.length === 1) return getRemoteBranches();
       return [];
@@ -470,7 +462,6 @@ const pullCmd: CommandNode = {
   args: {
     count: Infinity,
     items: dynamic(async (ctx) => {
-      // git pull [<remote> [<refspec>...]]：任意多 refspec
       if (ctx.positionals.length === 0) return getRemotes();
       if (ctx.positionals.length === 1) return getRemoteBranches();
       return [];
@@ -499,7 +490,6 @@ const pushCmd: CommandNode = {
   args: {
     count: Infinity,
     items: dynamic(async (ctx) => {
-      // git push [<remote> [<refspec>...]]：任意多 refspec
       if (ctx.positionals.length === 0) return getRemotes();
       if (ctx.positionals.length === 1) return getBranches();
       return [];
@@ -542,7 +532,7 @@ const stashCmd: CommandNode = {
         { labels: ["-k", "--keep-index"], description: t.opt_keep_index },
         { labels: ["-S", "--staged"], description: t.opt_staged },
       ],
-      args: dynamic(async (ctx) => scanPath(ctx.prefix)),
+      args: { count: Infinity, items: dynamic(async (ctx) => scanPath(ctx.prefix)) },
     },
     clear: { description: t.cmd_stash_clear },
   },
@@ -622,14 +612,12 @@ const remoteCmd: CommandNode = {
         items: dynamic(async (ctx) => {
           // git remote add <name> <url>
           if (ctx.positionals.length === 0) {
-            // 第一位置：新远端名（不直接补现有，避免与 add 语义冲突；提示常见命名）
             return [
               { display: "origin", value: "origin" },
               { display: "upstream", value: "upstream" },
             ];
           }
           if (ctx.positionals.length === 1) {
-            // 第二位置：url 模板，按 ctx.positionals[0]（远端名）推断
             const name = ctx.positionals[0];
             return [`git@github.com:me/${name}.git`, `https://github.com/me/${name}.git`];
           }
@@ -795,8 +783,6 @@ const configCmd: CommandNode = {
     edit: { description: t.cmd_config_edit, options: configFileOpts },
   },
 };
-
-// ---------- 全局选项 ----------
 
 const globalOpts: OptionNode[] = [
   { labels: ["-v", "--version"], description: t.opt_version },

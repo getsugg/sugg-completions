@@ -1,7 +1,5 @@
 import { For } from "solid-js";
-import { useScriptContext } from "~/contexts/ScriptContext";
 import { cn } from "~/lib/utils";
-import type { LineAnnotation } from "~/types";
 
 const TYPE_STYLE: Record<string, { bar: string; badge: string; label: string }> = {
   unsafe: {
@@ -16,13 +14,20 @@ const TYPE_STYLE: Record<string, { bar: string; badge: string; label: string }> 
   },
 };
 
+interface AnnotationItem {
+  line: number;
+  type: "unsafe" | "safe";
+  api?: string;
+  fileId?: string;
+  filename?: string;
+}
+
 interface AnnotationListProps {
-  anns: LineAnnotation[];
+  anns: AnnotationItem[];
+  scrollToLine: (line: number, fileId?: string) => void;
 }
 
 export function AnnotationList(props: AnnotationListProps) {
-  const { scrollToLine } = useScriptContext();
-
   return (
     <div class="flex flex-col gap-1">
       <For each={props.anns}>
@@ -32,7 +37,7 @@ export function AnnotationList(props: AnnotationListProps) {
             <button
               type="button"
               class="relative flex items-center gap-3 w-full rounded-md border border-transparent px-3 py-1.5 text-left cursor-pointer transition-all hover:bg-[rgba(245,158,11,0.05)] hover:border-[rgba(245,158,11,0.1)]"
-              onClick={() => scrollToLine(a.line)}
+              onClick={() => props.scrollToLine(a.line, a.fileId)}
             >
               <span
                 class="absolute left-0 top-0.75 bottom-0.75 w-0.75 rounded-r-sm"
@@ -44,6 +49,9 @@ export function AnnotationList(props: AnnotationListProps) {
               <span class="font-mono text-[11px] text-[#4a3f55] w-9 shrink-0 ml-3">
                 L{a.line + 1}
               </span>
+              {a.filename && (
+                <span class="font-mono text-[10px] text-[#6a5d78] shrink-0">{a.filename}</span>
+              )}
               <span class="font-mono text-xs text-[#c8bdd4] flex-1 truncate">{a.api ?? ""}</span>
               <span
                 class={cn(
