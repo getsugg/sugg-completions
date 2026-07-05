@@ -6,6 +6,7 @@ site/dist/
 AGENTS.md
 site/snapshots/
 site/public/highlighted/
+site/public/analysis/
 site/tests/visual/__screenshots__/
 site/.vitest-attachments/
 __screenshots__/

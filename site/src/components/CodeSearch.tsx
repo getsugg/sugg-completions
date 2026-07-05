@@ -1,4 +1,4 @@
-import { createSignal, createMemo, createEffect, Show, For, on, type Setter } from "solid-js";
+import { createSignal, createMemo, createEffect, batch, Show, For, type Setter } from "solid-js";
 import { createEventListener } from "@solid-primitives/event-listener";
 import {
   createViewportObserver,
@@ -41,9 +41,16 @@ export function CodeSearch(props: CodeSearchProps) {
     }
   };
 
+  const updateQuery = (q: string) => {
+    batch(() => {
+      setQuery(q);
+      setVisibleCount(PAGE_SIZE);
+    });
+  };
+
   const closeSearch = () => {
     setOpen(false);
-    setQuery("");
+    updateQuery("");
     setSelectedValue("");
     props.onSearchUpdate(new Set<number>());
   };
@@ -99,12 +106,6 @@ export function CodeSearch(props: CodeSearchProps) {
   createEffect(() => {
     if (open()) requestAnimationFrame(() => inputRef?.focus());
   });
-
-  createEffect(
-    on(query, () => {
-      setVisibleCount(PAGE_SIZE);
-    }),
-  );
 
   createEventListener(document, "keydown", (e) => {
     if (e.key === "f" && (e.metaKey || e.ctrlKey)) {
@@ -168,7 +169,7 @@ export function CodeSearch(props: CodeSearchProps) {
               }}
               placeholder="Search in file…"
               value={query()}
-              onValueChange={setQuery}
+              onValueChange={updateQuery}
             />
             <CommandList>
               <For each={visibleMatches()}>

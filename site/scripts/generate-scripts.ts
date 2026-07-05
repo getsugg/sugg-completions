@@ -16,6 +16,7 @@ import { createHash } from "crypto";
 import { execSync } from "child_process";
 import { createHighlighter } from "shiki";
 import { createTwoslasher } from "twoslash";
+import { parseSync } from "oxc-parser";
 import { scanSource } from "~/lib/scan";
 import { suggTheme } from "~/lib/shiki-theme";
 import type { LineAnnotation, ExtractResult, ApiUsage } from "~/types";
@@ -56,6 +57,7 @@ interface SharedModule {
   id: string;
   filename: string;
   absPath: string;
+  importPath: string;
 }
 
 interface ScriptEntry {
@@ -208,19 +210,34 @@ try {
 }
 
 // Detect shared module imports in source
-function findSharedModules(source: string, scriptDir: string): SharedModule[] {
+function findSharedModules(source: string, scriptDir: string, stem: string): SharedModule[] {
   const shared: SharedModule[] = [];
-  const importRe = /from\s*["'](\.\.\/_npm-utils(?:\.ts)?|\.\/_npm-utils(?:\.ts)?)["']/g;
-  let m;
-  while ((m = importRe.exec(source)) !== null) {
-    const sharedPath = resolve(scriptDir, m[1].replace(/\.ts$/, "") + ".ts");
-    if (existsSync(sharedPath)) {
-      shared.push({
-        id: "_npm-utils",
-        filename: "_npm-utils.ts",
-        absPath: sharedPath,
-      });
-    }
+  const seen = new Set<string>();
+
+  let ast;
+  try {
+    ast = parseSync(`${stem}.ts`, source, { sourceType: "module", lang: "ts" });
+  } catch {
+    return shared;
+  }
+
+  for (const node of ast.program.body) {
+    if (node.type !== "ImportDeclaration") continue;
+    const importPath = node.source.value;
+    if (!importPath.startsWith(".")) continue;
+    const absPath = resolve(
+      scriptDir,
+      importPath.endsWith(".ts") ? importPath : importPath + ".ts",
+    );
+    if (!existsSync(absPath) || seen.has(absPath)) continue;
+    seen.add(absPath);
+    const filename = importPath.split("/").pop()!;
+    shared.push({
+      id: filename.replace(/\.ts$/, ""),
+      filename: filename.endsWith(".ts") ? filename : filename + ".ts",
+      absPath,
+      importPath,
+    });
   }
   return shared;
 }
@@ -231,7 +248,7 @@ for (const entry of entries) {
   const fullPath = join(completionsDir, entry.sourceUrl.replace("./completions/", ""));
   const source = readFileSync(fullPath, "utf-8");
   const scriptDir = dirname(fullPath);
-  entry.sharedModules = findSharedModules(source, scriptDir);
+  entry.sharedModules = findSharedModules(source, scriptDir, entry.stem);
   for (const sm of entry.sharedModules) {
     if (!allSharedModules.has(sm.filename)) {
       allSharedModules.set(sm.filename, readFileSync(sm.absPath, "utf-8"));
@@ -301,9 +318,33 @@ function cleanDocs(docs: string | undefined): string | undefined {
     .replace(/\{@inheritDoc\}/g, "");
 }
 
-function generateHighlighted(source: string, stem: string, virtualPath?: string): LineData[] {
-  // twoslasher needs @filename to resolve relative imports
-  const codeForTwoslash = virtualPath ? `// @filename: ${virtualPath}\n${source}` : source;
+interface SharedFile {
+  virtualPath: string;
+  source: string;
+}
+
+function generateHighlighted(
+  source: string,
+  stem: string,
+  mainVirtualPath?: string,
+  sharedFiles?: SharedFile[],
+): LineData[] {
+  // Build twoslash code with all files for proper relative import resolution
+  let codeForTwoslash = "";
+  let mainFileOffset = 0;
+  if (mainVirtualPath && sharedFiles?.length) {
+    // Add shared modules first so relative imports resolve
+    for (const sf of sharedFiles) {
+      codeForTwoslash += `// @filename: ${sf.virtualPath}\n${sf.source}\n`;
+    }
+    mainFileOffset = codeForTwoslash.split("\n").length;
+    codeForTwoslash += `// @filename: ${mainVirtualPath}\n${source}`;
+  } else if (mainVirtualPath) {
+    codeForTwoslash = `// @filename: ${mainVirtualPath}\n${source}`;
+    mainFileOffset = 1;
+  } else {
+    codeForTwoslash = source;
+  }
   const twResult = twoslasher(codeForTwoslash, "ts");
   console.log(
     `[generate] ${stem}: ${twResult.hovers.length} hovers, ${twResult.errors.length} errors`,
@@ -312,6 +353,7 @@ function generateHighlighted(source: string, stem: string, virtualPath?: string)
   // Token generation uses original source (no @filename comment)
   const tokenLines = highlighter.codeToTokensBase(source, { lang: "ts", theme: suggTheme });
 
+  // Filter hovers to only those belonging to the main file (by line range)
   const hovers: Map<
     number,
     {
@@ -322,8 +364,12 @@ function generateHighlighted(source: string, stem: string, virtualPath?: string)
       tags?: [string, string | undefined][];
     }[]
   > = new Map();
+  const sourceLineCount = source.split("\n").length;
   for (const h of twResult.hovers) {
-    const list = hovers.get(h.line) ?? [];
+    // Skip hovers outside the main file's line range
+    if (h.line < mainFileOffset || h.line >= mainFileOffset + sourceLineCount) continue;
+    const localLine = h.line - mainFileOffset;
+    const list = hovers.get(localLine) ?? [];
     list.push({
       character: h.character,
       length: h.length,
@@ -331,7 +377,7 @@ function generateHighlighted(source: string, stem: string, virtualPath?: string)
       docs: cleanDocs(h.docs),
       tags: h.tags as [string, string | undefined][] | undefined,
     });
-    hovers.set(h.line, list);
+    hovers.set(localLine, list);
   }
 
   const lines: LineData[] = [];
@@ -403,7 +449,7 @@ for (const entry of entries) {
   entry.desc = getDescription(entry.stem, suggCacheDir);
 
   // Find shared modules
-  entry.sharedModules = findSharedModules(source, scriptDir);
+  entry.sharedModules = findSharedModules(source, scriptDir, entry.stem);
 
   // Run dynamic analysis at build time
   try {
@@ -448,7 +494,18 @@ for (const entry of entries) {
   );
 
   // Generate highlighted data for main file
-  const mainLines = generateHighlighted(source, entry.stem, entry.sourceUrl.replace("./", ""));
+  const mainVirtualPath = entry.sourceUrl.replace("./", "");
+  const sharedFiles: SharedFile[] = entry.sharedModules.map((sm) => {
+    const resolved = join(dirname(mainVirtualPath), sm.importPath).replace(/\\/g, "/");
+    const withExt = resolved.endsWith(".ts") ? resolved : resolved + ".ts";
+    return { virtualPath: withExt, source: readFileSync(sm.absPath, "utf-8") };
+  });
+  const mainLines = generateHighlighted(
+    source,
+    entry.stem,
+    sharedFiles.length ? entry.sourceUrl.replace("./", "") : undefined,
+    sharedFiles.length ? sharedFiles : undefined,
+  );
   writeFileSync(join(highlightedDir, `${entry.stem}.json`), JSON.stringify(mainLines), "utf-8");
 
   // Generate highlighted data for shared modules

@@ -1,6 +1,7 @@
-import { execFile, scanPath, readJson, cache } from "sugg";
+import { execFile, scanPath, cache } from "sugg";
 import * as t from "virtual:i18n/bun";
 import { getPkgDeps, getPkgTestFiles } from "../_npm-utils";
+
 async function getCompletes(type: "z" | "a" | "b"): Promise<string[]> {
   const out = await execFile("bun", ["getcompletes", type]);
   if (type === "z") {
@@ -475,12 +476,15 @@ const bunCommands: Record<string, CommandNode> = {
   remove: {
     aliases: ["rm", "r"],
     description: t.cmd_remove_desc,
-    args: { count: Infinity, items: dynamic(async (ctx) => {
-      if (ctx.options["-g"] === true || ctx.options["--global"] === true) {
-        return getGlobalPackages();
-      }
-      return getInstalledPackages(ctx.path);
-    }) },
+    args: {
+      count: Infinity,
+      items: dynamic(async (ctx) => {
+        if (ctx.options["-g"] === true || ctx.options["--global"] === true) {
+          return getGlobalPackages();
+        }
+        return getInstalledPackages(ctx.path);
+      }),
+    },
     options: [...commonGlobalOpts, ...installOptions],
   },
   update: {

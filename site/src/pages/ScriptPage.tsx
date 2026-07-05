@@ -9,7 +9,7 @@ import {
   type Accessor,
   type Setter,
 } from "solid-js";
-import { useParams } from "@solidjs/router";
+import { useParams, useBeforeLeave } from "@solidjs/router";
 import { useSourceLoader } from "~/hooks/useSourceLoader";
 import { useAnalysis } from "~/hooks/useAnalysis";
 import { getScript } from "~/lib/scripts-utils";
@@ -33,6 +33,23 @@ import type { AnalysisData, FilterType, LineAnnotation, LineData } from "~/types
  *   2. rawLines 加载完 → effect 触发，根据 pendingRestoreKey 恢复滚动
  *   3. 点击注解跳行 → 清除 pendingRestoreKey，直接 scrollToLine（不走记忆）
  */
+// 滚动状态缓存：每个脚本记住上次打开的文件和各文件的滚动位置
+// 模块级单例：跨组件挂载/卸载持久化，导航回来还能恢复
+interface ScriptScrollState {
+  selectedFile: string;
+  positions: Map<string, number>; // fileId → scrollTop
+}
+const scrollState = new Map<string, ScriptScrollState>();
+
+function getOrCreateState(stem: string): ScriptScrollState {
+  let state = scrollState.get(stem);
+  if (!state) {
+    state = { selectedFile: "", positions: new Map() };
+    scrollState.set(stem, state);
+  }
+  return state;
+}
+
 function useScrollManager(opts: {
   stem: Accessor<string | null>;
   activeFile: Accessor<string | null>;
@@ -40,44 +57,42 @@ function useScrollManager(opts: {
   rawLines: Accessor<LineData[]>;
   fileTabs: Accessor<{ id: string }[]>;
 }) {
-  // 滚动位置缓存，key 格式为 "脚本ID:文件ID"，value 为 scrollTop 像素值
-  const positions = new Map<string, number>();
-  // 记录每个脚本上次打开的文件 ID，用于跨脚本切换时恢复
-  const lastActiveFiles = new Map<string, string>();
-  // 待恢复的滚动位置 key，等 rawLines 加载完后才真正恢复
-  let pendingRestoreKey: string | null = null;
+  // 待恢复的滚动位置，等 rawLines 加载完后才真正恢复
+  let pendingRestore: { stem: string; fileId: string } | null = null;
   // SourceViewer 暴露的命令式 API，通过 bindAPI 注入
   let api: SourceViewerAPI | undefined;
 
   // 监听 rawLines 变化（数据加载完成），执行挂起的滚动恢复
   createEffect(
     on(opts.rawLines, () => {
-      if (!pendingRestoreKey || !api) return;
-      const saved = positions.get(pendingRestoreKey);
+      if (!pendingRestore || !api) return;
+      const saved = scrollState.get(pendingRestore.stem)?.positions.get(pendingRestore.fileId);
       api.scrollToPos(saved ?? 0);
-      pendingRestoreKey = null;
+      pendingRestore = null;
     }),
   );
 
-  // 监听脚本切换（路由变化），保存旧脚本状态并恢复新脚本的上次文件+滚动位置
+  // 路由离开前：在旧 DOM 还在时安全保存旧脚本的滚动位置和激活文件
+  useBeforeLeave(() => {
+    const s = opts.stem();
+    const af = opts.activeFile();
+    if (s && af && api) {
+      const state = getOrCreateState(s);
+      state.selectedFile = af;
+      state.positions.set(af, api.getCurrentTop());
+    }
+  });
+
+  // 监听脚本切换（路由变化），恢复新脚本的上次文件+滚动位置
   createEffect(
-    on(opts.stem, (currentStem, prevStem) => {
+    on(opts.stem, (currentStem) => {
       if (!currentStem) return;
-      // 离开旧脚本时，保存当前文件和滚动位置
-      if (prevStem && api) {
-        const af = opts.activeFile();
-        if (af) {
-          lastActiveFiles.set(prevStem, af);
-          positions.set(`${prevStem}:${af}`, api.getCurrentTop());
-        }
-      }
-      // 决定新脚本打开哪个文件：优先恢复上次的文件，否则用第一个
-      const saved = lastActiveFiles.get(currentStem);
+      const saved = scrollState.get(currentStem)?.selectedFile;
       const tabs = opts.fileTabs();
       const firstFileId = tabs[0]?.id;
       const targetFile = saved && tabs.some((t) => t.id === saved) ? saved : firstFileId;
       if (targetFile) {
-        pendingRestoreKey = `${currentStem}:${targetFile}`;
+        pendingRestore = { stem: currentStem, fileId: targetFile };
         opts.setActiveFile(targetFile);
       }
     }),
@@ -90,10 +105,10 @@ function useScrollManager(opts: {
     if (!s || current === newFileId) return;
     // 保存当前文件的滚动位置
     if (current && api) {
-      positions.set(`${s}:${current}`, api.getCurrentTop());
+      getOrCreateState(s).positions.set(current, api.getCurrentTop());
     }
     // 标记待恢复，等 rawLines 加载完后才真正滚动
-    pendingRestoreKey = `${s}:${newFileId}`;
+    pendingRestore = { stem: s, fileId: newFileId };
     opts.setActiveFile(newFileId);
   };
 
@@ -105,9 +120,9 @@ function useScrollManager(opts: {
     // 跨文件跳转：保存旧文件位置，清除待恢复（跳行优先于记忆），切换文件
     if (s && fileId && fileId !== current) {
       if (current && api) {
-        positions.set(`${s}:${current}`, api.getCurrentTop());
+        getOrCreateState(s).positions.set(current, api.getCurrentTop());
       }
-      pendingRestoreKey = null;
+      pendingRestore = null;
       opts.setActiveFile(fileId);
     }
     // 直接跳行（SourceViewer 内部有 pendingScroll 处理数据未加载的情况）

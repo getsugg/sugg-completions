@@ -1,13 +1,4 @@
-import {
-  For,
-  Show,
-  Switch,
-  Match,
-  createSignal,
-  createMemo,
-  createEffect,
-  type Setter,
-} from "solid-js";
+import { For, Show, Switch, Match, createSignal, createMemo, type Setter } from "solid-js";
 import ResizablePrimitive from "@corvu/resizable";
 import { createResizeObserver } from "@solid-primitives/resize-observer";
 import { useScriptContext } from "~/contexts/ScriptContext";
@@ -40,14 +31,11 @@ export function DetailArea(props: DetailAreaProps) {
 
   const isExpanded = createMemo(() => resizableCtx.sizes()[1] * containerHeight() > 60);
 
-  const [lastExpandedRatio, setLastExpandedRatio] = createSignal(0.35);
-
-  createEffect(() => {
+  const lastExpandedRatio = createMemo((prev: number) => {
     const size = resizableCtx.sizes()[1];
-    if (size * containerHeight() > 60) {
-      setLastExpandedRatio(size);
-    }
-  });
+    if (size * containerHeight() > 60) return size;
+    return prev;
+  }, 0.35);
 
   const toggle = () => {
     if (isExpanded()) {
