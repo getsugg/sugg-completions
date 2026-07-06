@@ -19,7 +19,7 @@ import { createTwoslasher } from "twoslash";
 import { parseSync } from "oxc-parser";
 import { scanSource } from "~/lib/scan";
 import { suggTheme } from "~/lib/shiki-theme";
-import type { LineAnnotation, ExtractResult, ApiUsage } from "~/types";
+import type { LineAnnotation, ExtractResult } from "~/types";
 
 const __dirname = import.meta.dirname!;
 
@@ -68,7 +68,6 @@ interface ScriptEntry {
   desc?: string;
   dynamicAnalysis?: {
     extractResult: ExtractResult;
-    apis: ApiUsage[];
   };
   sharedModules: SharedModule[];
 }
@@ -265,7 +264,6 @@ const wasmModule = await WebAssembly.compile(readFileSync(wasmBgPath));
 const wasmExports = await import(wasmJsPath);
 await wasmExports.default({ module: wasmModule });
 const extract = wasmExports.extract;
-const analyzeApis = wasmExports.analyze_apis;
 console.log("[generate] WASM loaded successfully");
 
 const highlighter = await createHighlighter({ langs: ["ts"], themes: [suggTheme] });
@@ -454,16 +452,12 @@ for (const entry of entries) {
   // Run dynamic analysis at build time
   try {
     const extractResult = extract(source, `${entry.stem}.ts`);
-    const apis = extractResult.dynamic.trim() ? analyzeApis(extractResult.dynamic) : [];
-    entry.dynamicAnalysis = { extractResult, apis };
-    console.log(
-      `[generate] ${entry.stem}: ${extractResult.func_ids.length} dynamic funcs, ${apis.length} API usages`,
-    );
+    entry.dynamicAnalysis = { extractResult };
+    console.log(`[generate] ${entry.stem}: ${extractResult.func_ids.length} dynamic funcs`);
   } catch (e) {
     console.error(`[generate] Dynamic analysis failed for "${entry.stem}"`, e);
     entry.dynamicAnalysis = {
       extractResult: { modified: source, dynamic: "", func_ids: [] },
-      apis: [],
     };
   }
 
@@ -549,6 +543,33 @@ const scriptsList = entries.map((e) => {
 });
 
 writeFileSync(scriptsJsonFile, JSON.stringify(scriptsList, null, 2), "utf-8");
+
+// Write registry.json for `sugg install` command
+const registry = {
+  scripts: entries.map((e) => {
+    // Detect i18n languages available
+    const i18nDir = join(completionsDir, e.stem, "i18n");
+    let i18nLangs: string[] = [];
+    if (existsSync(i18nDir)) {
+      i18nLangs = readdirSync(i18nDir)
+        .filter((f) => f.endsWith(".json"))
+        .map((f) => f.replace(/\.json$/, ""));
+    }
+    // Detect shared module dependencies (files starting with _)
+    const deps = e.sharedModules.map((sm) => sm.filename);
+
+    return {
+      name: e.stem,
+      description: e.desc ?? e.stem,
+      source: e.sourceUrl.replace("./completions/", ""),
+      deps,
+      i18n: i18nLangs,
+    };
+  }),
+};
+const registryFile = join(__dirname, "..", "public", "registry.json");
+writeFileSync(registryFile, JSON.stringify(registry, null, 2), "utf-8");
+console.log(`Generated registry.json with ${registry.scripts.length} scripts`);
 
 writeFileSync(cacheFile, JSON.stringify({ hash }), "utf-8");
 

@@ -1,24 +1,28 @@
-import { execFile, readJson, cache, scanPath } from "sugg";
+import { execFile, cache } from "sugg";
 import * as t from "virtual:i18n/vp";
-import { getPkgScripts, getPkgDeps, getPkgTestFiles } from "../_npm-utils";
+import { getPkgScripts, getPkgDeps, getPkgTestFiles } from "../npm/utils";
 
 async function getScriptNames(): Promise<Suggestion[]> {
   const names = await getPkgScripts();
-  return names.map(s => ({ display: s, description: t.suggestion_script }));
+  return names.map((s) => ({ display: s, description: t.suggestion_script }));
 }
 
 async function getInstalledPackages(): Promise<Suggestion[]> {
   const names = await getPkgDeps();
-  return names.map(name => ({ display: name, description: t.suggestion_installed }));
+  return names.map((name) => ({ display: name, description: t.suggestion_installed }));
 }
 
 async function getGlobalPackages(): Promise<Suggestion[]> {
   return cache.get("global-packages", 5000, async () => {
     const out = await execFile("vp", ["pm", "ls", "-g"]);
-    return out.trim().split("\n").filter(Boolean).map(name => ({
-      display: name,
-      description: t.suggestion_global_installed
-    }));
+    return out
+      .trim()
+      .split("\n")
+      .filter(Boolean)
+      .map((name) => ({
+        display: name,
+        description: t.suggestion_global_installed,
+      }));
   });
 }
 
@@ -36,9 +40,7 @@ const filterOpts = [
   { labels: ["-w", "--workspace-root"], description: t.opt_workspace_root },
 ];
 
-const globalOpts = [
-  { labels: ["-g", "--global"], description: t.opt_global },
-];
+const globalOpts = [{ labels: ["-g", "--global"], description: t.opt_global }];
 
 const envCommands: Record<string, CommandNode> = {
   setup: {
@@ -66,10 +68,7 @@ const envCommands: Record<string, CommandNode> = {
   },
   unpin: {
     description: t.env_cmd_unpin,
-    options: [
-      ...helpOpt,
-      { labels: ["--target"], args: [], description: t.opt_target_remove },
-    ],
+    options: [...helpOpt, { labels: ["--target"], args: [], description: t.opt_target_remove }],
   },
   use: {
     description: t.env_cmd_use,
@@ -82,11 +81,23 @@ const envCommands: Record<string, CommandNode> = {
     args: [],
   },
   install: { aliases: ["i"], description: t.env_cmd_install, options: [...helpOpt], args: [] },
-  uninstall: { aliases: ["uni"], description: t.env_cmd_uninstall, options: [...helpOpt], args: [] },
-  current: { description: t.env_cmd_current, options: [...helpOpt, { labels: ["--json"], description: t.opt_json }] },
+  uninstall: {
+    aliases: ["uni"],
+    description: t.env_cmd_uninstall,
+    options: [...helpOpt],
+    args: [],
+  },
+  current: {
+    description: t.env_cmd_current,
+    options: [...helpOpt, { labels: ["--json"], description: t.opt_json }],
+  },
   doctor: { description: t.env_cmd_doctor, options: [...helpOpt] },
   which: { description: t.env_cmd_which, options: [...helpOpt], args: ["node", "npm", "npx"] },
-  list: { aliases: ["ls"], description: t.env_cmd_list, options: [...helpOpt, { labels: ["--json"], description: t.opt_json }] },
+  list: {
+    aliases: ["ls"],
+    description: t.env_cmd_list,
+    options: [...helpOpt, { labels: ["--json"], description: t.opt_json }],
+  },
   "list-remote": {
     aliases: ["ls-remote"],
     description: t.env_cmd_list_remote,
@@ -207,10 +218,21 @@ const pmCommands: Record<string, CommandNode> = {
     args: [],
   },
   stage: { description: t.pm_cmd_stage, commands: pmStageCommands, options: [...helpOpt] },
-  owner: { aliases: ["author"], description: t.pm_cmd_owner, commands: pmOwnerCommands, options: [...helpOpt] },
+  owner: {
+    aliases: ["author"],
+    description: t.pm_cmd_owner,
+    commands: pmOwnerCommands,
+    options: [...helpOpt],
+  },
   cache: { description: t.pm_cmd_cache, commands: pmCacheCommands, options: [...helpOpt] },
-  config: { aliases: ["c"], description: t.pm_cmd_config, commands: pmConfigCommands, options: [...helpOpt] },
-  login: { aliases: ["adduser"],
+  config: {
+    aliases: ["c"],
+    description: t.pm_cmd_config,
+    commands: pmConfigCommands,
+    options: [...helpOpt],
+  },
+  login: {
+    aliases: ["adduser"],
     description: t.pm_cmd_login,
     options: [
       ...helpOpt,
@@ -241,7 +263,11 @@ const pmCommands: Record<string, CommandNode> = {
       { labels: ["--production"], description: t.opt_production },
     ],
   },
-  "dist-tag": { description: t.pm_cmd_dist_tag, commands: pmDistTagCommands, options: [...helpOpt] },
+  "dist-tag": {
+    description: t.pm_cmd_dist_tag,
+    commands: pmDistTagCommands,
+    options: [...helpOpt],
+  },
   deprecate: {
     description: t.pm_cmd_deprecate,
     options: [
@@ -270,17 +296,19 @@ const pmCommands: Record<string, CommandNode> = {
     options: [...helpOpt, { labels: ["--registry"], args: [], description: t.opt_registry }],
   },
   rebuild: { aliases: ["rb"], description: t.cmd_rebuild, options: [...helpOpt], args: [] },
-  list: { aliases: ["ls"], description: t.pm_cmd_list, options: [...helpOpt, ...globalOpts], args: [] },
+  list: {
+    aliases: ["ls"],
+    description: t.pm_cmd_list,
+    options: [...helpOpt, ...globalOpts],
+    args: [],
+  },
   info: { aliases: ["view", "show"], description: t.pm_cmd_info, options: [...helpOpt], args: [] },
 };
 
 export default createCompletion({
   vp: {
     description: t.desc,
-    options: [
-      { labels: ["-V", "--version"], description: t.opt_version },
-      ...helpOpt,
-    ],
+    options: [{ labels: ["-V", "--version"], description: t.opt_version }, ...helpOpt],
     commands: {
       create: {
         description: t.cmd_create,
@@ -680,7 +708,11 @@ export default createCompletion({
         options: [...helpOpt, { labels: ["-r", "--recursive"], description: t.opt_recursive }],
         args: { count: Infinity, items: dynamic(getInstalledPackages) },
       },
-      rebuild: { description: t.cmd_rebuild, options: [...helpOpt], args: { count: Infinity, items: dynamic(getInstalledPackages) } },
+      rebuild: {
+        description: t.cmd_rebuild,
+        options: [...helpOpt],
+        args: { count: Infinity, items: dynamic(getInstalledPackages) },
+      },
       pm: { description: t.cmd_pm, commands: pmCommands, options: [...helpOpt] },
       upgrade: {
         description: t.cmd_upgrade,

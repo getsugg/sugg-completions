@@ -1,4 +1,4 @@
-// Version: 0.3.4
+// Version: 0.3.5
 type ShellName = "bash" | "zsh" | "fish" | "nushell" | "powershell";
 type OsName = "windows" | "linux" | "macos";
 

@@ -1,6 +1,6 @@
 import { execFile, scanPath, cache } from "sugg";
 import * as t from "virtual:i18n/bun";
-import { getPkgDeps, getPkgTestFiles } from "../_npm-utils";
+import { getPkgDeps, getPkgTestFiles } from "../npm/utils";
 
 async function getCompletes(type: "z" | "a" | "b"): Promise<string[]> {
   const out = await execFile("bun", ["getcompletes", type]);

@@ -1,6 +1,6 @@
 # Sugg Completions — Web App
 
-A browser-based preview and security audit tool for sugg completion scripts. WASM runs in the browser to extract dynamic behaviors and analyze API usage.
+A browser-based preview and security audit tool for sugg completion scripts. WASM runs in the browser to extract dynamic behaviors.
 
 ## Tech Stack
 
@@ -54,7 +54,6 @@ When a script is opened, the analysis runs automatically:
 
 1. **Static scan** — `scanSource()` reads the script source and marks known API calls as `safe` or `unsafe`
 2. **WASM extraction** — `extract()` replaces `dynamic()` calls with annotated objects
-3. **API analysis** — `analyzeApis()` lists each dynamic function and its sugg API usage
 
 The bottom panel shows results in three tabs:
 

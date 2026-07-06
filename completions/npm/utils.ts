@@ -1,4 +1,4 @@
-import { readJson, exec, scanPath, cache } from "sugg";
+import { readJson, scanPath } from "sugg";
 
 export async function readPkg(): Promise<Record<string, any>> {
   try {

@@ -36,7 +36,6 @@ export async function fetchAnalysis(stem: string): Promise<AnalysisData> {
     stem,
     anns: raw.staticAnalysis,
     r: raw.dynamicAnalysis?.extractResult ?? { modified: "", dynamic: "", func_ids: [] },
-    apis: raw.dynamicAnalysis?.apis ?? [],
     staticHtml: raw.staticHtml,
     dynamicHtml: raw.dynamicHtml,
   };

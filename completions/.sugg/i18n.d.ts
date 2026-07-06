@@ -4102,6 +4102,16 @@ declare module "virtual:i18n/sugg" {
    */
   export const init_desc: string;
   /**
+   * - 🚩 **en**: Install completion scripts from registry
+   * - **zh-CN**: 从 registry 安装补全脚本
+   */
+  export const install_desc: string;
+  /**
+   * - 🚩 **en**: Install all available scripts
+   * - **zh-CN**: 安装所有可用脚本
+   */
+  export const opt_all: string;
+  /**
    * - 🚩 **en**: Override cache directory
    * - **zh-CN**: 覆盖缓存目录
    */
@@ -4126,6 +4136,11 @@ declare module "virtual:i18n/sugg" {
    * - **zh-CN**: i18n 语言（如 en、zh）
    */
   export const opt_lang: string;
+  /**
+   * - 🚩 **en**: List all available scripts
+   * - **zh-CN**: 列出所有可用脚本
+   */
+  export const opt_list: string;
   /**
    * - 🚩 **en**: Max results to return
    * - **zh-CN**: 最大返回结果数

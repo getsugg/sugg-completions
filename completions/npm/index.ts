@@ -1,6 +1,6 @@
 import { readJson, scanPath, cache, exec } from "sugg";
 import * as t from "virtual:i18n/npm";
-import { getPkgScripts, getPkgDeps } from "../_npm-utils";
+import { getPkgScripts, getPkgDeps } from "./utils";
 
 async function getScripts(): Promise<Suggestion[]> {
   const names = await getPkgScripts();
@@ -841,10 +841,13 @@ export default createCompletion({
           includeRootOpt,
           installLinksOpt,
         ],
-        args: { count: Infinity, items: dynamic(async (ctx) => {
-          if (ctx.options["-g"] || ctx.options["--global"]) return getGlobalPackages();
-          return scanPath(ctx.prefix);
-        }) },
+        args: {
+          count: Infinity,
+          items: dynamic(async (ctx) => {
+            if (ctx.options["-g"] || ctx.options["--global"]) return getGlobalPackages();
+            return scanPath(ctx.prefix);
+          }),
+        },
       },
       ll: {
         description: t.cmd_ll,

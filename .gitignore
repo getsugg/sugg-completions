@@ -7,6 +7,7 @@ AGENTS.md
 site/snapshots/
 site/public/highlighted/
 site/public/analysis/
+site/public/registry.json
 site/tests/visual/__screenshots__/
 site/.vitest-attachments/
 __screenshots__/

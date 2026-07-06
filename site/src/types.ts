@@ -12,16 +12,10 @@ export interface ExtractResult {
   func_ids: string[];
 }
 
-export interface ApiUsage {
-  name: string;
-  apis: string[];
-}
-
 export interface AnalysisData {
   stem: string;
   anns: LineAnnotation[];
   r: ExtractResult;
-  apis: ApiUsage[];
   staticHtml: string;
   dynamicHtml: string;
 }
@@ -30,7 +24,6 @@ export interface ScriptAnalysis {
   staticAnalysis: LineAnnotation[];
   dynamicAnalysis?: {
     extractResult: ExtractResult;
-    apis: ApiUsage[];
   };
   staticHtml: string;
   dynamicHtml: string;
