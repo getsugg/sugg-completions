@@ -9,7 +9,7 @@ import {
   copyFileSync,
   rmSync,
 } from "fs";
-import { join, dirname, resolve } from "path";
+import { join, dirname, resolve, relative } from "path";
 
 import { platform } from "os";
 import { createHash } from "crypto";
@@ -555,8 +555,10 @@ const registry = {
         .filter((f) => f.endsWith(".json"))
         .map((f) => f.replace(/\.json$/, ""));
     }
-    // Detect shared module dependencies (files starting with _)
-    const deps = e.sharedModules.map((sm) => sm.filename);
+    // Detect shared module dependencies (relative to completions/)
+    const deps = e.sharedModules.map((sm) => {
+      return relative(completionsDir, sm.absPath).replace(/\\/g, "/");
+    });
 
     return {
       name: e.stem,
