@@ -4127,6 +4127,11 @@ declare module "virtual:i18n/sugg" {
    */
   export const opt_dump_dynamic: string;
   /**
+   * - 🚩 **en**: Force overwrite existing files
+   * - **zh-CN**: 强制覆盖已有文件
+   */
+  export const opt_force: string;
+  /**
    * - 🚩 **en**: Print help
    * - **zh-CN**: 打印帮助
    */

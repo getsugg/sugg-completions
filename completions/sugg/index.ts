@@ -80,7 +80,8 @@ export default createCompletion({
           helpOpt,
           { labels: ["--list"], description: t.opt_list },
           { labels: ["--all"], description: t.opt_all },
-          langOpt,
+          { labels: ["--force"], description: t.opt_force },
+          { labels: ["--lang"], description: t.opt_lang, args: { count: Infinity } },
           completionsDirOpt,
         ],
         args: {

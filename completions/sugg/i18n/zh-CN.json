@@ -17,6 +17,7 @@
   "opt_max_results": "最大返回结果数",
   "opt_list": "列出所有可用脚本",
   "opt_all": "安装所有可用脚本",
+  "opt_force": "强制覆盖已有文件",
   "opt_help": "打印帮助",
   "opt_version": "打印版本"
 }

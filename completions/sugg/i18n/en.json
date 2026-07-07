@@ -17,6 +17,7 @@
   "opt_max_results": "Max results to return",
   "opt_list": "List all available scripts",
   "opt_all": "Install all available scripts",
+  "opt_force": "Force overwrite existing files",
   "opt_help": "Print help",
   "opt_version": "Print version"
 }
