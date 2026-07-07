@@ -14,6 +14,9 @@ export interface ScriptContextValue {
   counts: Accessor<{ total: number; unsafe: number; safe: number }>;
   filteredType: Accessor<FilterType>;
   setFilteredType: Setter<FilterType>;
+  scrollToLine: (line: number, fileId?: string) => void;
+  getCenterLine: () => number;
+  getLastJumpedLine: () => number;
 }
 
 export const ScriptContext = createContext<ScriptContextValue>();

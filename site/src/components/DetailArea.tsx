@@ -10,8 +10,6 @@ import { StaticCodePanel } from "./StaticCodePanel";
 export interface DetailAreaProps {
   rootEl: HTMLElement | undefined;
   onBarHeightChange?: Setter<number>;
-  scrollToLine: (line: number, fileId?: string) => void;
-  getCenterLine: () => number;
 }
 
 export function DetailArea(props: DetailAreaProps) {
@@ -63,13 +61,7 @@ export function DetailArea(props: DetailAreaProps) {
   return (
     <div class="flex flex-col h-full">
       <Show when={displayAnalysis()}>
-        <FilterBar
-          ref={setFilterBarEl}
-          onToggle={toggle}
-          isExpanded={isExpanded()}
-          scrollToLine={props.scrollToLine}
-          getCenterLine={props.getCenterLine}
-        />
+        <FilterBar ref={setFilterBarEl} onToggle={toggle} isExpanded={isExpanded()} />
 
         <Show when={isExpanded()}>
           <div class="flex flex-1 flex-col min-h-0 border-t border-border bg-card">
@@ -94,7 +86,7 @@ export function DetailArea(props: DetailAreaProps) {
             <div class="flex-1 overflow-auto px-4 py-3 text-xs">
               <Switch>
                 <Match when={activeTab() === "summary"}>
-                  <AnnotationList anns={filteredAnns()} scrollToLine={props.scrollToLine} />
+                  <AnnotationList anns={filteredAnns()} />
                 </Match>
                 <Match when={activeTab() === "dynamic"}>
                   <DynamicCodePanel dynamicHtml={displayAnalysis()?.dynamicHtml} />

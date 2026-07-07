@@ -13,10 +13,10 @@ import {
 } from "~/components/ui/command";
 import type { LineData } from "~/types";
 import { tokenStyle } from "~/lib/utils";
+import { useScriptContext } from "~/contexts/ScriptContext";
 
 interface CodeSearchProps {
   rawLines: LineData[];
-  onScrollToLine: (n: number) => void;
   onSearchUpdate: Setter<Set<number>>;
 }
 
@@ -26,6 +26,7 @@ const isMac = () => navigator.platform.toLowerCase().includes("mac");
 const shortcutKey = () => (isMac() ? "⌘F" : "Ctrl+F");
 
 export function CodeSearch(props: CodeSearchProps) {
+  const { scrollToLine } = useScriptContext();
   const [open, setOpen] = createSignal(false);
   const [query, setQuery] = createSignal("");
   const [selectedValue, setSelectedValue] = createSignal("");
@@ -99,7 +100,7 @@ export function CodeSearch(props: CodeSearchProps) {
     const v = selectedValue();
     if (!open() || !v || v === prev) return;
     const line = parseInt(v.slice(1), 10);
-    if (!isNaN(line)) props.onScrollToLine(line);
+    if (!isNaN(line)) scrollToLine(line);
     return v;
   });
 
@@ -125,7 +126,7 @@ export function CodeSearch(props: CodeSearchProps) {
   });
 
   const handleSelect = (line: number) => {
-    props.onScrollToLine(line);
+    scrollToLine(line);
     closeSearch();
   };
 

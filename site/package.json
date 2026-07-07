@@ -9,6 +9,7 @@
     "build": "vp build",
     "preview": "vp preview",
     "check": "vp check",
+    "check:fix": "vp check --fix",
     "prepare": "vp config",
     "test:visual": "vp test",
     "test:visual:update": "vp test --update"
@@ -22,13 +23,13 @@
     "@solid-primitives/intersection-observer": "^2.2.4",
     "@solid-primitives/resize-observer": "^2.1.5",
     "@solidjs/router": "^0.16.1",
-    "@tanstack/solid-virtual": "^3.13.29",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk-solid": "^1.1.2",
     "shiki": "^4.2.0",
     "solid-js": "^1.9.13",
-    "tailwind-merge": "^3.6.0"
+    "tailwind-merge": "^3.6.0",
+    "virtua": "^0.49.2"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.1",

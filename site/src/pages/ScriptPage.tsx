@@ -131,11 +131,14 @@ function useScrollManager(opts: {
 
   // 获取当前视口中心行号，供 DetailArea 的上/下注解导航使用
   const getCenterLine = () => api?.getCenterLine() ?? 0;
+  // 获取上次跳转的行号，用于避免重复跳转
+  const getLastJumpedLine = () => api?.getLastJumpedLine() ?? -1;
 
   return {
     handleFileSwitch,
     scrollToLine,
     getCenterLine,
+    getLastJumpedLine,
     // 将 SourceViewer 的 ref 回调绑定到内部 api 变量
     bindAPI: (a: SourceViewerAPI) => {
       api = a;
@@ -198,13 +201,14 @@ export default function ScriptPage() {
   });
 
   // 初始化滚动状态管理：封装了位置缓存、Tab 切换、行跳转等逻辑
-  const { handleFileSwitch, scrollToLine, getCenterLine, bindAPI } = useScrollManager({
-    stem,
-    activeFile,
-    setActiveFile,
-    rawLines,
-    fileTabs,
-  });
+  const { handleFileSwitch, scrollToLine, getCenterLine, getLastJumpedLine, bindAPI } =
+    useScrollManager({
+      stem,
+      activeFile,
+      setActiveFile,
+      rawLines,
+      fileTabs,
+    });
 
   // 根据注解过滤器和搜索匹配，计算每一行的 CSS 类名
   const baseClasses = createMemo(() => {
@@ -242,6 +246,9 @@ export default function ScriptPage() {
     counts,
     filteredType,
     setFilteredType,
+    scrollToLine,
+    getCenterLine,
+    getLastJumpedLine,
   };
 
   return (
@@ -317,22 +324,13 @@ export default function ScriptPage() {
 
                 <div class="relative flex-1 min-h-0">
                   <SourceViewer ref={bindAPI} rawLines={rawLines()} getLineClass={getLineClass} />
-                  <CodeSearch
-                    rawLines={rawLines()}
-                    onScrollToLine={scrollToLine}
-                    onSearchUpdate={setSearchMatches}
-                  />
+                  <CodeSearch rawLines={rawLines()} onSearchUpdate={setSearchMatches} />
                 </div>
               </div>
             </ResizablePanel>
             <ResizableHandle withHandle />
             <ResizablePanel minSize={`${barHeight()}px`} initialSize={`${barHeight()}px`}>
-              <DetailArea
-                rootEl={resizableRoot()}
-                onBarHeightChange={setBarHeight}
-                scrollToLine={scrollToLine}
-                getCenterLine={getCenterLine}
-              />
+              <DetailArea rootEl={resizableRoot()} onBarHeightChange={setBarHeight} />
             </ResizablePanel>
           </Resizable>
         </ErrorBoundary>

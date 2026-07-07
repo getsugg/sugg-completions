@@ -14,13 +14,20 @@ interface FilterBarProps {
   ref?: JSX.HTMLAttributes<HTMLDivElement>["ref"];
   onToggle: () => void;
   isExpanded: boolean;
-  scrollToLine: (line: number, fileId?: string) => void;
-  getCenterLine: () => number;
 }
 
 export function FilterBar(props: FilterBarProps) {
-  const { stem, activeFile, mergedAnnotations, counts, filteredType, setFilteredType } =
-    useScriptContext();
+  const {
+    stem,
+    activeFile,
+    mergedAnnotations,
+    counts,
+    filteredType,
+    setFilteredType,
+    scrollToLine,
+    getCenterLine,
+    getLastJumpedLine,
+  } = useScriptContext();
 
   const filteredAnns = createMemo(() => {
     const t = filteredType();
@@ -32,8 +39,9 @@ export function FilterBar(props: FilterBarProps) {
     stem,
     activeFile,
     filteredAnns,
-    getCenterLine: () => props.getCenterLine(),
-    scrollToLine: (line, fileId) => props.scrollToLine(line, fileId),
+    getCenterLine,
+    scrollToLine,
+    getLastJumpedLine,
   });
 
   const countFor = (k: FilterType) => {

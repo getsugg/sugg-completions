@@ -8,10 +8,12 @@ interface UseAnnotationNavigationOptions {
   filteredAnns: Accessor<MergedAnnotation[]>;
   getCenterLine: () => number;
   scrollToLine: (line: number, fileId?: string) => void;
+  getLastJumpedLine: () => number;
 }
 
 export function useAnnotationNavigation(options: UseAnnotationNavigationOptions) {
-  const { stem, activeFile, filteredAnns, getCenterLine, scrollToLine } = options;
+  const { stem, activeFile, filteredAnns, getCenterLine, scrollToLine, getLastJumpedLine } =
+    options;
 
   const files = () => {
     const s = stem();
@@ -28,9 +30,10 @@ export function useAnnotationNavigation(options: UseAnnotationNavigationOptions)
 
     const curFileId = activeFile() ?? fileOrder[0].id;
     const center = getCenterLine();
+    const lastLine = getLastJumpedLine();
 
     const curFileAnns = anns.filter((a) => a.fileId === curFileId);
-    const next = curFileAnns.find((a) => a.line > center);
+    const next = curFileAnns.find((a) => a.line > center && a.line !== lastLine);
     if (next) {
       scrollToLine(next.line, next.fileId);
       return;
@@ -45,6 +48,8 @@ export function useAnnotationNavigation(options: UseAnnotationNavigationOptions)
         return;
       }
     }
+
+    scrollToLine(anns[0].line, anns[0].fileId);
   };
 
   const goPrev = () => {
@@ -55,9 +60,10 @@ export function useAnnotationNavigation(options: UseAnnotationNavigationOptions)
 
     const curFileId = activeFile() ?? fileOrder[0].id;
     const center = getCenterLine();
+    const lastLine = getLastJumpedLine();
 
     const curFileAnns = anns.filter((a) => a.fileId === curFileId);
-    const prev = curFileAnns.findLast((a) => a.line < center);
+    const prev = curFileAnns.findLast((a) => a.line < center && a.line !== lastLine);
     if (prev) {
       scrollToLine(prev.line, prev.fileId);
       return;
@@ -73,6 +79,9 @@ export function useAnnotationNavigation(options: UseAnnotationNavigationOptions)
         return;
       }
     }
+
+    const last = anns[anns.length - 1];
+    scrollToLine(last.line, last.fileId);
   };
 
   return { goNext, goPrev, filteredAnns };
