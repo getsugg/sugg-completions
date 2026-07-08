@@ -285,3 +285,9 @@ body {
 .source-viewer:hover .hover-anchor {
   border-bottom-color: hsl(var(--muted-foreground));
 }
+
+/* Tabs selected state */
+[role="tab"][data-selected] {
+  border-bottom-color: var(--color-amber-500, #f59e0b);
+  color: var(--color-amber-500, #f59e0b);
+}

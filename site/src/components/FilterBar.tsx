@@ -2,6 +2,7 @@ import { For, createMemo, type JSX } from "solid-js";
 import { useScriptContext } from "~/contexts/ScriptContext";
 import { cn } from "~/lib/utils";
 import { useAnnotationNavigation } from "~/hooks/useAnnotationNavigation";
+import { Button } from "~/components/ui/button";
 import type { FilterType } from "~/types";
 
 const FILTER_LABELS: Record<FilterType, string> = {
@@ -54,54 +55,56 @@ export function FilterBar(props: FilterBarProps) {
       ref={props.ref}
       class="flex shrink-0 items-center border-t border-border bg-card px-3 py-1 text-[11px]"
     >
-      <button
-        type="button"
-        class="flex cursor-pointer items-center gap-1.5 px-1.5 py-1 text-left hover:bg-[#ffffff08] rounded"
-        onClick={() => props.onToggle()}
+      <Button
+        variant="ghost"
+        class="flex h-auto items-center gap-1.5 px-1.5 py-1 text-[11px] text-left hover:bg-[#ffffff08] rounded"
+        onClick={props.onToggle}
       >
         <span class="text-xs text-amber-400 w-3">{props.isExpanded ? "▾" : "▸"}</span>
-        <span class="text-[11px] font-semibold text-foreground">Annotations</span>
+        <span class="font-semibold text-foreground">Annotations</span>
         <span class="text-muted-foreground font-mono">{counts().total}</span>
-      </button>
+      </Button>
       <div class="flex-1" />
       <div class="flex items-center gap-1">
         <For each={Object.keys(FILTER_LABELS) as FilterType[]}>
           {(k) => (
-            <button
-              type="button"
+            <Button
+              variant="ghost"
               class={cn(
-                "cursor-pointer rounded-lg border px-2 py-0.5 text-[11px] font-medium whitespace-nowrap transition-none",
+                "h-auto cursor-pointer rounded-lg border px-2 py-0.5 text-[11px] font-medium whitespace-nowrap transition-none",
                 filteredType() === k
-                  ? "bg-amber-500 border-amber-500 text-[#0c0a0e] font-bold"
-                  : "border-[#2f2840] text-[#6a5d78] hover:border-[#4a3f55] hover:text-[#c8bdd4]",
+                  ? "bg-amber-500 border-amber-500 text-[#0c0a0e] font-bold hover:bg-amber-500/90"
+                  : "border-[#2f2840] text-[#6a5d78] hover:border-[#4a3f55] hover:text-[#c8bdd4] hover:bg-transparent",
               )}
               onClick={() => {
                 setFilteredType(k);
               }}
             >
               {FILTER_LABELS[k]} {countFor(k)}
-            </button>
+            </Button>
           )}
         </For>
       </div>
       <div class="w-px h-3 bg-border mx-1.5" />
       <div class="flex items-center gap-0.5">
-        <button
-          type="button"
-          class="cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed text-muted-foreground hover:text-foreground px-0.5"
+        <Button
+          variant="ghost"
+          size="icon"
+          class="h-auto w-auto px-0.5 text-muted-foreground hover:text-foreground"
           disabled={filteredAnns().length === 0}
           onClick={goPrev}
         >
           ◀
-        </button>
-        <button
-          type="button"
-          class="cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed text-muted-foreground hover:text-foreground px-0.5"
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          class="h-auto w-auto px-0.5 text-muted-foreground hover:text-foreground"
           disabled={filteredAnns().length === 0}
           onClick={goNext}
         >
           ▶
-        </button>
+        </Button>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import { createSignal, createMemo, createEffect, Show, For, type Setter } from "solid-js";
 import { createEventListener } from "@solid-primitives/event-listener";
 import { debounce } from "@solid-primitives/scheduled";
+
 import { VList } from "virtua/solid";
 import {
   Command,
@@ -9,6 +10,7 @@ import {
   CommandItem,
   CommandEmpty,
 } from "~/components/ui/command";
+import { Button } from "~/components/ui/button";
 import type { LineData } from "~/types";
 import { tokenStyle } from "~/lib/utils";
 import { useScriptContext } from "~/contexts/ScriptContext";
@@ -32,15 +34,11 @@ export function CodeSearch(props: CodeSearchProps) {
   const [selectedValue, setSelectedValue] = createSignal("");
   let panelRef: HTMLDivElement | undefined;
 
-  const applyQuery = (q: string) => {
-    setQuery(q);
-  };
-
-  const debouncedApplyQuery = debounce(applyQuery, 200);
+  const debouncedSetQuery = debounce(setQuery, 350);
 
   const closeSearch = () => {
     setOpen(false);
-    applyQuery("");
+    setQuery("");
     setSelectedValue("");
     props.onSearchUpdate(new Set<number>());
   };
@@ -110,9 +108,9 @@ export function CodeSearch(props: CodeSearchProps) {
 
   return (
     <>
-      <button
-        type="button"
-        class="absolute top-3 right-3 z-20 flex cursor-pointer items-center gap-1.5 rounded-md border border-border bg-card px-2.5 py-1.5 text-[11px] text-muted-foreground hover:border-[#2f2840] hover:text-foreground transition-none shadow-sm"
+      <Button
+        variant="outline"
+        class="absolute top-3 right-3 z-20 h-auto items-center gap-1.5 rounded-md border-border bg-card px-2.5 py-1.5 text-[11px] text-muted-foreground hover:border-[#2f2840] hover:text-foreground transition-none shadow-sm"
         onClick={() => setOpen(true)}
       >
         <svg
@@ -132,7 +130,7 @@ export function CodeSearch(props: CodeSearchProps) {
         <kbd class="inline-flex items-center rounded border border-border bg-[#1d1b21] px-1 font-mono text-[9px] leading-4 text-muted-foreground">
           {shortcutKey()}
         </kbd>
-      </button>
+      </Button>
 
       <Show when={open()}>
         <div
@@ -150,7 +148,7 @@ export function CodeSearch(props: CodeSearchProps) {
               }}
               placeholder="Search in file…"
               value={query()}
-              onValueChange={debouncedApplyQuery}
+              onValueChange={debouncedSetQuery}
             />
             <CommandList class="max-h-none! overflow-visible">
               <Show when={query() && matchCount() > 0}>

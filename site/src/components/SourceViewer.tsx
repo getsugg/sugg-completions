@@ -1,5 +1,5 @@
-import { For, Show, createSignal, onMount } from "solid-js";
-import { VList, type VListHandle } from "virtua/solid";
+import { For, Show, onMount } from "solid-js";
+import { VList, type VirtualizerHandle } from "virtua/solid";
 import type { LineData } from "~/types";
 import { cn, tokenStyle } from "~/lib/utils";
 import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/ui/tooltip";
@@ -21,33 +21,31 @@ interface SourceViewerProps {
 }
 
 export function SourceViewer(props: SourceViewerProps) {
-  const [handle, setHandle] = createSignal<VListHandle>();
-
+  let handle: VirtualizerHandle | undefined = undefined;
   const api: SourceViewerAPI = {
     scrollToLine: (line: number) => {
-      const h = handle();
-      if (!h) return;
+      if (!handle) return;
       props.onJump?.(line);
-      h.scrollToIndex(line, { align: "center" });
+      handle.scrollToIndex(line, { align: "center" });
     },
     scrollToPos: (top: number) => {
-      const h = handle();
-      if (!h) return;
-      h.scrollTo(top);
+      if (!handle) return;
+      handle.scrollTo(top);
     },
     getCenterLine: () => {
-      const h = handle();
-      if (!h) return 0;
-      return Math.floor((h.scrollOffset + h.viewportSize / 2) / LINE_HEIGHT);
+      if (!handle) return 0;
+      return Math.floor((handle.scrollOffset + handle.viewportSize / 2) / LINE_HEIGHT);
     },
-    getCurrentTop: () => handle()?.scrollOffset ?? 0,
+    getCurrentTop: () => handle?.scrollOffset ?? 0,
   };
 
   onMount(() => props.ref?.(api));
 
   return (
     <VList
-      ref={setHandle}
+      ref={(el) => {
+        handle = el;
+      }}
       data={props.rawLines}
       style={{ height: "100%" }}
       class="source-viewer h-full overflow-auto p-4 text-sm leading-5.5"

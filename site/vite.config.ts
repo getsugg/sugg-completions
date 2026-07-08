@@ -6,14 +6,13 @@ import { execSync } from "child_process";
 import { playwright } from "vitest/browser-playwright";
 import devtools from "solid-devtools/vite";
 import lint from "./oxlint.config";
+import fmt from "./oxfmt.config";
 
 export default defineConfig({
   staged: {
     "*": "vp check --fix",
   },
-  fmt: {
-    ignorePatterns: ["src/components/ui/**", "public/generated/**"],
-  },
+  fmt,
   lint,
   resolve: {
     alias: {

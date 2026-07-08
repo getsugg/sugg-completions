@@ -4,6 +4,8 @@ import { debounce } from "@solid-primitives/scheduled";
 import { VList } from "virtua/solid";
 import { cn } from "~/lib/utils";
 import { TextField, TextFieldInput } from "~/components/ui/text-field";
+import { Button } from "~/components/ui/button";
+import { Badge } from "~/components/ui/badge";
 import scripts from "~/generated/scripts.json";
 
 export function ScriptList() {
@@ -11,7 +13,7 @@ export function ScriptList() {
   const navigate = useNavigate();
   const selectedStem = () => params.script || null;
   const [searchText, setSearchText] = createSignal("");
-  const debouncedSetSearch = debounce(setSearchText, 200);
+  const debouncedSetSearch = debounce(setSearchText, 350);
 
   const filtered = createMemo(() => {
     const q = searchText().toLowerCase();
@@ -42,23 +44,23 @@ export function ScriptList() {
         <VList data={filtered()} style={{ height: "100%" }} itemSize={36} bufferSize={200}>
           {(s) => (
             <li>
-              <button
-                type="button"
+              <Button
+                variant="ghost"
                 class={cn(
-                  "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm transition-none",
+                  "h-auto w-full justify-start gap-2 rounded-md px-3 py-2 text-left text-sm transition-none",
                   selectedStem() === s.stem
-                    ? "bg-amber-700 text-white font-semibold"
-                    : "text-[#8b7d9a] hover:bg-[#ffffff08] hover:text-[#c8bdd4]",
+                    ? "!bg-amber-700 !text-white font-semibold"
+                    : "!text-[#8b7d9a] hover:!bg-[#ffffff08] hover:!text-[#c8bdd4]",
                 )}
                 onClick={() => navigate(`/${s.stem}`)}
               >
                 <span class="flex-1 truncate">{s.title}</span>
                 {s.unsafeCount > 0 && (
-                  <span class="font-mono text-[9px] font-semibold leading-none px-1.5 py-0.5 rounded-sm bg-[#ef444420] text-[#ff5555]">
+                  <Badge variant="error" class="font-mono text-[9px] px-1.5 py-0">
                     {s.unsafeCount}
-                  </span>
+                  </Badge>
                 )}
-              </button>
+              </Button>
             </li>
           )}
         </VList>

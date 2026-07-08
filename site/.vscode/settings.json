@@ -1,0 +1,4 @@
+{
+  "oxc.fmt.configPath": "./oxfmt.config.ts",
+  "oxc.configPath": "./oxlint.config.ts"
+}

@@ -19,6 +19,9 @@ import { Resizable, ResizablePanel, ResizableHandle } from "~/components/ui/resi
 import { SourceViewer, type SourceViewerAPI } from "~/components/SourceViewer";
 import { DetailArea } from "~/components/DetailArea";
 import { CodeSearch } from "~/components/CodeSearch";
+import { Button } from "~/components/ui/button";
+import { Badge } from "~/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import type { AnalysisData, FilterType, LineAnnotation, LineData } from "~/types";
 
 /**
@@ -293,9 +296,9 @@ export default function ScriptPage() {
           </Show>
           <Show when={!analysis.loading && analysis()}>
             {counts().unsafe > 0 && (
-              <span class="rounded-full border border-[#ef444430] bg-[#ef444420] px-2.5 py-0.5 text-[11px] font-bold text-[#ff5555]">
+              <Badge variant="error" round class="text-[11px]">
                 {counts().unsafe} unsafe
-              </span>
+              </Badge>
             )}
             <div class="flex items-center gap-1 text-[11px] text-[#6a5d78]">
               <span class="text-green-500 text-[11px] font-bold">✓</span>
@@ -308,13 +311,13 @@ export default function ScriptPage() {
           fallback={(err, reset) => (
             <div class="flex flex-1 items-center justify-center flex-col gap-3 text-sm text-muted-foreground">
               <span>Failed to load script data</span>
-              <button
-                type="button"
-                class="text-xs text-amber-500 hover:text-amber-400 cursor-pointer underline"
+              <Button
+                variant="link"
+                class="h-auto p-0 text-xs text-amber-500 hover:text-amber-400 underline"
                 onClick={reset}
               >
                 Retry
-              </button>
+              </Button>
             </div>
           )}
         >
@@ -332,24 +335,20 @@ export default function ScriptPage() {
             <ResizablePanel>
               <div class="relative h-full flex flex-col">
                 <Show when={fileTabs().length > 1}>
-                  <div class="flex shrink-0 border-b border-border bg-[#1a1720]">
-                    <For each={fileTabs()}>
-                      {(tab) => (
-                        <button
-                          type="button"
-                          class="cursor-pointer border-b-2 px-3 py-1.5 text-[11px] font-medium transition-none"
-                          classList={{
-                            "border-amber-500 bg-[#2d2a35] text-amber-500": activeFile() === tab.id,
-                            "border-transparent text-muted-foreground hover:text-foreground hover:bg-[#252230]":
-                              activeFile() !== tab.id,
-                          }}
-                          onClick={() => handleFileSwitch(tab.id)}
-                        >
-                          {tab.filename}
-                        </button>
-                      )}
-                    </For>
-                  </div>
+                  <Tabs value={activeFile() ?? ""} onChange={handleFileSwitch}>
+                    <TabsList class="h-auto justify-start rounded-none border-b border-border bg-[#1a1720] p-0 w-full">
+                      <For each={fileTabs()}>
+                        {(tab) => (
+                          <TabsTrigger
+                            value={tab.id}
+                            class="rounded-none px-3 py-1.5 text-[11px] font-medium text-muted-foreground transition-none"
+                          >
+                            {tab.filename}
+                          </TabsTrigger>
+                        )}
+                      </For>
+                    </TabsList>
+                  </Tabs>
                 </Show>
 
                 <div class="relative flex-1 min-h-0">

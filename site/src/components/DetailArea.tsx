@@ -1,4 +1,4 @@
-import { For, Show, Switch, Match, createSignal, createMemo, type Setter } from "solid-js";
+import { Show, createSignal, createMemo, type Setter } from "solid-js";
 import ResizablePrimitive from "@corvu/resizable";
 import { createResizeObserver } from "@solid-primitives/resize-observer";
 import { useScriptContext } from "~/contexts/ScriptContext";
@@ -6,6 +6,7 @@ import { FilterBar } from "./FilterBar";
 import { AnnotationList } from "./AnnotationList";
 import { DynamicCodePanel } from "./DynamicCodePanel";
 import { StaticCodePanel } from "./StaticCodePanel";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 
 export interface DetailAreaProps {
   containerHeight: number;
@@ -45,8 +46,6 @@ export function DetailArea(props: DetailAreaProps) {
     return allAnns;
   });
 
-  const TABS = ["summary", "dynamic", "static"] as const;
-
   return (
     <div class="flex flex-col h-full">
       <Show when={displayAnalysis()}>
@@ -62,37 +61,37 @@ export function DetailArea(props: DetailAreaProps) {
 
         <Show when={isExpanded()}>
           <div class="flex flex-1 flex-col min-h-0 border-t border-border bg-card">
-            <div class="flex shrink-0 border-b border-border">
-              <For each={TABS}>
-                {(t) => (
-                  <button
-                    type="button"
-                    class="cursor-pointer border-b-2 px-3.5 py-1.5 text-[11px] font-medium transition-none"
-                    classList={{
-                      "border-amber-500 text-amber-500": activeTab() === t,
-                      "border-transparent text-muted-foreground hover:text-foreground":
-                        activeTab() !== t,
-                    }}
-                    onClick={() => setActiveTab(t)}
-                  >
-                    {t === "summary" ? "Summary" : t === "dynamic" ? "Dynamic" : "Static"}
-                  </button>
-                )}
-              </For>
-            </div>
-            <div class="flex-1 overflow-hidden px-4 py-3 text-xs">
-              <Switch>
-                <Match when={activeTab() === "summary"}>
-                  <AnnotationList anns={filteredAnns()} />
-                </Match>
-                <Match when={activeTab() === "dynamic"}>
-                  <DynamicCodePanel dynamicHtml={displayAnalysis()?.dynamicHtml} />
-                </Match>
-                <Match when={activeTab() === "static"}>
-                  <StaticCodePanel staticHtml={displayAnalysis()?.staticHtml} />
-                </Match>
-              </Switch>
-            </div>
+            <Tabs value={activeTab()} onChange={setActiveTab} class="flex flex-col flex-1 min-h-0">
+              <TabsList class="h-auto justify-start rounded-none border-b border-border bg-transparent p-0 shrink-0">
+                <TabsTrigger
+                  value="summary"
+                  class="rounded-none px-3.5 py-1.5 text-[11px] font-medium"
+                >
+                  Summary
+                </TabsTrigger>
+                <TabsTrigger
+                  value="dynamic"
+                  class="rounded-none px-3.5 py-1.5 text-[11px] font-medium"
+                >
+                  Dynamic
+                </TabsTrigger>
+                <TabsTrigger
+                  value="static"
+                  class="rounded-none px-3.5 py-1.5 text-[11px] font-medium"
+                >
+                  Static
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="summary" class="flex-1 overflow-hidden px-4 py-3 text-xs h-full">
+                <AnnotationList anns={filteredAnns()} />
+              </TabsContent>
+              <TabsContent value="dynamic" class="flex-1 overflow-hidden px-4 py-3 text-xs h-full">
+                <DynamicCodePanel dynamicHtml={displayAnalysis()?.dynamicHtml} />
+              </TabsContent>
+              <TabsContent value="static" class="flex-1 overflow-hidden px-4 py-3 text-xs h-full">
+                <StaticCodePanel staticHtml={displayAnalysis()?.staticHtml} />
+              </TabsContent>
+            </Tabs>
           </div>
         </Show>
       </Show>

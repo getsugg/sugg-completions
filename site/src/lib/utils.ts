@@ -16,8 +16,3 @@ export function tokenStyle(t: { color?: string; fontStyle?: number }): string | 
   }
   return parts.join(";");
 }
-
-export function hoverTokenStyle(t: { color?: string; fontStyle?: number }): string {
-  const base = tokenStyle(t) || "";
-  return base || "";
-}
