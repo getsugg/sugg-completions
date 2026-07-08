@@ -10,6 +10,7 @@ import {
   type Setter,
 } from "solid-js";
 import { useParams, useBeforeLeave } from "@solidjs/router";
+import { createResizeObserver } from "@solid-primitives/resize-observer";
 import { useSourceLoader } from "~/hooks/useSourceLoader";
 import { useAnalysis } from "~/hooks/useAnalysis";
 import { getScript } from "~/lib/scripts-utils";
@@ -131,14 +132,11 @@ function useScrollManager(opts: {
 
   // 获取当前视口中心行号，供 DetailArea 的上/下注解导航使用
   const getCenterLine = () => api?.getCenterLine() ?? 0;
-  // 获取上次跳转的行号，用于避免重复跳转
-  const getLastJumpedLine = () => api?.getLastJumpedLine() ?? -1;
 
   return {
     handleFileSwitch,
     scrollToLine,
     getCenterLine,
-    getLastJumpedLine,
     // 将 SourceViewer 的 ref 回调绑定到内部 api 变量
     bindAPI: (a: SourceViewerAPI) => {
       api = a;
@@ -188,10 +186,38 @@ export default function ScriptPage() {
   const [filteredType, setFilteredType] = createSignal<FilterType>("all");
   // 代码搜索匹配的行号集合
   const [searchMatches, setSearchMatches] = createSignal(new Set<number>());
+  // 最近一次通过注解导航跳转的行号
+  const [lastJumpedLine, setLastJumpedLine] = createSignal(-1);
 
   // 可调整面板的根元素和底部栏高度
-  const [resizableRoot, setResizableRoot] = createSignal<HTMLElement>();
   const [barHeight, setBarHeight] = createSignal(32);
+  const [containerHeight, setContainerHeight] = createSignal(0);
+  const [panelSizes, setPanelSizes] = createSignal<number[]>([1, 0]);
+
+  // 派生最小高度占比（计算属性）
+  const minFrac = createMemo(() => {
+    const ch = containerHeight();
+    return ch === 0 ? 0 : barHeight() / ch;
+  });
+
+  // 派生安全的面板大小：读时夹逼，不污染原始 panelSizes 触发死循环
+  const safePanelSizes = createMemo(() => {
+    const current = panelSizes();
+    const min = minFrac();
+    if (current[1] < min) {
+      return [1 - min, min];
+    }
+    return current;
+  });
+
+  const handleSizesChange = (sizes: number[]) => {
+    const min = minFrac();
+    if (sizes[1] < min) {
+      setPanelSizes([1 - min, min]);
+    } else {
+      setPanelSizes(sizes);
+    }
+  };
 
   // 当前脚本的文件列表（用于渲染顶部 Tab 栏）
   const fileTabs = createMemo(() => {
@@ -201,14 +227,13 @@ export default function ScriptPage() {
   });
 
   // 初始化滚动状态管理：封装了位置缓存、Tab 切换、行跳转等逻辑
-  const { handleFileSwitch, scrollToLine, getCenterLine, getLastJumpedLine, bindAPI } =
-    useScrollManager({
-      stem,
-      activeFile,
-      setActiveFile,
-      rawLines,
-      fileTabs,
-    });
+  const { handleFileSwitch, scrollToLine, getCenterLine, bindAPI } = useScrollManager({
+    stem,
+    activeFile,
+    setActiveFile,
+    rawLines,
+    fileTabs,
+  });
 
   // 根据注解过滤器和搜索匹配，计算每一行的 CSS 类名
   const baseClasses = createMemo(() => {
@@ -248,7 +273,7 @@ export default function ScriptPage() {
     setFilteredType,
     scrollToLine,
     getCenterLine,
-    getLastJumpedLine,
+    lastJumpedLine,
   };
 
   return (
@@ -294,9 +319,14 @@ export default function ScriptPage() {
           )}
         >
           <Resizable
-            ref={setResizableRoot}
+            ref={(el) => {
+              createResizeObserver(el, ({ height }) => {
+                setContainerHeight(height);
+              });
+            }}
             orientation="vertical"
-            initialSizes={[1, 0]}
+            sizes={safePanelSizes()}
+            onSizesChange={handleSizesChange}
             class="flex-1 min-h-0"
           >
             <ResizablePanel>
@@ -323,14 +353,19 @@ export default function ScriptPage() {
                 </Show>
 
                 <div class="relative flex-1 min-h-0">
-                  <SourceViewer ref={bindAPI} rawLines={rawLines()} getLineClass={getLineClass} />
+                  <SourceViewer
+                    ref={bindAPI}
+                    rawLines={rawLines()}
+                    getLineClass={getLineClass}
+                    onJump={setLastJumpedLine}
+                  />
                   <CodeSearch rawLines={rawLines()} onSearchUpdate={setSearchMatches} />
                 </div>
               </div>
             </ResizablePanel>
             <ResizableHandle withHandle />
-            <ResizablePanel minSize={`${barHeight()}px`} initialSize={`${barHeight()}px`}>
-              <DetailArea rootEl={resizableRoot()} onBarHeightChange={setBarHeight} />
+            <ResizablePanel>
+              <DetailArea containerHeight={containerHeight()} onBarHeightChange={setBarHeight} />
             </ResizablePanel>
           </Resizable>
         </ErrorBoundary>

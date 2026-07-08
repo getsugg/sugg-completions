@@ -11,24 +11,23 @@ export interface SourceViewerAPI {
   scrollToPos: (top: number) => void;
   getCenterLine: () => number;
   getCurrentTop: () => number;
-  getLastJumpedLine: () => number;
 }
 
 interface SourceViewerProps {
   rawLines: LineData[];
   getLineClass: (index: number) => string;
   ref?: (api: SourceViewerAPI) => void;
+  onJump?: (line: number) => void;
 }
 
 export function SourceViewer(props: SourceViewerProps) {
   const [handle, setHandle] = createSignal<VListHandle>();
-  let lastJumpedLine = -1;
 
   const api: SourceViewerAPI = {
     scrollToLine: (line: number) => {
       const h = handle();
       if (!h) return;
-      lastJumpedLine = line;
+      props.onJump?.(line);
       h.scrollToIndex(line, { align: "center" });
     },
     scrollToPos: (top: number) => {
@@ -42,7 +41,6 @@ export function SourceViewer(props: SourceViewerProps) {
       return Math.floor((h.scrollOffset + h.viewportSize / 2) / LINE_HEIGHT);
     },
     getCurrentTop: () => handle()?.scrollOffset ?? 0,
-    getLastJumpedLine: () => lastJumpedLine,
   };
 
   onMount(() => props.ref?.(api));

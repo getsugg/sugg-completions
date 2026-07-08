@@ -1,5 +1,7 @@
-import { For, createSignal, createMemo } from "solid-js";
+import { createSignal, createMemo } from "solid-js";
 import { useNavigate, useParams } from "@solidjs/router";
+import { debounce } from "@solid-primitives/scheduled";
+import { VList } from "virtua/solid";
 import { cn } from "~/lib/utils";
 import { TextField, TextFieldInput } from "~/components/ui/text-field";
 import scripts from "~/generated/scripts.json";
@@ -9,6 +11,7 @@ export function ScriptList() {
   const navigate = useNavigate();
   const selectedStem = () => params.script || null;
   const [searchText, setSearchText] = createSignal("");
+  const debouncedSetSearch = debounce(setSearchText, 200);
 
   const filtered = createMemo(() => {
     const q = searchText().toLowerCase();
@@ -30,13 +33,13 @@ export function ScriptList() {
           <TextFieldInput
             placeholder="Search scripts..."
             value={searchText()}
-            onInput={(e) => setSearchText(e.currentTarget.value)}
+            onInput={(e) => debouncedSetSearch(e.currentTarget.value)}
             class="h-8 text-xs"
           />
         </TextField>
       </div>
-      <ul class="flex flex-col px-2 pb-3 overflow-auto">
-        <For each={filtered()}>
+      <div class="flex-1 min-h-0 px-2 pb-3">
+        <VList data={filtered()} style={{ height: "100%" }} itemSize={36} bufferSize={200}>
           {(s) => (
             <li>
               <button
@@ -58,8 +61,8 @@ export function ScriptList() {
               </button>
             </li>
           )}
-        </For>
-      </ul>
+        </VList>
+      </div>
     </aside>
   );
 }

@@ -26,7 +26,7 @@ export function FilterBar(props: FilterBarProps) {
     setFilteredType,
     scrollToLine,
     getCenterLine,
-    getLastJumpedLine,
+    lastJumpedLine,
   } = useScriptContext();
 
   const filteredAnns = createMemo(() => {
@@ -41,7 +41,7 @@ export function FilterBar(props: FilterBarProps) {
     filteredAnns,
     getCenterLine,
     scrollToLine,
-    getLastJumpedLine,
+    lastJumpedLine,
   });
 
   const countFor = (k: FilterType) => {

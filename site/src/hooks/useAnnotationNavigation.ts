@@ -8,12 +8,11 @@ interface UseAnnotationNavigationOptions {
   filteredAnns: Accessor<MergedAnnotation[]>;
   getCenterLine: () => number;
   scrollToLine: (line: number, fileId?: string) => void;
-  getLastJumpedLine: () => number;
+  lastJumpedLine: Accessor<number>;
 }
 
 export function useAnnotationNavigation(options: UseAnnotationNavigationOptions) {
-  const { stem, activeFile, filteredAnns, getCenterLine, scrollToLine, getLastJumpedLine } =
-    options;
+  const { stem, activeFile, filteredAnns, getCenterLine, scrollToLine, lastJumpedLine } = options;
 
   const files = () => {
     const s = stem();
@@ -30,7 +29,7 @@ export function useAnnotationNavigation(options: UseAnnotationNavigationOptions)
 
     const curFileId = activeFile() ?? fileOrder[0].id;
     const center = getCenterLine();
-    const lastLine = getLastJumpedLine();
+    const lastLine = lastJumpedLine();
 
     const curFileAnns = anns.filter((a) => a.fileId === curFileId);
     const next = curFileAnns.find((a) => a.line > center && a.line !== lastLine);
@@ -60,7 +59,7 @@ export function useAnnotationNavigation(options: UseAnnotationNavigationOptions)
 
     const curFileId = activeFile() ?? fileOrder[0].id;
     const center = getCenterLine();
-    const lastLine = getLastJumpedLine();
+    const lastLine = lastJumpedLine();
 
     const curFileAnns = anns.filter((a) => a.fileId === curFileId);
     const prev = curFileAnns.findLast((a) => a.line < center && a.line !== lastLine);

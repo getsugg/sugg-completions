@@ -16,7 +16,7 @@ export interface ScriptContextValue {
   setFilteredType: Setter<FilterType>;
   scrollToLine: (line: number, fileId?: string) => void;
   getCenterLine: () => number;
-  getLastJumpedLine: () => number;
+  lastJumpedLine: Accessor<number>;
 }
 
 export const ScriptContext = createContext<ScriptContextValue>();

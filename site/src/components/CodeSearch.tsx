@@ -1,9 +1,7 @@
-import { createSignal, createMemo, createEffect, batch, Show, For, type Setter } from "solid-js";
+import { createSignal, createMemo, createEffect, Show, For, type Setter } from "solid-js";
 import { createEventListener } from "@solid-primitives/event-listener";
-import {
-  createViewportObserver,
-  type EntryCallback,
-} from "@solid-primitives/intersection-observer";
+import { debounce } from "@solid-primitives/scheduled";
+import { VList } from "virtua/solid";
 import {
   Command,
   CommandInput,
@@ -20,38 +18,29 @@ interface CodeSearchProps {
   onSearchUpdate: Setter<Set<number>>;
 }
 
-const PAGE_SIZE = 50;
-
 const isMac = () => navigator.platform.toLowerCase().includes("mac");
 const shortcutKey = () => (isMac() ? "⌘F" : "Ctrl+F");
+
+const ITEM_HEIGHT = 32;
+const MAX_VISIBLE_ITEMS = 10;
+const LIST_HEIGHT = MAX_VISIBLE_ITEMS * ITEM_HEIGHT;
 
 export function CodeSearch(props: CodeSearchProps) {
   const { scrollToLine } = useScriptContext();
   const [open, setOpen] = createSignal(false);
   const [query, setQuery] = createSignal("");
   const [selectedValue, setSelectedValue] = createSignal("");
-  const [visibleCount, setVisibleCount] = createSignal(PAGE_SIZE);
   let panelRef: HTMLDivElement | undefined;
-  let inputRef: HTMLInputElement | undefined;
 
-  const [intersectionObserver] = createViewportObserver({ rootMargin: "200px" });
-
-  const handleIntersect: EntryCallback = (entry) => {
-    if (entry.isIntersecting) {
-      setVisibleCount((c) => Math.min(c + PAGE_SIZE, matches().length));
-    }
+  const applyQuery = (q: string) => {
+    setQuery(q);
   };
 
-  const updateQuery = (q: string) => {
-    batch(() => {
-      setQuery(q);
-      setVisibleCount(PAGE_SIZE);
-    });
-  };
+  const debouncedApplyQuery = debounce(applyQuery, 200);
 
   const closeSearch = () => {
     setOpen(false);
-    updateQuery("");
+    applyQuery("");
     setSelectedValue("");
     props.onSearchUpdate(new Set<number>());
   };
@@ -75,14 +64,7 @@ export function CodeSearch(props: CodeSearchProps) {
     return result;
   });
 
-  const visibleMatches = createMemo(() => matches().slice(0, visibleCount()));
   const matchCount = () => matches().length;
-
-  const currentIdx = createMemo(() => {
-    const v = selectedValue();
-    if (!v) return 0;
-    return visibleMatches().findIndex((m) => `l${m.line}` === v);
-  });
 
   const highlightedLines = createMemo(() => {
     if (!open() || !query()) return new Set<number>();
@@ -102,10 +84,6 @@ export function CodeSearch(props: CodeSearchProps) {
     const line = parseInt(v.slice(1), 10);
     if (!isNaN(line)) scrollToLine(line);
     return v;
-  });
-
-  createEffect(() => {
-    if (open()) requestAnimationFrame(() => inputRef?.focus());
   });
 
   createEventListener(document, "keydown", (e) => {
@@ -166,42 +144,43 @@ export function CodeSearch(props: CodeSearchProps) {
           <Command shouldFilter={false} value={selectedValue()} onValueChange={setSelectedValue}>
             <CommandInput
               ref={(el) => {
-                inputRef = el;
+                createEffect(() => {
+                  if (open()) requestAnimationFrame(() => el.focus());
+                });
               }}
               placeholder="Search in file…"
               value={query()}
-              onValueChange={updateQuery}
+              onValueChange={debouncedApplyQuery}
             />
-            <CommandList>
-              <For each={visibleMatches()}>
-                {(match) => (
-                  <CommandItem value={`l${match.line}`} onSelect={() => handleSelect(match.line)}>
-                    <span class="mr-2 w-8 shrink-0 text-right font-mono text-[10px] text-muted-foreground">
-                      {match.line + 1}
-                    </span>
-                    <span class="flex-1 truncate font-mono text-[12px] leading-5 [&_span]:whitespace-nowrap!">
-                      <For each={match.lineData.tokens}>
-                        {(t) => <span style={tokenStyle(t) ?? ""}>{t.content}</span>}
-                      </For>
-                    </span>
-                  </CommandItem>
-                )}
-              </For>
+            <CommandList class="max-h-none! overflow-visible">
+              <Show when={query() && matchCount() > 0}>
+                <VList
+                  data={matches()}
+                  style={{ height: `${Math.min(matchCount() * ITEM_HEIGHT, LIST_HEIGHT)}px` }}
+                  itemSize={ITEM_HEIGHT}
+                  bufferSize={200}
+                >
+                  {(match) => (
+                    <CommandItem value={`l${match.line}`} onSelect={() => handleSelect(match.line)}>
+                      <span class="mr-2 w-8 shrink-0 text-right font-mono text-[10px] text-muted-foreground">
+                        {match.line + 1}
+                      </span>
+                      <span class="flex-1 truncate font-mono text-[12px] leading-5 [&_span]:whitespace-nowrap!">
+                        <For each={match.lineData.tokens}>
+                          {(t) => <span style={tokenStyle(t) ?? ""}>{t.content}</span>}
+                        </For>
+                      </span>
+                    </CommandItem>
+                  )}
+                </VList>
+              </Show>
               <Show when={query() && matchCount() === 0}>
                 <CommandEmpty>No results found</CommandEmpty>
-              </Show>
-              <Show when={visibleCount() < matchCount()}>
-                <div ref={(el) => intersectionObserver(el, handleIntersect)} class="h-2" />
               </Show>
             </CommandList>
             <Show when={query() && matchCount() > 0}>
               <div class="flex items-center justify-between border-t border-border px-3 py-1.5 text-[10px] text-muted-foreground">
-                <span>
-                  {currentIdx() + 1} / {matchCount()} matches
-                  <Show when={visibleCount() < matchCount()}>
-                    <span class="ml-1 text-[9px]">· scroll for more</span>
-                  </Show>
-                </span>
+                <span>{matchCount()} matches</span>
                 <span class="flex items-center gap-2">
                   <span>↑↓ navigate</span>
                   <span>Enter jump</span>

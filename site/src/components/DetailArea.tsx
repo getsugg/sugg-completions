@@ -8,30 +8,19 @@ import { DynamicCodePanel } from "./DynamicCodePanel";
 import { StaticCodePanel } from "./StaticCodePanel";
 
 export interface DetailAreaProps {
-  rootEl: HTMLElement | undefined;
+  containerHeight: number;
   onBarHeightChange?: Setter<number>;
 }
 
 export function DetailArea(props: DetailAreaProps) {
   const { displayAnalysis, mergedAnnotations, filteredType } = useScriptContext();
   const resizableCtx = ResizablePrimitive.useContext();
-  const [containerHeight, setContainerHeight] = createSignal(300);
 
-  createResizeObserver(
-    () => props.rootEl,
-    ({ height }) => setContainerHeight(height),
-  );
-
-  const [filterBarEl, setFilterBarEl] = createSignal<HTMLDivElement>();
-  createResizeObserver(filterBarEl, ({ height }) => {
-    props.onBarHeightChange?.(Math.ceil(height));
-  });
-
-  const isExpanded = createMemo(() => resizableCtx.sizes()[1] * containerHeight() > 60);
+  const isExpanded = createMemo(() => resizableCtx.sizes()[1] * props.containerHeight > 60);
 
   const lastExpandedRatio = createMemo((prev: number) => {
     const size = resizableCtx.sizes()[1];
-    if (size * containerHeight() > 60) return size;
+    if (size * props.containerHeight > 60) return size;
     return prev;
   }, 0.35);
 
@@ -61,7 +50,15 @@ export function DetailArea(props: DetailAreaProps) {
   return (
     <div class="flex flex-col h-full">
       <Show when={displayAnalysis()}>
-        <FilterBar ref={setFilterBarEl} onToggle={toggle} isExpanded={isExpanded()} />
+        <FilterBar
+          ref={(el) => {
+            createResizeObserver(el, (_rect, el) => {
+              props.onBarHeightChange?.(Math.ceil(el.offsetHeight));
+            });
+          }}
+          onToggle={toggle}
+          isExpanded={isExpanded()}
+        />
 
         <Show when={isExpanded()}>
           <div class="flex flex-1 flex-col min-h-0 border-t border-border bg-card">
@@ -83,7 +80,7 @@ export function DetailArea(props: DetailAreaProps) {
                 )}
               </For>
             </div>
-            <div class="flex-1 overflow-auto px-4 py-3 text-xs">
+            <div class="flex-1 overflow-hidden px-4 py-3 text-xs">
               <Switch>
                 <Match when={activeTab() === "summary"}>
                   <AnnotationList anns={filteredAnns()} />
