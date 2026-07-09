@@ -4,12 +4,14 @@ import {
   symlinkSync,
   existsSync,
   mkdirSync,
+  lstatSync,
   statSync,
   readFileSync,
   copyFileSync,
   rmSync,
 } from "fs";
-import { join, dirname, resolve, relative } from "path";
+import { join, dirname, relative, basename } from "path";
+import { pathToFileURL } from "url";
 
 import { platform } from "os";
 import { createHash } from "crypto";
@@ -17,6 +19,8 @@ import { execSync } from "child_process";
 import { createHighlighter } from "shiki";
 import { createTwoslasher } from "twoslash";
 import { parseSync } from "oxc-parser";
+import { ResolverFactory } from "oxc-resolver";
+import fg from "fast-glob";
 import { scanSource } from "~/lib/scan";
 import { suggTheme } from "~/lib/shiki-theme";
 import type { LineAnnotation, ExtractResult } from "~/types";
@@ -29,18 +33,33 @@ const wasmBgPath = join(wasmDir, "sugg_wasm_bg.wasm");
 
 const completionsDir = join(__dirname, "..", "..", "completions");
 
-const generatedDir = join(__dirname, "..", "src", "generated");
-const scriptsJsonFile = join(generatedDir, "scripts.json");
-const cacheFile = join(generatedDir, ".generate-cache.json");
+const srcGeneratedDir = join(__dirname, "..", "src", "generated");
+const scriptsJsonFile = join(srcGeneratedDir, "scripts.json");
+const cacheFile = join(srcGeneratedDir, ".generate-cache.json");
 
-const highlightedDir = join(__dirname, "..", "public", "highlighted");
-const analysisDir = join(__dirname, "..", "public", "analysis");
-const generatedSourceDir = join(__dirname, "..", "public", "generated");
+const publicGeneratedDir = join(__dirname, "..", "public", "generated");
+const highlightedDir = join(publicGeneratedDir, "highlighted");
+const analysisDir = join(publicGeneratedDir, "analysis");
 
 const linkTarget = join(__dirname, "..", "..", "completions");
 const linkPath = join(__dirname, "..", "public", "completions");
 
-if (!existsSync(linkPath)) {
+let shouldCreateSymlink = false;
+try {
+  const stat = lstatSync(linkPath);
+  if (!stat.isSymbolicLink()) {
+    rmSync(linkPath, { recursive: true, force: true });
+    shouldCreateSymlink = true;
+  }
+} catch (e: any) {
+  if (e.code === "ENOENT") {
+    shouldCreateSymlink = true;
+  } else {
+    throw e;
+  }
+}
+
+if (shouldCreateSymlink) {
   mkdirSync(dirname(linkPath), { recursive: true });
   if (platform() === "win32") {
     symlinkSync(linkTarget, linkPath, "junction");
@@ -48,16 +67,30 @@ if (!existsSync(linkPath)) {
     symlinkSync(linkTarget, linkPath, "dir");
   }
 }
-mkdirSync(generatedDir, { recursive: true });
+mkdirSync(srcGeneratedDir, { recursive: true });
+mkdirSync(publicGeneratedDir, { recursive: true });
 mkdirSync(highlightedDir, { recursive: true });
 mkdirSync(analysisDir, { recursive: true });
-mkdirSync(generatedSourceDir, { recursive: true });
 
 interface SharedModule {
   id: string;
   filename: string;
   absPath: string;
   importPath: string;
+}
+
+const TS_EXTENSIONS = [".ts", ".mts", ".cts"];
+const JS_EXTENSIONS = [".js", ".mjs", ".cjs"];
+const ALL_EXTENSIONS = [...TS_EXTENSIONS, ...JS_EXTENSIONS];
+
+const resolver = new ResolverFactory({
+  extensions: [...ALL_EXTENSIONS, ".json", ".node"],
+  mainFiles: ["index"],
+});
+
+function langFromFile(filename: string): "ts" | "js" {
+  const ext = filename.match(/\.(m|c)?(ts|js)$/)?.[0] ?? ".ts";
+  return ext.includes("ts") ? "ts" : "js";
 }
 
 interface ScriptEntry {
@@ -74,7 +107,7 @@ interface ScriptEntry {
 
 function getDescription(stem: string, cacheDir: string): string {
   try {
-    const out = execSync(`sugg complete nushell --cache-dir "${cacheDir}" -- ${stem}`, {
+    const out = execSync(`sugg complete nushell --cache-dir "${cacheDir}" -- "${stem}"`, {
       encoding: "utf-8",
       timeout: 10000,
     });
@@ -104,31 +137,40 @@ function readCachedHash(): string | null {
   }
 }
 
+function smHighlightId(sm: SharedModule): string {
+  return relative(completionsDir, sm.absPath)
+    .replace(/\\/g, "/")
+    .replace(/\.(m|c)?(ts|js)$/, "");
+}
+
 function allOutputsExist(entries: ScriptEntry[]): boolean {
   if (!existsSync(scriptsJsonFile)) return false;
   for (const entry of entries) {
     if (!existsSync(join(highlightedDir, `${entry.stem}.json`))) return false;
     if (!existsSync(join(analysisDir, `${entry.stem}.json`))) return false;
     for (const sm of entry.sharedModules) {
-      if (!existsSync(join(highlightedDir, `${entry.stem}-${sm.id}.json`))) return false;
+      if (!existsSync(join(highlightedDir, `${smHighlightId(sm)}.json`))) return false;
     }
   }
   return true;
 }
 
 // Regenerate sugg.d.ts in a temp dir, copy the single file we need
-const initTmpDir = join(__dirname, "..", "tmp", "sugg-dts", "completions");
+const suggDtsBaseDir = join(__dirname, "..", "tmp", "sugg-dts");
+const initTmpDir = join(suggDtsBaseDir, "completions");
 try {
   mkdirSync(initTmpDir, { recursive: true });
   execSync(`sugg dev init --completions-dir "${initTmpDir}"`, {
     stdio: "inherit",
     timeout: 15000,
   });
-  copyFileSync(join(initTmpDir, ".sugg", "sugg.d.ts"), join(completionsDir, ".sugg", "sugg.d.ts"));
+  const destSuggDir = join(completionsDir, ".sugg");
+  mkdirSync(destSuggDir, { recursive: true });
+  copyFileSync(join(initTmpDir, ".sugg", "sugg.d.ts"), join(destSuggDir, "sugg.d.ts"));
 } catch (e) {
   console.error("[generate] sugg dev init failed, sugg.d.ts may be stale", e);
 } finally {
-  rmSync(join(initTmpDir, ".."), { recursive: true, force: true });
+  rmSync(suggDtsBaseDir, { recursive: true, force: true });
 }
 
 // Keep i18n.d.ts in sync with i18n JSON files
@@ -147,45 +189,36 @@ for (const name of readdirSync(completionsDir).sort()) {
   if (name.startsWith(".") || name === "node_modules") continue;
   const full = join(completionsDir, name);
   const stat = statSync(full);
-  if (stat.isFile() && name.endsWith(".ts") && !name.startsWith("_")) {
+  const ext = ALL_EXTENSIONS.find((e) => name.endsWith(e));
+  if (stat.isFile() && ext && !name.startsWith("_")) {
+    const stem = name.slice(0, -ext.length);
     entries.push({
-      stem: name.replace(/\.ts$/, ""),
+      stem,
       sourceUrl: `./completions/${name}`,
-      linesUrl: `./highlighted/${name.replace(/\.ts$/, "")}.json`,
+      linesUrl: `./generated/highlighted/${stem}.json`,
       sharedModules: [],
     });
-  } else if (stat.isDirectory() && existsSync(join(full, "index.ts"))) {
-    entries.push({
-      stem: name,
-      sourceUrl: `./completions/${name}/index.ts`,
-      linesUrl: `./highlighted/${name}.json`,
-      sharedModules: [],
-    });
-  }
-}
-
-const inputFiles = entries.map((e) =>
-  join(completionsDir, e.sourceUrl.replace("./completions/", "")),
-);
-inputFiles.push(
-  join(completionsDir, ".sugg", "sugg.d.ts"),
-  join(completionsDir, ".sugg", "i18n.d.ts"),
-  join(__dirname, "..", "..", ".sugg-version"),
-);
-// Include shared modules in hash
-for (const f of readdirSync(completionsDir).sort()) {
-  if (f.startsWith("_") && f.endsWith(".ts")) {
-    inputFiles.push(join(completionsDir, f));
-  }
-}
-for (const stem of entries.map((e) => e.stem)) {
-  const i18nDir = join(completionsDir, stem, "i18n");
-  if (existsSync(i18nDir)) {
-    for (const f of readdirSync(i18nDir).sort()) {
-      inputFiles.push(join(i18nDir, f));
+  } else if (stat.isDirectory()) {
+    const indexExt = ALL_EXTENSIONS.find((e) => existsSync(join(full, `index${e}`)));
+    if (indexExt) {
+      entries.push({
+        stem: name,
+        sourceUrl: `./completions/${name}/index${indexExt}`,
+        linesUrl: `./generated/highlighted/${name}.json`,
+        sharedModules: [],
+      });
     }
   }
 }
+
+const inputFiles = await fg("**/*", {
+  cwd: completionsDir,
+  ignore: ["node_modules", ".git"],
+  absolute: true,
+  onlyFiles: true,
+});
+const suggVersionFile = join(__dirname, "..", "..", ".sugg-version");
+if (existsSync(suggVersionFile)) inputFiles.push(suggVersionFile);
 const hash = computeHash(inputFiles);
 
 if (readCachedHash() === hash && allOutputsExist(entries)) {
@@ -208,49 +241,75 @@ try {
   console.error("[generate] sugg reload failed, descriptions will fall back to stem names", e);
 }
 
-// Detect shared module imports in source
-function findSharedModules(source: string, scriptDir: string, stem: string): SharedModule[] {
-  const shared: SharedModule[] = [];
-  const seen = new Set<string>();
-
-  let ast;
+// Phase 1: Extract relative imports from a single file using oxc-parser
+function findImports(source: string, scriptDir: string, filename: string): SharedModule[] {
+  const result: SharedModule[] = [];
+  const lang = langFromFile(filename);
+  let ast: ReturnType<typeof parseSync>;
   try {
-    ast = parseSync(`${stem}.ts`, source, { sourceType: "module", lang: "ts" });
+    ast = parseSync(filename, source, { sourceType: "module", lang });
   } catch {
-    return shared;
+    return result;
   }
-
+  const fromFile = join(scriptDir, filename);
   for (const node of ast.program.body) {
     if (node.type !== "ImportDeclaration") continue;
     const importPath = node.source.value;
     if (!importPath.startsWith(".")) continue;
-    const absPath = resolve(
-      scriptDir,
-      importPath.endsWith(".ts") ? importPath : importPath + ".ts",
-    );
-    if (!existsSync(absPath) || seen.has(absPath)) continue;
-    seen.add(absPath);
-    const filename = importPath.split("/").pop()!;
-    shared.push({
-      id: filename.replace(/\.ts$/, ""),
-      filename: filename.endsWith(".ts") ? filename : filename + ".ts",
+    const resolved = resolver.resolveFileSync(fromFile, importPath);
+    if (resolved.error || !resolved.path) continue;
+    const absPath = resolved.path;
+    if (!existsSync(absPath)) continue;
+    const baseName = importPath.split("/").pop()!;
+    const realExt = ALL_EXTENSIONS.find((e) => absPath.endsWith(e)) ?? ".ts";
+    result.push({
+      id: baseName.replace(/\.(m|c)?(ts|js)$/, ""),
+      filename: baseName.replace(/\.(m|c)?(ts|js)$/, "") + realExt,
       absPath,
       importPath,
     });
   }
-  return shared;
+  return result;
 }
 
-// Pre-scan all entries to find shared modules for twoslasher
-const allSharedModules = new Map<string, string>(); // virtual path -> source
+// Extract virtual:i18n/* imports from a single file using oxc-parser
+function findI18nImports(source: string, filename: string): string[] {
+  const lang = langFromFile(filename);
+  let ast: ReturnType<typeof parseSync>;
+  try {
+    ast = parseSync(filename, source, { sourceType: "module", lang });
+  } catch {
+    return [];
+  }
+  const result: string[] = [];
+  for (const node of ast.program.body) {
+    if (node.type !== "ImportDeclaration") continue;
+    const importPath = node.source.value;
+    const match = importPath.match(/^virtual:i18n\/(.+)$/);
+    if (match) result.push(match[1]);
+  }
+  return result;
+}
+
+// Phase 2: BFS resolve all transitive deps for each entry
+const allFiles = new Map<string, string>(); // relPath → source (for twoslasher extraFiles)
 for (const entry of entries) {
   const fullPath = join(completionsDir, entry.sourceUrl.replace("./completions/", ""));
-  const source = readFileSync(fullPath, "utf-8");
-  const scriptDir = dirname(fullPath);
-  entry.sharedModules = findSharedModules(source, scriptDir, entry.stem);
-  for (const sm of entry.sharedModules) {
-    if (!allSharedModules.has(sm.filename)) {
-      allSharedModules.set(sm.filename, readFileSync(sm.absPath, "utf-8"));
+  const seen = new Set<string>();
+  const queue: [string, string, string][] = [
+    [readFileSync(fullPath, "utf-8"), dirname(fullPath), basename(fullPath)],
+  ];
+
+  while (queue.length > 0) {
+    const [source, scriptDir, filename] = queue.shift()!;
+    for (const sm of findImports(source, scriptDir, filename)) {
+      if (seen.has(sm.absPath)) continue;
+      seen.add(sm.absPath);
+      entry.sharedModules.push(sm);
+      const relPath = relative(completionsDir, sm.absPath).replace(/\\/g, "/");
+      const content = readFileSync(sm.absPath, "utf-8");
+      if (!allFiles.has(relPath)) allFiles.set(relPath, content);
+      queue.push([content, dirname(sm.absPath), basename(sm.absPath)]);
     }
   }
 }
@@ -261,19 +320,18 @@ const i18nDts = readFileSync(join(completionsDir, ".sugg", "i18n.d.ts"), "utf-8"
 // Load WASM for build-time dynamic analysis
 console.log("[generate] Loading WASM for dynamic analysis...");
 const wasmModule = await WebAssembly.compile(readFileSync(wasmBgPath));
-const wasmExports = await import(wasmJsPath);
+const wasmExports = await import(pathToFileURL(wasmJsPath).href);
 await wasmExports.default({ module: wasmModule });
 const extract = wasmExports.extract;
 console.log("[generate] WASM loaded successfully");
 
-const highlighter = await createHighlighter({ langs: ["ts"], themes: [suggTheme] });
+const highlighter = await createHighlighter({ langs: ["ts", "js"], themes: [suggTheme] });
 const extraFiles: Record<string, string> = {
   "node_modules/@types/sugg/index.d.ts": suggDts,
   "node_modules/@types/sugg-i18n/index.d.ts": i18nDts,
 };
-// Add shared modules so twoslasher can resolve imports
-for (const [filename, content] of allSharedModules) {
-  extraFiles[`completions/${filename}`] = content;
+for (const [relPath, content] of allFiles) {
+  extraFiles[`completions/${relPath}`] = content;
 }
 const twoslasher = createTwoslasher({
   compilerOptions: {
@@ -324,6 +382,7 @@ interface SharedFile {
 function generateHighlighted(
   source: string,
   stem: string,
+  lang: "ts" | "js",
   mainVirtualPath?: string,
   sharedFiles?: SharedFile[],
 ): LineData[] {
@@ -343,13 +402,13 @@ function generateHighlighted(
   } else {
     codeForTwoslash = source;
   }
-  const twResult = twoslasher(codeForTwoslash, "ts");
+  const twResult = twoslasher(codeForTwoslash, lang);
   console.log(
     `[generate] ${stem}: ${twResult.hovers.length} hovers, ${twResult.errors.length} errors`,
   );
 
   // Token generation uses original source (no @filename comment)
-  const tokenLines = highlighter.codeToTokensBase(source, { lang: "ts", theme: suggTheme });
+  const tokenLines = highlighter.codeToTokensBase(source, { lang, theme: suggTheme });
 
   // Filter hovers to only those belonging to the main file (by line range)
   const hovers: Map<
@@ -441,17 +500,14 @@ function generateHighlighted(
 for (const entry of entries) {
   const fullPath = join(completionsDir, entry.sourceUrl.replace("./completions/", ""));
   const source = readFileSync(fullPath, "utf-8");
-  const scriptDir = dirname(fullPath);
 
   entry.analysis = scanSource(source);
   entry.desc = getDescription(entry.stem, suggCacheDir);
 
-  // Find shared modules
-  entry.sharedModules = findSharedModules(source, scriptDir, entry.stem);
-
   // Run dynamic analysis at build time
+  const extractFilename = entry.sourceUrl.replace("./completions/", "");
   try {
-    const extractResult = extract(source, `${entry.stem}.ts`);
+    const extractResult = extract(source, extractFilename);
     entry.dynamicAnalysis = { extractResult };
     console.log(`[generate] ${entry.stem}: ${extractResult.func_ids.length} dynamic funcs`);
   } catch (e) {
@@ -462,15 +518,16 @@ for (const entry of entries) {
   }
 
   // Pre-generate HTML for static and dynamic panels
+  const fileLang = langFromFile(entry.sourceUrl.split("/").pop()!);
   const staticHtml = entry.dynamicAnalysis.extractResult.modified
     ? highlighter.codeToHtml(entry.dynamicAnalysis.extractResult.modified, {
-        lang: "ts",
+        lang: fileLang,
         theme: suggTheme,
       })
     : "";
   const dynamicHtml = entry.dynamicAnalysis.extractResult.dynamic
     ? highlighter.codeToHtml(entry.dynamicAnalysis.extractResult.dynamic, {
-        lang: "ts",
+        lang: fileLang,
         theme: suggTheme,
       })
     : "";
@@ -488,15 +545,15 @@ for (const entry of entries) {
   );
 
   // Generate highlighted data for main file
-  const mainVirtualPath = entry.sourceUrl.replace("./", "");
   const sharedFiles: SharedFile[] = entry.sharedModules.map((sm) => {
-    const resolved = join(dirname(mainVirtualPath), sm.importPath).replace(/\\/g, "/");
-    const withExt = resolved.endsWith(".ts") ? resolved : resolved + ".ts";
-    return { virtualPath: withExt, source: readFileSync(sm.absPath, "utf-8") };
+    const relPath = relative(completionsDir, sm.absPath).replace(/\\/g, "/");
+    return { virtualPath: `completions/${relPath}`, source: allFiles.get(relPath) ?? "" };
   });
+  const mainLang = langFromFile(entry.sourceUrl.split("/").pop()!);
   const mainLines = generateHighlighted(
     source,
     entry.stem,
+    mainLang,
     sharedFiles.length ? entry.sourceUrl.replace("./", "") : undefined,
     sharedFiles.length ? sharedFiles : undefined,
   );
@@ -505,12 +562,26 @@ for (const entry of entries) {
   // Generate highlighted data for shared modules
   for (const sm of entry.sharedModules) {
     const sharedSource = readFileSync(sm.absPath, "utf-8");
-    const sharedLines = generateHighlighted(sharedSource, `${entry.stem}-${sm.id}`);
-    writeFileSync(
-      join(highlightedDir, `${entry.stem}-${sm.id}.json`),
-      JSON.stringify(sharedLines),
-      "utf-8",
+    const smDir = dirname(sm.absPath);
+    const smImports = findImports(sharedSource, smDir, sm.id);
+    const smSharedFiles: SharedFile[] = smImports.map((td) => {
+      const relPath = relative(completionsDir, td.absPath).replace(/\\/g, "/");
+      return { virtualPath: `completions/${relPath}`, source: allFiles.get(relPath) ?? "" };
+    });
+    const smRelPath = relative(completionsDir, sm.absPath).replace(/\\/g, "/");
+    const smVirtualPath = `completions/${smRelPath}`;
+    const highlightId = smHighlightId(sm);
+    const smLang = langFromFile(sm.filename);
+    const sharedLines = generateHighlighted(
+      sharedSource,
+      highlightId,
+      smLang,
+      smSharedFiles.length ? smVirtualPath : undefined,
+      smSharedFiles.length ? smSharedFiles : undefined,
     );
+    const smJsonPath = join(highlightedDir, `${highlightId}.json`);
+    mkdirSync(dirname(smJsonPath), { recursive: true });
+    writeFileSync(smJsonPath, JSON.stringify(sharedLines), "utf-8");
   }
 }
 
@@ -523,12 +594,22 @@ const scriptsList = entries.map((e) => {
       linesUrl: e.linesUrl,
       anns: e.analysis ?? [],
     },
-    ...e.sharedModules.map((sm) => ({
-      id: sm.id,
-      filename: sm.filename,
-      linesUrl: `./highlighted/${e.stem}-${sm.id}.json`,
-      anns: scanSource(readFileSync(sm.absPath, "utf-8")),
-    })),
+    ...e.sharedModules.map((sm) => {
+      const highlightId = smHighlightId(sm);
+      const smDir = relative(completionsDir, dirname(sm.absPath)).replace(/\\/g, "/");
+      const entryRelDir = relative(
+        completionsDir,
+        dirname(join(completionsDir, e.sourceUrl.replace("./completions/", ""))),
+      ).replace(/\\/g, "/");
+      const relPath = relative(completionsDir, sm.absPath).replace(/\\/g, "/");
+      const displayName = smDir === entryRelDir ? sm.filename : relPath;
+      return {
+        id: highlightId,
+        filename: displayName,
+        linesUrl: `./generated/highlighted/${highlightId}.json`,
+        anns: scanSource(readFileSync(sm.absPath, "utf-8")),
+      };
+    }),
   ];
 
   return {
@@ -547,13 +628,27 @@ writeFileSync(scriptsJsonFile, JSON.stringify(scriptsList, null, 2), "utf-8");
 // Write registry.json for `sugg install` command
 const registry = {
   scripts: entries.map((e) => {
-    // Detect i18n languages available
-    const i18nDir = join(completionsDir, e.stem, "i18n");
-    let i18nLangs: string[] = [];
-    if (existsSync(i18nDir)) {
-      i18nLangs = readdirSync(i18nDir)
-        .filter((f) => f.endsWith(".json"))
-        .map((f) => f.replace(/\.json$/, ""));
+    // Detect i18n modules by scanning imports in all source files
+    const i18nModuleSet = new Set<string>();
+    const mainPath = join(completionsDir, e.sourceUrl.replace("./completions/", ""));
+    const mainFilename = basename(mainPath);
+    for (const name of findI18nImports(readFileSync(mainPath, "utf-8"), mainFilename)) {
+      i18nModuleSet.add(name);
+    }
+    for (const sm of e.sharedModules) {
+      for (const name of findI18nImports(readFileSync(sm.absPath, "utf-8"), basename(sm.absPath))) {
+        i18nModuleSet.add(name);
+      }
+    }
+    const i18nObj: Record<string, string[]> = {};
+    for (const mod of i18nModuleSet) {
+      const i18nDir = join(completionsDir, mod, "i18n");
+      if (existsSync(i18nDir)) {
+        const langs = readdirSync(i18nDir)
+          .filter((f) => f.endsWith(".json"))
+          .map((f) => f.replace(/\.json$/, ""));
+        if (langs.length > 0) i18nObj[mod] = langs;
+      }
     }
     // Detect shared module dependencies (relative to completions/)
     const deps = e.sharedModules.map((sm) => {
@@ -565,11 +660,11 @@ const registry = {
       description: e.desc ?? e.stem,
       source: e.sourceUrl.replace("./completions/", ""),
       deps,
-      i18n: i18nLangs,
+      i18n: i18nObj,
     };
   }),
 };
-const registryFile = join(__dirname, "..", "public", "registry.json");
+const registryFile = join(publicGeneratedDir, "registry.json");
 writeFileSync(registryFile, JSON.stringify(registry, null, 2), "utf-8");
 console.log(`Generated registry.json with ${registry.scripts.length} scripts`);
 

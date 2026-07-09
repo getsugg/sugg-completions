@@ -29,7 +29,7 @@ export async function fetchFileLines(file: FileState): Promise<LineData[]> {
 }
 
 export async function fetchAnalysis(stem: string): Promise<AnalysisData> {
-  const res = await fetch(`./analysis/${stem}.json`);
+  const res = await fetch(`./generated/analysis/${stem}.json`);
   if (!res.ok) throw new Error(`Failed to load analysis for ${stem}`);
   const raw: ScriptAnalysis = await res.json();
   return {
