@@ -17,6 +17,7 @@
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "cmdk-solid": "^1.1.2",
+        "lucide-solid": "^1.24.0",
         "shiki": "^4.2.0",
         "solid-js": "^1.9.13",
         "tailwind-merge": "^3.6.0",
@@ -797,6 +798,8 @@
     "lodash.merge": ["lodash.merge@4.6.2", "https://registry.npmmirror.com/lodash.merge/-/lodash.merge-4.6.2.tgz", {}, "sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ=="],
 
     "lru-cache": ["lru-cache@11.5.1", "https://registry.npmmirror.com/lru-cache/-/lru-cache-11.5.1.tgz", {}, "sha512-RPimw/7aMdv2oqRrxKwvZXcPfwBrn/JZ2xYcY9Hus/6LaS3VOAKVWKWgNLCFSiOm1ESXinjsDlidVU7JlnCN2A=="],
+
+    "lucide-solid": ["lucide-solid@1.24.0", "https://registry.npmmirror.com/lucide-solid/-/lucide-solid-1.24.0.tgz", { "peerDependencies": { "solid-js": "^1.4.7" } }, "sha512-0mgYCmcW2TogIgDI15C+HYNdQhjHeHViYW4laUnRKrzFPG3DThb3MOlqRPa/7WZv1Uzh5nZJ9sgvi/MYQ4WKQA=="],
 
     "lz-string": ["lz-string@1.5.0", "https://registry.npmmirror.com/lz-string/-/lz-string-1.5.0.tgz", { "bin": { "lz-string": "bin/bin.js" } }, "sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ=="],
 

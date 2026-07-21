@@ -14,7 +14,27 @@ export default defineConfig({
   },
   rules: {
     "tailwindcss/enforce-canonical": "warn",
-    "tailwindcss/no-unknown-classes": "error",
+    "tailwindcss/no-unknown-classes": [
+      "error",
+      {
+        allowlist: [
+          "line",
+          "output",
+          "prompt",
+          "highlight",
+          "term-window",
+          "term-bar",
+          "term-dot",
+          "term-title",
+          "term-body",
+          "heroglow",
+          "ai-section",
+          "shimmer-btn",
+          "mask-intersect",
+          "border-(length:--border-beam-width)",
+        ],
+      },
+    ],
     "tailwindcss/no-deprecated-classes": "error",
     "tailwindcss/no-conflicting-classes": "error",
 

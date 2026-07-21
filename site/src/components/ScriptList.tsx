@@ -52,7 +52,7 @@ export function ScriptList() {
                     ? "!bg-amber-700 !text-white font-semibold"
                     : "!text-[#8b7d9a] hover:!bg-[#ffffff08] hover:!text-[#c8bdd4]",
                 )}
-                onClick={() => navigate(`/${s.stem}`)}
+                onClick={() => navigate(`/scripts/${s.stem}`)}
               >
                 <span class="flex-1 truncate">{s.title}</span>
                 {s.unsafeCount > 0 && (

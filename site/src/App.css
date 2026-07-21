@@ -3,7 +3,7 @@
 @custom-variant dark (&:where(.dark, [data-kb-theme="dark"]) &);
 
 @theme {
-  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
@@ -89,6 +89,90 @@
   50% {
     opacity: 0;
   }
+}
+
+/* ───────── magic-ui animation theme ───────── */
+@keyframes magic-shimmer-slide {
+  to {
+    transform: translate(calc(100cqw - 100%), 0);
+  }
+}
+@keyframes magic-spin-around {
+  0% {
+    transform: translateZ(0) rotate(0);
+  }
+  15%,
+  35% {
+    transform: translateZ(0) rotate(90deg);
+  }
+  65%,
+  85% {
+    transform: translateZ(0) rotate(270deg);
+  }
+  100% {
+    transform: translateZ(0) rotate(360deg);
+  }
+}
+@keyframes magic-shiny-text {
+  0%,
+  90%,
+  100% {
+    background-position: calc(-100% - var(--shiny-width)) 0;
+  }
+  30%,
+  60% {
+    background-position: calc(100% + var(--shiny-width)) 0;
+  }
+}
+@keyframes magic-meteor {
+  0% {
+    transform: rotate(var(--angle)) translateX(0);
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(var(--angle)) translateX(-500px);
+    opacity: 0;
+  }
+}
+@keyframes magic-border-beam {
+  0% {
+    offset-distance: 0%;
+  }
+  100% {
+    offset-distance: 100%;
+  }
+}
+@keyframes magic-border-beam-reverse {
+  0% {
+    offset-distance: 100%;
+  }
+  100% {
+    offset-distance: 0%;
+  }
+}
+
+.mask-intersect {
+  border-color: transparent !important;
+}
+@keyframes magic-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@theme {
+  --animate-magic-shimmer-slide: magic-shimmer-slide var(--speed, 3s) ease-in-out infinite alternate;
+  --animate-magic-spin-around: magic-spin-around calc(var(--speed, 3s) * 2) infinite linear;
+  --animate-magic-shiny-text: magic-shiny-text 8s infinite;
+  --animate-magic-meteor: magic-meteor 5s linear infinite;
 }
 
 /* ───────── Terminal dark theme ───────── */
@@ -221,7 +305,7 @@ body {
   flex-shrink: 0;
   padding: 0 8px 0 0;
   margin-right: 19px;
-  color: #484f58;
+  color: hsl(var(--muted-foreground) / 0.6);
   font-size: 11px;
   font-family: "JetBrains Mono", "Fira Code", monospace;
   user-select: none;

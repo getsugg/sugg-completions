@@ -1,12 +1,6 @@
 import { render } from "solid-js/web";
-import { HashRouter, Route } from "@solidjs/router";
 import App from "./App";
 
-render(
-  () => (
-    <HashRouter>
-      <Route path={["/", "/:script"]} component={App} />
-    </HashRouter>
-  ),
-  document.getElementById("root")!,
-);
+const root = document.getElementById("root")!;
+if (import.meta.env.PROD) root.innerHTML = "";
+render(() => <App />, root);

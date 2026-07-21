@@ -1,0 +1,64 @@
+.shimmer-btn {
+  position: relative;
+  overflow: hidden;
+  z-index: 0;
+  transform: translateZ(0);
+  transition: transform 0.3s;
+}
+.shimmer-btn::before {
+  content: "";
+  position: absolute;
+  inset: -200%;
+  width: auto;
+  aspect-ratio: 1;
+  background: conic-gradient(
+    from calc(270deg - 45deg),
+    transparent 0,
+    rgba(255, 255, 255, 0.25) 90deg,
+    transparent 180deg
+  );
+  animation: shimmer-spin 3s linear infinite;
+  z-index: -2;
+}
+.shimmer-btn::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: inherit;
+  background: inherit;
+  z-index: -1;
+}
+@keyframes shimmer-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.heroglow {
+  position: relative;
+}
+.heroglow::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: 50%;
+  translate: -50% 0;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.ai-section {
+  background: linear-gradient(
+    180deg,
+    hsl(var(--background)) 0%,
+    hsl(var(--card)) 50%,
+    hsl(var(--background)) 100%
+  );
+  border-top: 1px solid hsl(var(--border));
+  border-bottom: 1px solid hsl(var(--border));
+}

@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "generate": "bun scripts/generate.ts",
     "generate-scripts": "bun scripts/generate-scripts.ts",
+    "generate-landing-code": "bun scripts/generate-landing-code.ts",
     "dev": "vp dev",
     "build": "vp build",
     "preview": "vp preview",
@@ -27,6 +29,8 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk-solid": "^1.1.2",
+    "lucide-solid": "^1.24.0",
+    "motion": "^12.42.2",
     "shiki": "^4.2.0",
     "solid-js": "^1.9.13",
     "tailwind-merge": "^3.6.0",
