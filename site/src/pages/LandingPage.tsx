@@ -917,7 +917,7 @@ export default function LandingPage() {
             <thead>
               <tr class="text-muted-foreground uppercase tracking-wider text-[11px]">
                 <th class="text-left p-3 border-b border-border font-semibold text-foreground" />
-                <th class="text-left p-3 border-b border-border font-semibold bg-amber-500/5 border-l border-r border-amber-500/20">
+                <th class="text-left p-3 border-b font-semibold bg-amber-500/5 border-l border-r border-amber-500/20">
                   Sugg
                 </th>
                 <th class="text-left p-3 border-b border-border font-semibold">Carapace</th>
