@@ -1,4 +1,4 @@
-import { For, createSignal } from "solid-js";
+import { For, Show, createSignal } from "solid-js";
 import { cn } from "~/lib/utils";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
@@ -28,8 +28,9 @@ import {
   Server,
   Boxes,
   Cloud,
-  TerminalSquare,
+  SquareTerminal,
 } from "lucide-solid";
+import { siGithub } from "simple-icons";
 import scripts from "~/generated/scripts.json";
 import { ShimmerButton } from "~/components/magic-ui/shimmer-button";
 import { BorderBeam } from "~/components/magic-ui/border-beam";
@@ -39,19 +40,25 @@ import { AnimatedShinyText } from "~/components/magic-ui/animated-shiny-text";
 import { aiDemoHtml, bunCodeHtml, gitCodeHtml, npmCodeHtml } from "~/generated/landing-code-html";
 import "./LandingPage.css";
 
+const INSTALL_SH_URL = "https://getsugg.github.io/install.sh";
+const INSTALL_PS1_URL = "https://getsugg.github.io/install.ps1";
 const shells = ["zsh", "fish", "bash", "nushell", "powershell"] as const;
 
 export default function LandingPage() {
   const [codeTab, setCodeTab] = createSignal("bun");
   const [copiedIdx, setCopiedIdx] = createSignal(-1);
+  const getDefaultPlatform = () => {
+    try {
+      return navigator.platform?.toLowerCase().includes("win") ? "win" : "unix";
+    } catch {
+      return "unix";
+    }
+  };
+  const [heroTab, setHeroTab] = createSignal<"unix" | "win">(getDefaultPlatform());
   function copyWithFeedback(text: string, idx: number) {
     void navigator.clipboard.writeText(text);
     setCopiedIdx(idx);
     setTimeout(() => setCopiedIdx(-1), 1500);
-  }
-  function scrollTo(e: MouseEvent, id: string) {
-    e.preventDefault();
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   }
   return (
     <div class="min-h-screen bg-background text-foreground">
@@ -59,57 +66,76 @@ export default function LandingPage() {
       <nav class="sticky top-0 z-50 flex h-13 items-center gap-6 px-6 border-b border-border bg-background/85 backdrop-blur-sm">
         <img src="/logo-horizontal.svg" alt="sugg" class="h-8 shrink-0" />
         <div class="flex items-center gap-5 ml-auto">
-          <a
-            href="#problem"
-            onClick={(e) => scrollTo(e, "problem")}
-            class="text-sm text-muted-foreground hover:text-amber-500 transition-colors no-underline"
+          <button
+            type="button"
+            onClick={() =>
+              document.getElementById("problem")?.scrollIntoView({ behavior: "smooth" })
+            }
+            class="text-sm text-muted-foreground hover:text-amber-500 transition-colors cursor-pointer bg-transparent border-none"
           >
             Problem
-          </a>
-          <a
-            href="#how-it-works"
-            onClick={(e) => scrollTo(e, "how-it-works")}
-            class="text-sm text-muted-foreground hover:text-amber-500 transition-colors no-underline"
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })
+            }
+            class="text-sm text-muted-foreground hover:text-amber-500 transition-colors cursor-pointer bg-transparent border-none"
           >
             How
-          </a>
-          <a
-            href="#features"
-            onClick={(e) => scrollTo(e, "features")}
-            class="text-sm text-muted-foreground hover:text-amber-500 transition-colors no-underline"
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              document.getElementById("features")?.scrollIntoView({ behavior: "smooth" })
+            }
+            class="text-sm text-muted-foreground hover:text-amber-500 transition-colors cursor-pointer bg-transparent border-none"
           >
             Features
-          </a>
-          <a
-            href="#ai-workflow"
-            onClick={(e) => scrollTo(e, "ai-workflow")}
-            class="text-sm text-muted-foreground hover:text-amber-500 transition-colors no-underline"
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              document.getElementById("ai-workflow")?.scrollIntoView({ behavior: "smooth" })
+            }
+            class="text-sm text-muted-foreground hover:text-amber-500 transition-colors cursor-pointer bg-transparent border-none"
           >
             AI
-          </a>
-          <a
-            href="#comparison"
-            onClick={(e) => scrollTo(e, "comparison")}
-            class="text-sm text-muted-foreground hover:text-amber-500 transition-colors no-underline"
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              document.getElementById("comparison")?.scrollIntoView({ behavior: "smooth" })
+            }
+            class="text-sm text-muted-foreground hover:text-amber-500 transition-colors cursor-pointer bg-transparent border-none"
           >
             Compare
-          </a>
-          <a
-            href="#install"
-            onClick={(e) => scrollTo(e, "install")}
-            class="text-sm text-muted-foreground hover:text-amber-500 transition-colors no-underline"
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              document.getElementById("install")?.scrollIntoView({ behavior: "smooth" })
+            }
+            class="text-sm text-muted-foreground hover:text-amber-500 transition-colors cursor-pointer bg-transparent border-none"
           >
             Install
-          </a>
+          </button>
+          <Button variant="outline" size="sm" class="text-xs" as="a" href="#/scripts">
+            Browse Scripts
+          </Button>
           <Button
             variant="ghost"
-            size="sm"
-            class="text-xs"
+            size="icon"
             as="a"
             href="https://github.com/getsugg/sugg"
             target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub"
           >
-            GitHub
+            <svg class="size-4" viewBox="0 0 24 24" fill="currentColor">
+              <title>GitHub</title>
+              <path d={siGithub.path} />
+            </svg>
           </Button>
         </div>
       </nav>
@@ -131,16 +157,52 @@ export default function LandingPage() {
         </AnimatedShinyText>
 
         <div class="flex flex-col items-center gap-3 mt-8">
-          <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-card border border-border font-mono text-xs text-muted-foreground">
-            <span class="text-foreground">
-              curl -fsSL https://raw.githubusercontent.com/getsugg/sugg/main/scripts/install.sh |
-              bash
-            </span>
+          <div
+            class="inline-flex items-center p-0.5 rounded-full bg-muted/40 border border-border"
+            role="tablist"
+          >
             <button
+              type="button"
+              class={`text-xs px-3 py-1.5 rounded-full font-medium transition-all ${
+                heroTab() === "unix"
+                  ? "bg-amber-500 text-white shadow-xs"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+              role="tab"
+              aria-selected={heroTab() === "unix"}
+              onClick={() => setHeroTab("unix")}
+            >
+              macOS / Linux
+            </button>
+            <button
+              type="button"
+              class={`text-xs px-3 py-1.5 rounded-full font-medium transition-all ${
+                heroTab() === "win"
+                  ? "bg-amber-500 text-white shadow-xs"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+              role="tab"
+              aria-selected={heroTab() === "win"}
+              onClick={() => setHeroTab("win")}
+            >
+              Windows
+            </button>
+          </div>
+          <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-card border border-border font-mono text-xs text-muted-foreground">
+            <Show
+              when={heroTab() === "unix"}
+              fallback={<span class="text-foreground">irm {INSTALL_PS1_URL} | iex</span>}
+            >
+              <span class="text-foreground">curl -fsSL {INSTALL_SH_URL} | bash</span>
+            </Show>
+            <button
+              type="button"
               class="text-muted-foreground hover:text-amber-500 bg-transparent border-none cursor-pointer p-1 text-sm"
               onClick={() =>
                 copyWithFeedback(
-                  "curl -fsSL https://raw.githubusercontent.com/getsugg/sugg/main/scripts/install.sh | bash",
+                  heroTab() === "unix"
+                    ? `curl -fsSL ${INSTALL_SH_URL} | bash`
+                    : `irm ${INSTALL_PS1_URL} | iex`,
                   0,
                 )
               }
@@ -153,7 +215,13 @@ export default function LandingPage() {
             </button>
           </div>
           <div class="flex flex-wrap items-center justify-center gap-3">
-            <a href="#install" onClick={(e) => scrollTo(e, "install")}>
+            <button
+              type="button"
+              onClick={() =>
+                document.getElementById("install")?.scrollIntoView({ behavior: "smooth" })
+              }
+              class="bg-transparent border-none cursor-pointer p-0"
+            >
               <ShimmerButton
                 shimmerColor="#f59e0b"
                 background="rgba(245, 158, 11, 1)"
@@ -163,13 +231,13 @@ export default function LandingPage() {
               >
                 Install
               </ShimmerButton>
-            </a>
+            </button>
             <Button
               variant="ghost"
-              class="text-muted-foreground border-border border"
-              as="a"
-              href="#features"
-              onClick={(e) => scrollTo(e, "features")}
+              class="text-muted-foreground border-border border cursor-pointer"
+              onClick={() =>
+                document.getElementById("features")?.scrollIntoView({ behavior: "smooth" })
+              }
             >
               Learn More ↓
             </Button>
@@ -602,6 +670,7 @@ export default function LandingPage() {
 
         <div class="flex gap-1 p-1 bg-muted/40 border border-border rounded-lg w-max mb-4">
           <button
+            type="button"
             onClick={() => setCodeTab("bun")}
             class={cn(
               "px-4 py-1.5 text-xs font-medium rounded-md transition-all cursor-pointer",
@@ -613,6 +682,7 @@ export default function LandingPage() {
             bun
           </button>
           <button
+            type="button"
             onClick={() => setCodeTab("git")}
             class={cn(
               "px-4 py-1.5 text-xs font-medium rounded-md transition-all cursor-pointer",
@@ -624,6 +694,7 @@ export default function LandingPage() {
             git
           </button>
           <button
+            type="button"
             onClick={() => setCodeTab("npm")}
             class={cn(
               "px-4 py-1.5 text-xs font-medium rounded-md transition-all cursor-pointer",
@@ -801,7 +872,7 @@ export default function LandingPage() {
           <Card class="group relative overflow-hidden bg-linear-to-b from-card to-black/20 hover:border-amber-500 hover:shadow-[0_0_32px_rgba(245,158,11,0.12)] transition-all flex flex-col">
             <CardContent class="p-6 flex flex-col h-full">
               <div class="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-4 group-hover:bg-amber-500/10 group-hover:border-amber-500/20 transition-colors">
-                <TerminalSquare class="w-5 h-5 text-muted-foreground group-hover:text-amber-500 transition-colors" />
+                <SquareTerminal class="w-5 h-5 text-muted-foreground group-hover:text-amber-500 transition-colors" />
               </div>
               <h4 class="text-sm font-semibold mb-2">CLI Tool Authors</h4>
               <p class="text-sm text-muted-foreground leading-relaxed mb-6">
@@ -1073,6 +1144,7 @@ export default function LandingPage() {
           <a
             href="https://github.com/getsugg/sugg#quick-start"
             target="_blank"
+            rel="noopener noreferrer"
             class="hover:border-amber-500 hover:shadow-[0_0_32px_rgba(245,158,11,0.12)] transition-all no-underline"
           >
             <Card class="relative overflow-hidden hover:border-amber-500 hover:shadow-[0_0_32px_rgba(245,158,11,0.12)] transition-all h-full">
@@ -1088,6 +1160,7 @@ export default function LandingPage() {
           <a
             href="https://github.com/getsugg/sugg-completions"
             target="_blank"
+            rel="noopener noreferrer"
             class="hover:border-amber-500 hover:shadow-[0_0_32px_rgba(245,158,11,0.12)] transition-all no-underline"
           >
             <Card class="relative overflow-hidden hover:border-amber-500 hover:shadow-[0_0_32px_rgba(245,158,11,0.12)] transition-all h-full">
@@ -1105,6 +1178,7 @@ export default function LandingPage() {
           <a
             href="https://github.com/getsugg/sugg/blob/main/CONTRIBUTING.md"
             target="_blank"
+            rel="noopener noreferrer"
             class="hover:border-amber-500 hover:shadow-[0_0_32px_rgba(245,158,11,0.12)] transition-all no-underline"
           >
             <Card class="relative overflow-hidden hover:border-amber-500 hover:shadow-[0_0_32px_rgba(245,158,11,0.12)] transition-all h-full">
@@ -1141,20 +1215,14 @@ export default function LandingPage() {
                 <span class="min-w-0">
                   <span class="text-emerald-400">curl</span>{" "}
                   <span class="text-amber-400">-fsSL</span>{" "}
-                  <span class="text-sky-400 break-all">
-                    https://raw.githubusercontent.com/getsugg/sugg/main/scripts/install.sh
-                  </span>{" "}
+                  <span class="text-sky-400 break-all">{INSTALL_SH_URL}</span>{" "}
                   <span class="text-muted-foreground">|</span>{" "}
                   <span class="text-emerald-400">bash</span>
                 </span>
                 <button
+                  type="button"
                   class="bg-transparent border-none text-muted-foreground/50 hover:text-amber-500 cursor-pointer text-xs transition-colors ml-2 shrink-0"
-                  onClick={() =>
-                    copyWithFeedback(
-                      "curl -fsSL https://raw.githubusercontent.com/getsugg/sugg/main/scripts/install.sh | bash",
-                      1,
-                    )
-                  }
+                  onClick={() => copyWithFeedback(`curl -fsSL ${INSTALL_SH_URL} | bash`, 1)}
                 >
                   {copiedIdx() === 1 ? (
                     <Check class="w-3.5 h-3.5 text-success-foreground" />
@@ -1173,20 +1241,14 @@ export default function LandingPage() {
               <div class="font-mono text-xs p-2.5 flex items-center justify-between overflow-hidden">
                 <span class="min-w-0">
                   <span class="text-emerald-400">irm</span>{" "}
-                  <span class="text-sky-400 break-all">
-                    https://raw.githubusercontent.com/getsugg/sugg/main/scripts/install.sh
-                  </span>{" "}
+                  <span class="text-sky-400 break-all">{INSTALL_SH_URL}</span>{" "}
                   <span class="text-muted-foreground">|</span>{" "}
                   <span class="text-emerald-400">iex</span>
                 </span>
                 <button
+                  type="button"
                   class="bg-transparent border-none text-muted-foreground/50 hover:text-amber-500 cursor-pointer text-xs transition-colors ml-2 shrink-0"
-                  onClick={() =>
-                    copyWithFeedback(
-                      "irm https://raw.githubusercontent.com/getsugg/sugg/main/scripts/install.ps1 | iex",
-                      2,
-                    )
-                  }
+                  onClick={() => copyWithFeedback(`irm ${INSTALL_PS1_URL} | iex`, 2)}
                 >
                   {copiedIdx() === 2 ? (
                     <Check class="w-3.5 h-3.5 text-success-foreground" />
@@ -1210,6 +1272,7 @@ export default function LandingPage() {
                   <span class="text-amber-400">--release</span>
                 </span>
                 <button
+                  type="button"
                   class="bg-transparent border-none text-muted-foreground/50 hover:text-amber-500 cursor-pointer text-xs transition-colors ml-2 shrink-0"
                   onClick={() =>
                     copyWithFeedback("cargo run -p sugg-deploy --release -- --add-path", 3)
@@ -1238,6 +1301,7 @@ export default function LandingPage() {
                   <span class="text-foreground">reload</span>
                 </span>
                 <button
+                  type="button"
                   class="bg-transparent border-none text-muted-foreground/50 hover:text-amber-500 cursor-pointer text-xs transition-colors ml-2 shrink-0"
                   onClick={() => copyWithFeedback("sugg init zsh && sugg reload", 4)}
                 >

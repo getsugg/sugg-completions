@@ -29,6 +29,11 @@ jobs:
           curl -fsSL "https://raw.githubusercontent.com/getsugg/sugg/main/scripts/install.sh" | bash
           echo "$HOME/.sugg/bin" >> $GITHUB_PATH
 
+      - name: Download install scripts for hosting
+        run: |
+          curl -fsSL "https://raw.githubusercontent.com/getsugg/sugg/main/scripts/install.sh" -o public/install.sh
+          curl -fsSL "https://raw.githubusercontent.com/getsugg/sugg/main/scripts/install.ps1" -o public/install.ps1
+
       - name: Build
         run: vp build
 
