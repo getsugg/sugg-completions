@@ -1391,6 +1391,3134 @@ declare module "virtual:i18n/bun" {
   export const x_option_verbose: string;
 }
 
+declare module "virtual:i18n/docker" {
+  /**
+   * - 🚩 **en**: Attach local standard input, output, and error streams to a running container
+   * - **zh-CN**: 将本地标准输入输出错误流附加到运行中的容器
+   */
+  export const cmd_attach: string;
+  /**
+   * - 🚩 **en**: Build from a file
+   * - **zh-CN**: 从文件构建
+   */
+  export const cmd_bake: string;
+  /**
+   * - 🚩 **en**: Build an image from a Dockerfile
+   * - **zh-CN**: 从 Dockerfile 构建镜像
+   */
+  export const cmd_build: string;
+  /**
+   * - 🚩 **en**: Manage builds
+   * - **zh-CN**: 管理构建
+   */
+  export const cmd_builder: string;
+  /**
+   * - 🚩 **en**: Build from a file
+   * - **zh-CN**: 从文件构建
+   */
+  export const cmd_builder_bake: string;
+  /**
+   * - 🚩 **en**: Start a build
+   * - **zh-CN**: 开始构建
+   */
+  export const cmd_builder_build: string;
+  /**
+   * - 🚩 **en**: Create a new builder instance
+   * - **zh-CN**: 创建新的构建器实例
+   */
+  export const cmd_builder_create: string;
+  /**
+   * - 🚩 **en**: Start debug adapter protocol compatible debugger
+   * - **zh-CN**: 启动调试适配器协议兼容调试器
+   */
+  export const cmd_builder_dap: string;
+  /**
+   * - 🚩 **en**: Proxy current stdio streams to builder instance
+   * - **zh-CN**: 将当前 stdio 流代理到构建器实例
+   */
+  export const cmd_builder_dial_stdio: string;
+  /**
+   * - 🚩 **en**: Disk usage
+   * - **zh-CN**: 磁盘使用情况
+   */
+  export const cmd_builder_du: string;
+  /**
+   * - 🚩 **en**: Commands to work on build records
+   * - **zh-CN**: 构建记录相关命令
+   */
+  export const cmd_builder_history: string;
+  /**
+   * - 🚩 **en**: Commands to work on images in registry
+   * - **zh-CN**: 注册表中镜像相关命令
+   */
+  export const cmd_builder_imagetools: string;
+  /**
+   * - 🚩 **en**: Inspect current builder instance
+   * - **zh-CN**: 检查当前构建器实例
+   */
+  export const cmd_builder_inspect: string;
+  /**
+   * - 🚩 **en**: List builder instances
+   * - **zh-CN**: 列出构建器实例
+   */
+  export const cmd_builder_ls: string;
+  /**
+   * - 🚩 **en**: Commands for working with build policies
+   * - **zh-CN**: 构建策略相关命令
+   */
+  export const cmd_builder_policy: string;
+  /**
+   * - 🚩 **en**: Remove build cache
+   * - **zh-CN**: 删除构建缓存
+   */
+  export const cmd_builder_prune: string;
+  /**
+   * - 🚩 **en**: Remove one or more builder instances
+   * - **zh-CN**: 删除一个或多个构建器实例
+   */
+  export const cmd_builder_rm: string;
+  /**
+   * - 🚩 **en**: Stop builder instance
+   * - **zh-CN**: 停止构建器实例
+   */
+  export const cmd_builder_stop: string;
+  /**
+   * - 🚩 **en**: Set the current builder instance
+   * - **zh-CN**: 设置当前构建器实例
+   */
+  export const cmd_builder_use: string;
+  /**
+   * - 🚩 **en**: Show buildx version information
+   * - **zh-CN**: 显示构建版本信息
+   */
+  export const cmd_builder_version: string;
+  /**
+   * - 🚩 **en**: Manage checkpoints
+   * - **zh-CN**: 管理检查点
+   */
+  export const cmd_checkpoint: string;
+  /**
+   * - 🚩 **en**: Create a checkpoint from a running container
+   * - **zh-CN**: 从运行中的容器创建检查点
+   */
+  export const cmd_checkpoint_create: string;
+  /**
+   * - 🚩 **en**: List checkpoints for a container
+   * - **zh-CN**: 列出容器的检查点
+   */
+  export const cmd_checkpoint_ls: string;
+  /**
+   * - 🚩 **en**: Remove a checkpoint
+   * - **zh-CN**: 删除检查点
+   */
+  export const cmd_checkpoint_rm: string;
+  /**
+   * - 🚩 **en**: Create a new image from a container's changes
+   * - **zh-CN**: 从容器的变更创建新镜像
+   */
+  export const cmd_commit: string;
+  /**
+   * - 🚩 **en**: Docker Compose
+   * - **zh-CN**: Docker Compose 多容器应用
+   */
+  export const cmd_compose: string;
+  /**
+   * - 🚩 **en**: Attach local standard input, output, and error streams to a service's running container
+   * - **zh-CN**: 将本地标准输入输出错误流附加到服务的运行中容器
+   */
+  export const cmd_compose_attach: string;
+  /**
+   * - 🚩 **en**: Convert compose files into another model
+   * - **zh-CN**: 将 Compose 文件转换为其他模型
+   */
+  export const cmd_compose_bridge: string;
+  /**
+   * - 🚩 **en**: Build or rebuild services
+   * - **zh-CN**: 构建或重建服务
+   */
+  export const cmd_compose_build: string;
+  /**
+   * - 🚩 **en**: Create a new image from a service container's changes
+   * - **zh-CN**: 从容器的变更创建新镜像
+   */
+  export const cmd_compose_commit: string;
+  /**
+   * - 🚩 **en**: Validate and view the Compose file
+   * - **zh-CN**: 验证并查看 Compose 文件
+   */
+  export const cmd_compose_config: string;
+  /**
+   * - 🚩 **en**: Copy files/folders between a service container and the local filesystem
+   * - **zh-CN**: 在服务容器和本地文件系统之间复制文件
+   */
+  export const cmd_compose_cp: string;
+  /**
+   * - 🚩 **en**: Create containers
+   * - **zh-CN**: 创建容器
+   */
+  export const cmd_compose_create: string;
+  /**
+   * - 🚩 **en**: Stop and remove containers, networks
+   * - **zh-CN**: 停止并删除容器、网络
+   */
+  export const cmd_compose_down: string;
+  /**
+   * - 🚩 **en**: Receive real time events from containers
+   * - **zh-CN**: 接收容器的实时事件
+   */
+  export const cmd_compose_events: string;
+  /**
+   * - 🚩 **en**: Execute a command in a running container
+   * - **zh-CN**: 在运行中的容器内执行命令
+   */
+  export const cmd_compose_exec: string;
+  /**
+   * - 🚩 **en**: Export a service container's filesystem as a tar archive
+   * - **zh-CN**: 将服务容器的文件系统导出为 tar 归档
+   */
+  export const cmd_compose_export: string;
+  /**
+   * - 🚩 **en**: List images used by the created containers
+   * - **zh-CN**: 列出已创建容器使用的镜像
+   */
+  export const cmd_compose_images: string;
+  /**
+   * - 🚩 **en**: Kill containers
+   * - **zh-CN**: 杀死容器
+   */
+  export const cmd_compose_kill: string;
+  /**
+   * - 🚩 **en**: View output from containers
+   * - **zh-CN**: 查看容器输出
+   */
+  export const cmd_compose_logs: string;
+  /**
+   * - 🚩 **en**: List running compose projects
+   * - **zh-CN**: 列出运行中的 compose 项目
+   */
+  export const cmd_compose_ls: string;
+  /**
+   * - 🚩 **en**: Pause services
+   * - **zh-CN**: 暂停服务
+   */
+  export const cmd_compose_pause: string;
+  /**
+   * - 🚩 **en**: Print the public port for a port binding
+   * - **zh-CN**: 打印端口绑定的公共端口
+   */
+  export const cmd_compose_port: string;
+  /**
+   * - 🚩 **en**: List containers
+   * - **zh-CN**: 列出容器
+   */
+  export const cmd_compose_ps: string;
+  /**
+   * - 🚩 **en**: Publish compose application
+   * - **zh-CN**: 发布 compose 应用
+   */
+  export const cmd_compose_publish: string;
+  /**
+   * - 🚩 **en**: Pull service images
+   * - **zh-CN**: 拉取服务镜像
+   */
+  export const cmd_compose_pull: string;
+  /**
+   * - 🚩 **en**: Push service images
+   * - **zh-CN**: 推送服务镜像
+   */
+  export const cmd_compose_push: string;
+  /**
+   * - 🚩 **en**: Restart services
+   * - **zh-CN**: 重启服务
+   */
+  export const cmd_compose_restart: string;
+  /**
+   * - 🚩 **en**: Remove stopped service containers
+   * - **zh-CN**: 删除已停止的服务容器
+   */
+  export const cmd_compose_rm: string;
+  /**
+   * - 🚩 **en**: Run a one-off command
+   * - **zh-CN**: 运行一次性命令
+   */
+  export const cmd_compose_run: string;
+  /**
+   * - 🚩 **en**: Set number of containers for a service
+   * - **zh-CN**: 设置服务的容器数量
+   */
+  export const cmd_compose_scale: string;
+  /**
+   * - 🚩 **en**: Start services
+   * - **zh-CN**: 启动服务
+   */
+  export const cmd_compose_start: string;
+  /**
+   * - 🚩 **en**: Display a live stream of container(s) resource usage statistics
+   * - **zh-CN**: 实时显示容器的资源使用统计
+   */
+  export const cmd_compose_stats: string;
+  /**
+   * - 🚩 **en**: Stop services
+   * - **zh-CN**: 停止服务
+   */
+  export const cmd_compose_stop: string;
+  /**
+   * - 🚩 **en**: Display the running processes
+   * - **zh-CN**: 显示运行中的进程
+   */
+  export const cmd_compose_top: string;
+  /**
+   * - 🚩 **en**: Unpause services
+   * - **zh-CN**: 恢复服务
+   */
+  export const cmd_compose_unpause: string;
+  /**
+   * - 🚩 **en**: Create and start containers
+   * - **zh-CN**: 创建并启动容器
+   */
+  export const cmd_compose_up: string;
+  /**
+   * - 🚩 **en**: Show version information
+   * - **zh-CN**: 显示版本信息
+   */
+  export const cmd_compose_version: string;
+  /**
+   * - 🚩 **en**: List volumes
+   * - **zh-CN**: 列出卷
+   */
+  export const cmd_compose_volumes: string;
+  /**
+   * - 🚩 **en**: Block until containers of all (or specified) services stop
+   * - **zh-CN**: 等待所有（或指定）服务的容器停止
+   */
+  export const cmd_compose_wait: string;
+  /**
+   * - 🚩 **en**: Watch build context for service and rebuild/refresh containers when files are updated
+   * - **zh-CN**: 监视构建上下文并在文件更新时重建/刷新容器
+   */
+  export const cmd_compose_watch: string;
+  /**
+   * - 🚩 **en**: Manage Swarm configs
+   * - **zh-CN**: 管理 Swarm 配置
+   */
+  export const cmd_config: string;
+  /**
+   * - 🚩 **en**: Create a config from a file or STDIN
+   * - **zh-CN**: 从文件或 STDIN 创建配置
+   */
+  export const cmd_config_create: string;
+  /**
+   * - 🚩 **en**: Display detailed information on one or more configs
+   * - **zh-CN**: 查看配置详细信息
+   */
+  export const cmd_config_inspect: string;
+  /**
+   * - 🚩 **en**: List configs
+   * - **zh-CN**: 列出配置
+   */
+  export const cmd_config_ls: string;
+  /**
+   * - 🚩 **en**: Remove one or more configs
+   * - **zh-CN**: 删除一个或多个配置
+   */
+  export const cmd_config_rm: string;
+  /**
+   * - 🚩 **en**: Manage containers
+   * - **zh-CN**: 管理容器
+   */
+  export const cmd_container: string;
+  /**
+   * - 🚩 **en**: Attach local standard input, output, and error streams to a running container
+   * - **zh-CN**: 附加到运行中的容器
+   */
+  export const cmd_container_attach: string;
+  /**
+   * - 🚩 **en**: Create a new image from a container's changes
+   * - **zh-CN**: 从容器的变更创建新镜像
+   */
+  export const cmd_container_commit: string;
+  /**
+   * - 🚩 **en**: Copy files/folders between a container and the local filesystem
+   * - **zh-CN**: 复制文件到/从容器
+   */
+  export const cmd_container_cp: string;
+  /**
+   * - 🚩 **en**: Create a new container
+   * - **zh-CN**: 创建新容器
+   */
+  export const cmd_container_create: string;
+  /**
+   * - 🚩 **en**: Inspect changes to files or directories on a container's filesystem
+   * - **zh-CN**: 检查容器文件系统变更
+   */
+  export const cmd_container_diff: string;
+  /**
+   * - 🚩 **en**: Execute a command in a running container
+   * - **zh-CN**: 在容器中执行命令
+   */
+  export const cmd_container_exec: string;
+  /**
+   * - 🚩 **en**: Return low-level information on a container
+   * - **zh-CN**: 查看容器详细信息
+   */
+  export const cmd_container_inspect: string;
+  /**
+   * - 🚩 **en**: Kill one or more running containers
+   * - **zh-CN**: 杀死运行中的容器
+   */
+  export const cmd_container_kill: string;
+  /**
+   * - 🚩 **en**: Fetch the logs of a container
+   * - **zh-CN**: 获取容器日志
+   */
+  export const cmd_container_logs: string;
+  /**
+   * - 🚩 **en**: List containers
+   * - **zh-CN**: 列出容器
+   */
+  export const cmd_container_ls: string;
+  /**
+   * - 🚩 **en**: Pause all processes within one or more containers
+   * - **zh-CN**: 暂停容器进程
+   */
+  export const cmd_container_pause: string;
+  /**
+   * - 🚩 **en**: List port mappings or a specific mapping for the container
+   * - **zh-CN**: 列出端口映射
+   */
+  export const cmd_container_port: string;
+  /**
+   * - 🚩 **en**: Remove all stopped containers
+   * - **zh-CN**: 删除所有已停止的容器
+   */
+  export const cmd_container_prune: string;
+  /**
+   * - 🚩 **en**: Rename a container
+   * - **zh-CN**: 重命名容器
+   */
+  export const cmd_container_rename: string;
+  /**
+   * - 🚩 **en**: Restart one or more containers
+   * - **zh-CN**: 重启容器
+   */
+  export const cmd_container_restart: string;
+  /**
+   * - 🚩 **en**: Remove one or more containers
+   * - **zh-CN**: 删除容器
+   */
+  export const cmd_container_rm: string;
+  /**
+   * - 🚩 **en**: Create and run a new container from an image
+   * - **zh-CN**: 创建并启动一个新容器
+   */
+  export const cmd_container_run: string;
+  /**
+   * - 🚩 **en**: Start one or more stopped containers
+   * - **zh-CN**: 启动已停止的容器
+   */
+  export const cmd_container_start: string;
+  /**
+   * - 🚩 **en**: Display a live stream of container(s) resource usage statistics
+   * - **zh-CN**: 查看容器资源统计
+   */
+  export const cmd_container_stats: string;
+  /**
+   * - 🚩 **en**: Stop one or more running containers
+   * - **zh-CN**: 停止运行中的容器
+   */
+  export const cmd_container_stop: string;
+  /**
+   * - 🚩 **en**: Display the running processes of a container
+   * - **zh-CN**: 显示容器的运行中进程
+   */
+  export const cmd_container_top: string;
+  /**
+   * - 🚩 **en**: Unpause all processes within one or more containers
+   * - **zh-CN**: 恢复容器进程
+   */
+  export const cmd_container_unpause: string;
+  /**
+   * - 🚩 **en**: Update configuration of one or more containers
+   * - **zh-CN**: 更新一个或多个容器的配置
+   */
+  export const cmd_container_update: string;
+  /**
+   * - 🚩 **en**: Block until one or more containers stop, then print their exit codes
+   * - **zh-CN**: 等待容器停止
+   */
+  export const cmd_container_wait: string;
+  /**
+   * - 🚩 **en**: Manage contexts
+   * - **zh-CN**: 管理上下文
+   */
+  export const cmd_context: string;
+  /**
+   * - 🚩 **en**: Create a context
+   * - **zh-CN**: 创建上下文
+   */
+  export const cmd_context_create: string;
+  /**
+   * - 🚩 **en**: Export a context to a tar archive FILE or a tar stream on STDOUT
+   * - **zh-CN**: 将上下文导出为 tar 归档
+   */
+  export const cmd_context_export: string;
+  /**
+   * - 🚩 **en**: Import a context from a tar or zip file
+   * - **zh-CN**: 从 tar 或 zip 文件导入上下文
+   */
+  export const cmd_context_import: string;
+  /**
+   * - 🚩 **en**: Display detailed information on one or more contexts
+   * - **zh-CN**: 查看上下文详细信息
+   */
+  export const cmd_context_inspect: string;
+  /**
+   * - 🚩 **en**: List contexts
+   * - **zh-CN**: 列出上下文
+   */
+  export const cmd_context_ls: string;
+  /**
+   * - 🚩 **en**: Remove one or more contexts
+   * - **zh-CN**: 删除一个或多个上下文
+   */
+  export const cmd_context_rm: string;
+  /**
+   * - 🚩 **en**: Print the name of the current context
+   * - **zh-CN**: 显示当前上下文名称
+   */
+  export const cmd_context_show: string;
+  /**
+   * - 🚩 **en**: Update a context
+   * - **zh-CN**: 更新上下文
+   */
+  export const cmd_context_update: string;
+  /**
+   * - 🚩 **en**: Set the default docker context
+   * - **zh-CN**: 设置默认 docker 上下文
+   */
+  export const cmd_context_use: string;
+  /**
+   * - 🚩 **en**: Copy files/folders between a container and the local filesystem
+   * - **zh-CN**: 在容器和本地文件系统之间复制文件/文件夹
+   */
+  export const cmd_cp: string;
+  /**
+   * - 🚩 **en**: Create a new container
+   * - **zh-CN**: 创建新容器
+   */
+  export const cmd_create: string;
+  /**
+   * - 🚩 **en**: Inspect changes to files or directories on a container's filesystem
+   * - **zh-CN**: 检查容器文件系统的变更
+   */
+  export const cmd_diff: string;
+  /**
+   * - 🚩 **en**: A self-sufficient runtime for containers
+   * - **zh-CN**: 容器化运行时环境
+   */
+  export const cmd_docker: string;
+  /**
+   * - 🚩 **en**: Get real time events from the server
+   * - **zh-CN**: 从服务器获取实时事件
+   */
+  export const cmd_events: string;
+  /**
+   * - 🚩 **en**: Execute a command in a running container
+   * - **zh-CN**: 在运行中的容器内执行命令
+   */
+  export const cmd_exec: string;
+  /**
+   * - 🚩 **en**: Export a container's filesystem as a tar archive
+   * - **zh-CN**: 将容器的文件系统导出为 tar 归档
+   */
+  export const cmd_export: string;
+  /**
+   * - 🚩 **en**: Show the history of an image
+   * - **zh-CN**: 显示镜像的构建历史
+   */
+  export const cmd_history: string;
+  /**
+   * - 🚩 **en**: Manage images
+   * - **zh-CN**: 管理镜像
+   */
+  export const cmd_image: string;
+  /**
+   * - 🚩 **en**: Build an image from a Dockerfile
+   * - **zh-CN**: 从 Dockerfile 构建镜像
+   */
+  export const cmd_image_build: string;
+  /**
+   * - 🚩 **en**: Show the history of an image
+   * - **zh-CN**: 查看镜像构建历史
+   */
+  export const cmd_image_history: string;
+  /**
+   * - 🚩 **en**: Import the contents from a tarball to create a filesystem image
+   * - **zh-CN**: 从 tarball 导入创建镜像
+   */
+  export const cmd_image_import: string;
+  /**
+   * - 🚩 **en**: Return low-level information on an image
+   * - **zh-CN**: 查看镜像详细信息
+   */
+  export const cmd_image_inspect: string;
+  /**
+   * - 🚩 **en**: Load an image from a tar archive or STDIN
+   * - **zh-CN**: 从 tar 归档加载镜像
+   */
+  export const cmd_image_load: string;
+  /**
+   * - 🚩 **en**: List images
+   * - **zh-CN**: 列出镜像
+   */
+  export const cmd_image_ls: string;
+  /**
+   * - 🚩 **en**: Remove unused images
+   * - **zh-CN**: 删除未使用的镜像
+   */
+  export const cmd_image_prune: string;
+  /**
+   * - 🚩 **en**: Download an image from a registry
+   * - **zh-CN**: 从 registry 下载镜像
+   */
+  export const cmd_image_pull: string;
+  /**
+   * - 🚩 **en**: Upload an image to a registry
+   * - **zh-CN**: 上传镜像到 registry
+   */
+  export const cmd_image_push: string;
+  /**
+   * - 🚩 **en**: Remove one or more images
+   * - **zh-CN**: 删除一个或多个镜像
+   */
+  export const cmd_image_rm: string;
+  /**
+   * - 🚩 **en**: Save one or more images to a tar archive
+   * - **zh-CN**: 保存镜像为 tar 归档
+   */
+  export const cmd_image_save: string;
+  /**
+   * - 🚩 **en**: Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE
+   * - **zh-CN**: 为镜像打标签
+   */
+  export const cmd_image_tag: string;
+  /**
+   * - 🚩 **en**: List images
+   * - **zh-CN**: 列出镜像
+   */
+  export const cmd_images: string;
+  /**
+   * - 🚩 **en**: Import the contents from a tarball to create a filesystem image
+   * - **zh-CN**: 从 tarball 导入内容创建文件系统镜像
+   */
+  export const cmd_import: string;
+  /**
+   * - 🚩 **en**: Display system-wide information
+   * - **zh-CN**: 显示系统信息
+   */
+  export const cmd_info: string;
+  /**
+   * - 🚩 **en**: Return low-level information on Docker objects
+   * - **zh-CN**: 查看 Docker 对象的底层信息
+   */
+  export const cmd_inspect: string;
+  /**
+   * - 🚩 **en**: Kill one or more running containers
+   * - **zh-CN**: 杀死一个或多个运行中的容器
+   */
+  export const cmd_kill: string;
+  /**
+   * - 🚩 **en**: Load an image from a tar archive or STDIN
+   * - **zh-CN**: 从 tar 归档或 STDIN 加载镜像
+   */
+  export const cmd_load: string;
+  /**
+   * - 🚩 **en**: Authenticate to a registry
+   * - **zh-CN**: 登录到 registry
+   */
+  export const cmd_login: string;
+  /**
+   * - 🚩 **en**: Log out from a registry
+   * - **zh-CN**: 从 registry 登出
+   */
+  export const cmd_logout: string;
+  /**
+   * - 🚩 **en**: Fetch the logs of a container
+   * - **zh-CN**: 获取容器的日志
+   */
+  export const cmd_logs: string;
+  /**
+   * - 🚩 **en**: Manage Docker image manifests and manifest lists
+   * - **zh-CN**: 管理镜像清单和清单列表
+   */
+  export const cmd_manifest: string;
+  /**
+   * - 🚩 **en**: Add additional information to a local image manifest
+   * - **zh-CN**: 向本地镜像清单添加附加信息
+   */
+  export const cmd_manifest_annotate: string;
+  /**
+   * - 🚩 **en**: Create a local manifest list for annotating and pushing to a registry
+   * - **zh-CN**: 创建本地清单列表
+   */
+  export const cmd_manifest_create: string;
+  /**
+   * - 🚩 **en**: Display an image manifest, or manifest list
+   * - **zh-CN**: 显示镜像清单或清单列表
+   */
+  export const cmd_manifest_inspect: string;
+  /**
+   * - 🚩 **en**: Push a manifest list to a repository
+   * - **zh-CN**: 推送清单列表到仓库
+   */
+  export const cmd_manifest_push: string;
+  /**
+   * - 🚩 **en**: Delete one or more manifest lists from local storage
+   * - **zh-CN**: 从本地存储删除清单列表
+   */
+  export const cmd_manifest_rm: string;
+  /**
+   * - 🚩 **en**: Manage networks
+   * - **zh-CN**: 管理网络
+   */
+  export const cmd_network: string;
+  /**
+   * - 🚩 **en**: Connect a container to a network
+   * - **zh-CN**: 将容器连接到网络
+   */
+  export const cmd_network_connect: string;
+  /**
+   * - 🚩 **en**: Create a network
+   * - **zh-CN**: 创建网络
+   */
+  export const cmd_network_create: string;
+  /**
+   * - 🚩 **en**: Disconnect a container from a network
+   * - **zh-CN**: 将容器从网络断开
+   */
+  export const cmd_network_disconnect: string;
+  /**
+   * - 🚩 **en**: Return low-level information on a network
+   * - **zh-CN**: 查看网络详细信息
+   */
+  export const cmd_network_inspect: string;
+  /**
+   * - 🚩 **en**: List networks
+   * - **zh-CN**: 列出网络
+   */
+  export const cmd_network_ls: string;
+  /**
+   * - 🚩 **en**: Remove all unused networks
+   * - **zh-CN**: 删除所有未使用的网络
+   */
+  export const cmd_network_prune: string;
+  /**
+   * - 🚩 **en**: Remove one or more networks
+   * - **zh-CN**: 删除一个或多个网络
+   */
+  export const cmd_network_rm: string;
+  /**
+   * - 🚩 **en**: Manage Swarm nodes
+   * - **zh-CN**: 管理 Swarm 节点
+   */
+  export const cmd_node: string;
+  /**
+   * - 🚩 **en**: Demote one or more nodes from manager in the swarm
+   * - **zh-CN**: 将节点从管理角色降级
+   */
+  export const cmd_node_demote: string;
+  /**
+   * - 🚩 **en**: Display detailed information on one or more nodes
+   * - **zh-CN**: 查看节点详细信息
+   */
+  export const cmd_node_inspect: string;
+  /**
+   * - 🚩 **en**: List nodes in the swarm
+   * - **zh-CN**: 列出 Swarm 中的节点
+   */
+  export const cmd_node_ls: string;
+  /**
+   * - 🚩 **en**: Promote one or more nodes to manager in the swarm
+   * - **zh-CN**: 将节点提升为管理角色
+   */
+  export const cmd_node_promote: string;
+  /**
+   * - 🚩 **en**: List tasks running on one or more nodes, defaults to current node
+   * - **zh-CN**: 列出节点上运行的任务
+   */
+  export const cmd_node_ps: string;
+  /**
+   * - 🚩 **en**: Remove one or more nodes from the swarm
+   * - **zh-CN**: 从 Swarm 中移除节点
+   */
+  export const cmd_node_rm: string;
+  /**
+   * - 🚩 **en**: Update a node
+   * - **zh-CN**: 更新节点
+   */
+  export const cmd_node_update: string;
+  /**
+   * - 🚩 **en**: Pause all processes within one or more containers
+   * - **zh-CN**: 暂停一个或多个容器中的所有进程
+   */
+  export const cmd_pause: string;
+  /**
+   * - 🚩 **en**: Manage plugins
+   * - **zh-CN**: 管理插件
+   */
+  export const cmd_plugin: string;
+  /**
+   * - 🚩 **en**: Create a plugin from a rootfs and configuration. Plugin data directory must contain config.json and rootfs directory
+   * - **zh-CN**: 创建插件
+   */
+  export const cmd_plugin_create: string;
+  /**
+   * - 🚩 **en**: Disable a plugin
+   * - **zh-CN**: 禁用插件
+   */
+  export const cmd_plugin_disable: string;
+  /**
+   * - 🚩 **en**: Enable a plugin
+   * - **zh-CN**: 启用插件
+   */
+  export const cmd_plugin_enable: string;
+  /**
+   * - 🚩 **en**: Display detailed information on one or more plugins
+   * - **zh-CN**: 查看插件详细信息
+   */
+  export const cmd_plugin_inspect: string;
+  /**
+   * - 🚩 **en**: Install a plugin
+   * - **zh-CN**: 安装插件
+   */
+  export const cmd_plugin_install: string;
+  /**
+   * - 🚩 **en**: List plugins
+   * - **zh-CN**: 列出插件
+   */
+  export const cmd_plugin_ls: string;
+  /**
+   * - 🚩 **en**: Push a plugin to a registry
+   * - **zh-CN**: 推送插件到注册表
+   */
+  export const cmd_plugin_push: string;
+  /**
+   * - 🚩 **en**: Remove one or more plugins
+   * - **zh-CN**: 删除一个或多个插件
+   */
+  export const cmd_plugin_rm: string;
+  /**
+   * - 🚩 **en**: Change settings for a plugin
+   * - **zh-CN**: 更改插件设置
+   */
+  export const cmd_plugin_set: string;
+  /**
+   * - 🚩 **en**: Upgrade an existing plugin
+   * - **zh-CN**: 升级现有插件
+   */
+  export const cmd_plugin_upgrade: string;
+  /**
+   * - 🚩 **en**: List port mappings or a specific mapping for the container
+   * - **zh-CN**: 列出端口映射
+   */
+  export const cmd_port: string;
+  /**
+   * - 🚩 **en**: List containers
+   * - **zh-CN**: 列出容器
+   */
+  export const cmd_ps: string;
+  /**
+   * - 🚩 **en**: Download an image from a registry
+   * - **zh-CN**: 从 registry 下载镜像
+   */
+  export const cmd_pull: string;
+  /**
+   * - 🚩 **en**: Upload an image to a registry
+   * - **zh-CN**: 将镜像上传到 registry
+   */
+  export const cmd_push: string;
+  /**
+   * - 🚩 **en**: Rename a container
+   * - **zh-CN**: 重命名容器
+   */
+  export const cmd_rename: string;
+  /**
+   * - 🚩 **en**: Restart one or more containers
+   * - **zh-CN**: 重启一个或多个容器
+   */
+  export const cmd_restart: string;
+  /**
+   * - 🚩 **en**: Remove one or more containers
+   * - **zh-CN**: 删除一个或多个容器
+   */
+  export const cmd_rm: string;
+  /**
+   * - 🚩 **en**: Remove one or more images
+   * - **zh-CN**: 删除一个或多个镜像
+   */
+  export const cmd_rmi: string;
+  /**
+   * - 🚩 **en**: Create and run a new container from an image
+   * - **zh-CN**: 创建并启动一个新容器
+   */
+  export const cmd_run: string;
+  /**
+   * - 🚩 **en**: Save one or more images to a tar archive
+   * - **zh-CN**: 将一个或多个镜像保存为 tar 归档
+   */
+  export const cmd_save: string;
+  /**
+   * - 🚩 **en**: Docker Scout
+   * - **zh-CN**: Docker Scout 镜像分析
+   */
+  export const cmd_scout: string;
+  /**
+   * - 🚩 **en**: Search Docker Hub for images
+   * - **zh-CN**: 在 Docker Hub 搜索镜像
+   */
+  export const cmd_search: string;
+  /**
+   * - 🚩 **en**: Manage Swarm secrets
+   * - **zh-CN**: 管理 Swarm 密钥
+   */
+  export const cmd_secret: string;
+  /**
+   * - 🚩 **en**: Create a secret from a file or STDIN as content
+   * - **zh-CN**: 从文件或 STDIN 创建密钥
+   */
+  export const cmd_secret_create: string;
+  /**
+   * - 🚩 **en**: Display detailed information on one or more secrets
+   * - **zh-CN**: 查看密钥详细信息
+   */
+  export const cmd_secret_inspect: string;
+  /**
+   * - 🚩 **en**: List secrets
+   * - **zh-CN**: 列出密钥
+   */
+  export const cmd_secret_ls: string;
+  /**
+   * - 🚩 **en**: Remove one or more secrets
+   * - **zh-CN**: 删除一个或多个密钥
+   */
+  export const cmd_secret_rm: string;
+  /**
+   * - 🚩 **en**: Manage Swarm services
+   * - **zh-CN**: 管理 Swarm 服务
+   */
+  export const cmd_service: string;
+  /**
+   * - 🚩 **en**: Create a new service
+   * - **zh-CN**: 创建新服务
+   */
+  export const cmd_service_create: string;
+  /**
+   * - 🚩 **en**: Display detailed information on one or more services
+   * - **zh-CN**: 查看服务详细信息
+   */
+  export const cmd_service_inspect: string;
+  /**
+   * - 🚩 **en**: Fetch the logs of a service or task
+   * - **zh-CN**: 获取服务或任务的日志
+   */
+  export const cmd_service_logs: string;
+  /**
+   * - 🚩 **en**: List services
+   * - **zh-CN**: 列出服务
+   */
+  export const cmd_service_ls: string;
+  /**
+   * - 🚩 **en**: List the tasks of one or more services
+   * - **zh-CN**: 列出一个或多个服务的任务
+   */
+  export const cmd_service_ps: string;
+  /**
+   * - 🚩 **en**: Remove one or more services
+   * - **zh-CN**: 删除一个或多个服务
+   */
+  export const cmd_service_rm: string;
+  /**
+   * - 🚩 **en**: Revert changes to a service's configuration
+   * - **zh-CN**: 恢复服务配置的变更
+   */
+  export const cmd_service_rollback: string;
+  /**
+   * - 🚩 **en**: Scale one or multiple replicated services
+   * - **zh-CN**: 扩展一个或多个复制服务
+   */
+  export const cmd_service_scale: string;
+  /**
+   * - 🚩 **en**: Update a service
+   * - **zh-CN**: 更新服务
+   */
+  export const cmd_service_update: string;
+  /**
+   * - 🚩 **en**: Manage Swarm stacks
+   * - **zh-CN**: 管理 Swarm 堆栈
+   */
+  export const cmd_stack: string;
+  /**
+   * - 🚩 **en**: Outputs the final config file, after doing merges and interpolations
+   * - **zh-CN**: 输出最终的配置文件
+   */
+  export const cmd_stack_config: string;
+  /**
+   * - 🚩 **en**: Deploy a new stack or update an existing stack
+   * - **zh-CN**: 部署新堆栈或更新现有堆栈
+   */
+  export const cmd_stack_deploy: string;
+  /**
+   * - 🚩 **en**: List stacks
+   * - **zh-CN**: 列出堆栈
+   */
+  export const cmd_stack_ls: string;
+  /**
+   * - 🚩 **en**: List the tasks in the stack
+   * - **zh-CN**: 列出堆栈中的任务
+   */
+  export const cmd_stack_ps: string;
+  /**
+   * - 🚩 **en**: Remove one or more stacks
+   * - **zh-CN**: 删除一个或多个堆栈
+   */
+  export const cmd_stack_rm: string;
+  /**
+   * - 🚩 **en**: List the services in the stack
+   * - **zh-CN**: 列出堆栈中的服务
+   */
+  export const cmd_stack_services: string;
+  /**
+   * - 🚩 **en**: Start one or more stopped containers
+   * - **zh-CN**: 启动一个或多个已停止的容器
+   */
+  export const cmd_start: string;
+  /**
+   * - 🚩 **en**: Display a live stream of container(s) resource usage statistics
+   * - **zh-CN**: 实时显示容器的资源使用统计
+   */
+  export const cmd_stats: string;
+  /**
+   * - 🚩 **en**: Stop one or more running containers
+   * - **zh-CN**: 停止一个或多个运行中的容器
+   */
+  export const cmd_stop: string;
+  /**
+   * - 🚩 **en**: Manage Swarm
+   * - **zh-CN**: 管理 Swarm
+   */
+  export const cmd_swarm: string;
+  /**
+   * - 🚩 **en**: Display and rotate the root CA
+   * - **zh-CN**: 显示和轮换根 CA
+   */
+  export const cmd_swarm_ca: string;
+  /**
+   * - 🚩 **en**: Initialize a swarm
+   * - **zh-CN**: 初始化 Swarm
+   */
+  export const cmd_swarm_init: string;
+  /**
+   * - 🚩 **en**: Join a swarm as a node and/or manager
+   * - **zh-CN**: 以节点或管理角色加入 Swarm
+   */
+  export const cmd_swarm_join: string;
+  /**
+   * - 🚩 **en**: Manage join tokens
+   * - **zh-CN**: 管理加入令牌
+   */
+  export const cmd_swarm_join_token: string;
+  /**
+   * - 🚩 **en**: Leave the swarm
+   * - **zh-CN**: 离开 Swarm
+   */
+  export const cmd_swarm_leave: string;
+  /**
+   * - 🚩 **en**: Unlock swarm
+   * - **zh-CN**: 解锁 Swarm
+   */
+  export const cmd_swarm_unlock: string;
+  /**
+   * - 🚩 **en**: Manage the unlock key
+   * - **zh-CN**: 管理解锁密钥
+   */
+  export const cmd_swarm_unlock_key: string;
+  /**
+   * - 🚩 **en**: Update the swarm
+   * - **zh-CN**: 更新 Swarm
+   */
+  export const cmd_swarm_update: string;
+  /**
+   * - 🚩 **en**: Manage Docker
+   * - **zh-CN**: 管理 Docker 系统
+   */
+  export const cmd_system: string;
+  /**
+   * - 🚩 **en**: Show docker disk usage
+   * - **zh-CN**: 查看 Docker 磁盘使用情况
+   */
+  export const cmd_system_df: string;
+  /**
+   * - 🚩 **en**: Get real time events from the server
+   * - **zh-CN**: 从服务器获取实时事件
+   */
+  export const cmd_system_events: string;
+  /**
+   * - 🚩 **en**: Display system-wide information
+   * - **zh-CN**: 显示系统信息
+   */
+  export const cmd_system_info: string;
+  /**
+   * - 🚩 **en**: Remove unused data
+   * - **zh-CN**: 删除未使用的数据
+   */
+  export const cmd_system_prune: string;
+  /**
+   * - 🚩 **en**: Show the Docker version information
+   * - **zh-CN**: 显示 Docker 版本信息
+   */
+  export const cmd_system_version: string;
+  /**
+   * - 🚩 **en**: Create a tag TARGET_IMAGE that refers to SOURCE_IMAGE
+   * - **zh-CN**: 为镜像创建标签
+   */
+  export const cmd_tag: string;
+  /**
+   * - 🚩 **en**: Display the running processes of a container
+   * - **zh-CN**: 显示容器的运行中进程
+   */
+  export const cmd_top: string;
+  /**
+   * - 🚩 **en**: Manage trust on Docker images
+   * - **zh-CN**: 管理 Docker 镜像信任
+   */
+  export const cmd_trust: string;
+  /**
+   * - 🚩 **en**: Unpause all processes within one or more containers
+   * - **zh-CN**: 恢复一个或多个容器中的所有进程
+   */
+  export const cmd_unpause: string;
+  /**
+   * - 🚩 **en**: Update configuration of one or more containers
+   * - **zh-CN**: 更新一个或多个容器的配置
+   */
+  export const cmd_update: string;
+  /**
+   * - 🚩 **en**: Show the Docker version information
+   * - **zh-CN**: 显示 Docker 版本信息
+   */
+  export const cmd_version: string;
+  /**
+   * - 🚩 **en**: Manage volumes
+   * - **zh-CN**: 管理卷
+   */
+  export const cmd_volume: string;
+  /**
+   * - 🚩 **en**: Create a volume
+   * - **zh-CN**: 创建卷
+   */
+  export const cmd_volume_create: string;
+  /**
+   * - 🚩 **en**: Return low-level information on a volume
+   * - **zh-CN**: 查看卷详细信息
+   */
+  export const cmd_volume_inspect: string;
+  /**
+   * - 🚩 **en**: List volumes
+   * - **zh-CN**: 列出卷
+   */
+  export const cmd_volume_ls: string;
+  /**
+   * - 🚩 **en**: Remove all unused local volumes
+   * - **zh-CN**: 删除所有未使用的本地卷
+   */
+  export const cmd_volume_prune: string;
+  /**
+   * - 🚩 **en**: Remove one or more volumes
+   * - **zh-CN**: 删除一个或多个卷
+   */
+  export const cmd_volume_rm: string;
+  /**
+   * - 🚩 **en**: Update a volume (cluster volumes only)
+   * - **zh-CN**: 更新卷（仅集群卷）
+   */
+  export const cmd_volume_update: string;
+  /**
+   * - 🚩 **en**: Block until one or more containers stop, then print their exit codes
+   * - **zh-CN**: 阻塞直到容器停止，然后打印退出码
+   */
+  export const cmd_wait: string;
+  /**
+   * - 🚩 **en**: Stops all containers if any container was stopped
+   * - **zh-CN**: 如果有容器停止则停止所有容器
+   */
+  export const opt_abort_on_container_exit: string;
+  /**
+   * - 🚩 **en**: Stops all containers if any container exited with failure
+   * - **zh-CN**: 如果有容器异常退出则停止所有容器
+   */
+  export const opt_abort_on_container_failure: string;
+  /**
+   * - 🚩 **en**: Add a custom host-to-IP mapping (host:ip)
+   * - **zh-CN**: 添加自定义 host-to-IP 映射
+   */
+  export const opt_add_host: string;
+  /**
+   * - 🚩 **en**: Advertised address
+   * - **zh-CN**: 广播地址
+   */
+  export const opt_advertise_addr: string;
+  /**
+   * - 🚩 **en**: Add network-scoped alias for the container
+   * - **zh-CN**: 为容器添加网络作用域别名
+   */
+  export const opt_alias: string;
+  /**
+   * - 🚩 **en**: Add an alias for the plugin
+   * - **zh-CN**: 为插件添加别名
+   */
+  export const opt_alias_plugin: string;
+  /**
+   * - 🚩 **en**: Show all containers/images (default shows just running)
+   * - **zh-CN**: 显示所有容器/镜像
+   */
+  export const opt_all: string;
+  /**
+   * - 🚩 **en**: Include containers created by the run command
+   * - **zh-CN**: 包含由 run 命令创建的容器
+   */
+  export const opt_all_cp: string;
+  /**
+   * - 🚩 **en**: Remove all inactive builders
+   * - **zh-CN**: 移除所有非活跃构建器
+   */
+  export const opt_all_inactive: string;
+  /**
+   * - 🚩 **en**: Include all resources, even those not used by services
+   * - **zh-CN**: 包含所有资源，即使未被服务使用
+   */
+  export const opt_all_resources: string;
+  /**
+   * - 🚩 **en**: Push/pull all tags of an image
+   * - **zh-CN**: 推送/拉取镜像的所有标签
+   */
+  export const opt_all_tags: string;
+  /**
+   * - 🚩 **en**: Allow extra privileged entitlement (e.g., network.host, security.insecure, device)
+   * - **zh-CN**: 允许额外的特权授权
+   */
+  export const opt_allow: string;
+  /**
+   * - 🚩 **en**: Recreate dependent containers
+   * - **zh-CN**: 重新创建依赖容器
+   */
+  export const opt_always_recreate_deps: string;
+  /**
+   * - 🚩 **en**: Amend an existing manifest
+   * - **zh-CN**: 修改现有 manifest
+   */
+  export const opt_amend: string;
+  /**
+   * - 🚩 **en**: Add an annotation to the container
+   * - **zh-CN**: 为容器添加注解
+   */
+  export const opt_annotation: string;
+  /**
+   * - 🚩 **en**: Add annotation to the image
+   * - **zh-CN**: 为镜像添加注解
+   */
+  export const opt_annotation_build: string;
+  /**
+   * - 🚩 **en**: Control when to print ANSI control characters
+   * - **zh-CN**: 控制何时打印 ANSI 控制字符
+   */
+  export const opt_ansi: string;
+  /**
+   * - 🚩 **en**: Append a node to builder instead of changing it
+   * - **zh-CN**: 向构建器追加节点而非修改
+   */
+  export const opt_append: string;
+  /**
+   * - 🚩 **en**: Target architecture
+   * - **zh-CN**: 目标架构
+   */
+  export const opt_arch: string;
+  /**
+   * - 🚩 **en**: Archive mode (copy all uid/gid information)
+   * - **zh-CN**: 归档模式（保留所有 uid/gid 信息）
+   */
+  export const opt_archive: string;
+  /**
+   * - 🚩 **en**: Attach to STDIN, STDOUT or STDERR
+   * - **zh-CN**: 附加到 STDIN/STDOUT/STDERR
+   */
+  export const opt_attach: string;
+  /**
+   * - 🚩 **en**: Restrict attaching to the specified services
+   * - **zh-CN**: 限制仅附加到指定服务
+   */
+  export const opt_attach_compose: string;
+  /**
+   * - 🚩 **en**: Automatically attach to log output of dependent services
+   * - **zh-CN**: 自动附加到依赖服务的日志输出
+   */
+  export const opt_attach_deps: string;
+  /**
+   * - 🚩 **en**: Enable manual container attachment
+   * - **zh-CN**: 启用手动容器附加
+   */
+  export const opt_attachable: string;
+  /**
+   * - 🚩 **en**: Attestation parameters (format: type=sbom,generator=image)
+   * - **zh-CN**: 证明参数
+   */
+  export const opt_attest: string;
+  /**
+   * - 🚩 **en**: Author (e.g., "John Hannibal Smith <hannibal@a-team.com>")
+   * - **zh-CN**: 作者
+   */
+  export const opt_author: string;
+  /**
+   * - 🚩 **en**: Enable manager autolocking
+   * - **zh-CN**: 启用管理器自动锁定
+   */
+  export const opt_autolock: string;
+  /**
+   * - 🚩 **en**: Auxiliary IPv4 or IPv6 addresses used by Network driver
+   * - **zh-CN**: 网络驱动使用的辅助 IPv4 或 IPv6 地址
+   */
+  export const opt_aux_address: string;
+  /**
+   * - 🚩 **en**: Availability of the node (active|pause|drain)
+   * - **zh-CN**: 节点的可用性（active|pause|drain）
+   */
+  export const opt_availability: string;
+  /**
+   * - 🚩 **en**: Block IO (relative weight), between 10 and 1000
+   * - **zh-CN**: 块 IO 权重（10-1000）
+   */
+  export const opt_blkio_weight: string;
+  /**
+   * - 🚩 **en**: Block IO weight (relative device weight)
+   * - **zh-CN**: 块 IO 设备权重
+   */
+  export const opt_blkio_weight_device: string;
+  /**
+   * - 🚩 **en**: Boot builder after creation
+   * - **zh-CN**: 创建后启动构建器
+   */
+  export const opt_bootstrap: string;
+  /**
+   * - 🚩 **en**: Branch for the service
+   * - **zh-CN**: 服务的分支
+   */
+  export const opt_branch: string;
+  /**
+   * - 🚩 **en**: Set build-time variables
+   * - **zh-CN**: 设置构建时变量
+   */
+  export const opt_build_arg: string;
+  /**
+   * - 🚩 **en**: Build images before creating containers
+   * - **zh-CN**: 创建容器前构建镜像
+   */
+  export const opt_build_compose: string;
+  /**
+   * - 🚩 **en**: Additional build contexts
+   * - **zh-CN**: 额外的构建上下文
+   */
+  export const opt_build_context: string;
+  /**
+   * - 🚩 **en**: Override the configured builder instance
+   * - **zh-CN**: 覆盖配置的构建器实例
+   */
+  export const opt_builder: string;
+  /**
+   * - 🚩 **en**: Override the default timeout for loading
+   * - **zh-CN**: 覆盖加载的默认超时时间
+   */
+  export const opt_builder_timeout: string;
+  /**
+   * - 🚩 **en**: BuildKit daemon config file
+   * - **zh-CN**: BuildKit 守护进程配置文件
+   */
+  export const opt_buildkitd_config: string;
+  /**
+   * - 🚩 **en**: BuildKit daemon flags
+   * - **zh-CN**: BuildKit 守护进程标志
+   */
+  export const opt_buildkitd_flags: string;
+  /**
+   * - 🚩 **en**: Path to the PEM-encoded root CA certificate for the swarm
+   * - **zh-CN**: swarm 的 PEM 编码根 CA 证书路径
+   */
+  export const opt_ca_cert: string;
+  /**
+   * - 🚩 **en**: Path to the PEM-encoded CA key for the swarm
+   * - **zh-CN**: swarm 的 PEM 编码 CA 密钥路径
+   */
+  export const opt_ca_key: string;
+  /**
+   * - 🚩 **en**: External cache sources
+   * - **zh-CN**: 外部缓存来源
+   */
+  export const opt_cache_from: string;
+  /**
+   * - 🚩 **en**: Cache export destinations
+   * - **zh-CN**: 缓存导出目标
+   */
+  export const opt_cache_to: string;
+  /**
+   * - 🚩 **en**: Set method for evaluating build (check|outline|targets)
+   * - **zh-CN**: 设置构建评估方法
+   */
+  export const opt_call: string;
+  /**
+   * - 🚩 **en**: Add Linux capabilities
+   * - **zh-CN**: 添加 Linux 内核能力
+   */
+  export const opt_cap_add: string;
+  /**
+   * - 🚩 **en**: Drop Linux capabilities
+   * - **zh-CN**: 删除 Linux 内核能力
+   */
+  export const opt_cap_drop: string;
+  /**
+   * - 🚩 **en**: Validity period for node certificates
+   * - **zh-CN**: 节点证书的有效期
+   */
+  export const opt_cert_expiry: string;
+  /**
+   * - 🚩 **en**: Optional parent cgroup for the container
+   * - **zh-CN**: 容器的可选父 cgroup
+   */
+  export const opt_cgroup_parent: string;
+  /**
+   * - 🚩 **en**: Cgroup namespace to use (host|private)
+   * - **zh-CN**: cgroup 命名空间模式（host|private）
+   */
+  export const opt_cgroupns: string;
+  /**
+   * - 🚩 **en**: Apply Dockerfile instruction to the created image
+   * - **zh-CN**: 对创建的镜像应用 Dockerfile 指令
+   */
+  export const opt_change: string;
+  /**
+   * - 🚩 **en**: Shorthand for --call=check
+   * - **zh-CN**: --call=check 的简写
+   */
+  export const opt_check: string;
+  /**
+   * - 🚩 **en**: Restore from this checkpoint
+   * - **zh-CN**: 从该检查点恢复
+   */
+  export const opt_checkpoint: string;
+  /**
+   * - 🚩 **en**: Use a custom checkpoint storage directory
+   * - **zh-CN**: 自定义检查点存储目录
+   */
+  export const opt_checkpoint_dir: string;
+  /**
+   * - 🚩 **en**: Write the container ID to the file
+   * - **zh-CN**: 将容器 ID 写入文件
+   */
+  export const opt_cidfile: string;
+  /**
+   * - 🚩 **en**: Display only cluster volumes, and use cluster volume list formatting
+   * - **zh-CN**: 仅显示集群卷，并使用集群卷列表格式
+   */
+  export const opt_cluster_vol: string;
+  /**
+   * - 🚩 **en**: Attempt to down-level the compose file for older engine versions
+   * - **zh-CN**: 尝试向下兼容旧引擎版本
+   */
+  export const opt_compatibility: string;
+  /**
+   * - 🚩 **en**: Compose file to use
+   * - **zh-CN**: 使用的 Compose 文件
+   */
+  export const opt_compose_file: string;
+  /**
+   * - 🚩 **en**: Compress the plugin tarball
+   * - **zh-CN**: 压缩插件 tarball
+   */
+  export const opt_compress: string;
+  /**
+   * - 🚩 **en**: Compress the build context using gzip
+   * - **zh-CN**: 使用 gzip 压缩构建上下文
+   */
+  export const opt_compressed: string;
+  /**
+   * - 🚩 **en**: Compose configuration files
+   * - **zh-CN**: Compose 配置文件
+   */
+  export const opt_config: string;
+  /**
+   * - 🚩 **en**: The network from which to copy the configuration
+   * - **zh-CN**: 从中复制配置的网络
+   */
+  export const opt_config_from: string;
+  /**
+   * - 🚩 **en**: Location of client config files
+   * - **zh-CN**: 客户端配置文件位置
+   */
+  export const opt_config_global: string;
+  /**
+   * - 🚩 **en**: Create a configuration only network
+   * - **zh-CN**: 创建仅配置网络
+   */
+  export const opt_config_only: string;
+  /**
+   * - 🚩 **en**: Placement constraints
+   * - **zh-CN**: 放置约束
+   */
+  export const opt_constraint: string;
+  /**
+   * - 🚩 **en**: Container labels
+   * - **zh-CN**: 容器标签
+   */
+  export const opt_container_label: string;
+  /**
+   * - 🚩 **en**: Name of the context to use to connect to the daemon
+   * - **zh-CN**: 连接到守护进程的上下文名称
+   */
+  export const opt_context_global: string;
+  /**
+   * - 🚩 **en**: CPU count (Windows only)
+   * - **zh-CN**: CPU 数量（仅 Windows）
+   */
+  export const opt_cpu_count: string;
+  /**
+   * - 🚩 **en**: CPU percent (Windows only)
+   * - **zh-CN**: CPU 百分比（仅 Windows）
+   */
+  export const opt_cpu_percent: string;
+  /**
+   * - 🚩 **en**: Limit CPU CFS (Completely Fair Scheduler) period
+   * - **zh-CN**: 限制 CPU CFS 调度周期
+   */
+  export const opt_cpu_period: string;
+  /**
+   * - 🚩 **en**: Limit CPU CFS (Completely Fair Scheduler) quota
+   * - **zh-CN**: 限制 CPU CFS 调度配额
+   */
+  export const opt_cpu_quota: string;
+  /**
+   * - 🚩 **en**: Limit CPU real-time period in microseconds
+   * - **zh-CN**: 限制 CPU 实时周期（微秒）
+   */
+  export const opt_cpu_rt_period: string;
+  /**
+   * - 🚩 **en**: Limit CPU real-time runtime in microseconds
+   * - **zh-CN**: 限制 CPU 实时运行时间（微秒）
+   */
+  export const opt_cpu_rt_runtime: string;
+  /**
+   * - 🚩 **en**: CPU shares (relative weight)
+   * - **zh-CN**: CPU 份额（相对权重）
+   */
+  export const opt_cpu_shares: string;
+  /**
+   * - 🚩 **en**: Number of CPUs
+   * - **zh-CN**: CPU 数量
+   */
+  export const opt_cpus: string;
+  /**
+   * - 🚩 **en**: CPUs in which to allow execution (0-3, 0,1)
+   * - **zh-CN**: 允许执行的 CPU（0-3, 0,1）
+   */
+  export const opt_cpuset_cpus: string;
+  /**
+   * - 🚩 **en**: MEMs in which to allow execution (0-3, 0,1)
+   * - **zh-CN**: 允许执行的内存节点（0-3, 0,1）
+   */
+  export const opt_cpuset_mems: string;
+  /**
+   * - 🚩 **en**: Address or interface to use for data path traffic
+   * - **zh-CN**: 用于数据路径流量的地址或接口
+   */
+  export const opt_data_path_addr: string;
+  /**
+   * - 🚩 **en**: Enable debug mode
+   * - **zh-CN**: 启用调试模式
+   */
+  export const opt_debug: string;
+  /**
+   * - 🚩 **en**: Set builder as default for current context
+   * - **zh-CN**: 将构建器设置为当前上下文的默认值
+   */
+  export const opt_default_builder: string;
+  /**
+   * - 🚩 **en**: Description of the context
+   * - **zh-CN**: 上下文的描述
+   */
+  export const opt_description_context: string;
+  /**
+   * - 🚩 **en**: Run container in background
+   * - **zh-CN**: 后台运行容器
+   */
+  export const opt_detach: string;
+  /**
+   * - 🚩 **en**: Override the key sequence for detaching a container
+   * - **zh-CN**: 覆盖分离容器的按键序列
+   */
+  export const opt_detach_keys: string;
+  /**
+   * - 🚩 **en**: Show extra details provided to logs
+   * - **zh-CN**: 显示日志额外详情
+   */
+  export const opt_details: string;
+  /**
+   * - 🚩 **en**: Add a host device to the container
+   * - **zh-CN**: 添加宿主机设备到容器
+   */
+  export const opt_device: string;
+  /**
+   * - 🚩 **en**: Add a rule to the cgroup allowed devices list
+   * - **zh-CN**: 添加到 cgroup 允许设备列表的规则
+   */
+  export const opt_device_cgroup_rule: string;
+  /**
+   * - 🚩 **en**: Limit read rate (bytes per second) from a device
+   * - **zh-CN**: 限制设备的读取速率（字节/秒）
+   */
+  export const opt_device_read_bps: string;
+  /**
+   * - 🚩 **en**: Limit read rate (IO per second) from a device
+   * - **zh-CN**: 限制设备的读取速率（IO/秒）
+   */
+  export const opt_device_read_iops: string;
+  /**
+   * - 🚩 **en**: Limit write rate (bytes per second) to a device
+   * - **zh-CN**: 限制设备的写入速率（字节/秒）
+   */
+  export const opt_device_write_bps: string;
+  /**
+   * - 🚩 **en**: Limit write rate (IO per second) to a device
+   * - **zh-CN**: 限制设备的写入速率（IO/秒）
+   */
+  export const opt_device_write_iops: string;
+  /**
+   * - 🚩 **en**: Show digests
+   * - **zh-CN**: 显示摘要
+   */
+  export const opt_digests: string;
+  /**
+   * - 🚩 **en**: Disable the plugin after installing
+   * - **zh-CN**: 安装后禁用插件
+   */
+  export const opt_disable_plugin: string;
+  /**
+   * - 🚩 **en**: Dispatcher heartbeat period
+   * - **zh-CN**: 调度器心跳周期
+   */
+  export const opt_dispatcher_heartbeat: string;
+  /**
+   * - 🚩 **en**: Set custom DNS servers
+   * - **zh-CN**: 设置自定义 DNS 服务器
+   */
+  export const opt_dns: string;
+  /**
+   * - 🚩 **en**: Set DNS options
+   * - **zh-CN**: 设置 DNS 选项
+   */
+  export const opt_dns_option: string;
+  /**
+   * - 🚩 **en**: Set custom DNS search domains
+   * - **zh-CN**: 设置自定义 DNS 搜索域
+   */
+  export const opt_dns_search: string;
+  /**
+   * - 🚩 **en**: Set the docker endpoint
+   * - **zh-CN**: 设置 Docker 端点
+   */
+  export const opt_docker_context: string;
+  /**
+   * - 🚩 **en**: Container NIS domain name
+   * - **zh-CN**: 容器 NIS 域名
+   */
+  export const opt_domainname: string;
+  /**
+   * - 🚩 **en**: Drops project when the first container stops
+   * - **zh-CN**: 首个容器停止时放弃项目
+   */
+  export const opt_down_project: string;
+  /**
+   * - 🚩 **en**: Driver to manage the Volume/Network
+   * - **zh-CN**: 卷/网络的驱动
+   */
+  export const opt_driver: string;
+  /**
+   * - 🚩 **en**: driver options for the network
+   * - **zh-CN**: 网络的驱动选项
+   */
+  export const opt_driver_opt: string;
+  /**
+   * - 🚩 **en**: Options for the driver
+   * - **zh-CN**: 驱动的选项
+   */
+  export const opt_driver_opt_builder: string;
+  /**
+   * - 🚩 **en**: Execute command in dry run mode
+   * - **zh-CN**: 预演模式执行
+   */
+  export const opt_dry_run: string;
+  /**
+   * - 🚩 **en**: Encrypt the traffic among the local network
+   * - **zh-CN**: 加密本地网络中的流量
+   */
+  export const opt_encrypt: string;
+  /**
+   * - 🚩 **en**: Endpoint mode (vip|dnsrr)
+   * - **zh-CN**: 端点模式 (vip|dnsrr)
+   */
+  export const opt_endpoint_mode: string;
+  /**
+   * - 🚩 **en**: Overwrite the default ENTRYPOINT of the image
+   * - **zh-CN**: 覆盖镜像的默认 ENTRYPOINT
+   */
+  export const opt_entrypoint: string;
+  /**
+   * - 🚩 **en**: Set environment variables
+   * - **zh-CN**: 设置环境变量
+   */
+  export const opt_env: string;
+  /**
+   * - 🚩 **en**: Read in a file of environment variables
+   * - **zh-CN**: 从文件读取环境变量
+   */
+  export const opt_env_file: string;
+  /**
+   * - 🚩 **en**: Set environment variables from file
+   * - **zh-CN**: 从文件设置环境变量
+   */
+  export const opt_env_from_file: string;
+  /**
+   * - 🚩 **en**: Print environment used for interpolation
+   * - **zh-CN**: 打印用于插值的环境变量
+   */
+  export const opt_environment: string;
+  /**
+   * - 🚩 **en**: Return the exit code of the selected service
+   * - **zh-CN**: 返回指定服务的退出码
+   */
+  export const opt_exit_code_from: string;
+  /**
+   * - 🚩 **en**: Expose a port or a range of ports
+   * - **zh-CN**: 暴露端口或端口范围
+   */
+  export const opt_expose: string;
+  /**
+   * - 🚩 **en**: Specifications of one or more certificate signing endpoints
+   * - **zh-CN**: 一个或多个证书签名端点的规格
+   */
+  export const opt_external_ca: string;
+  /**
+   * - 🚩 **en**: Name of the Dockerfile
+   * - **zh-CN**: Dockerfile 的名称
+   */
+  export const opt_file: string;
+  /**
+   * - 🚩 **en**: Filter output based on conditions provided
+   * - **zh-CN**: 根据条件过滤输出
+   */
+  export const opt_filter: string;
+  /**
+   * - 🚩 **en**: Follow log output
+   * - **zh-CN**: 跟随日志输出
+   */
+  export const opt_follow: string;
+  /**
+   * - 🚩 **en**: Always follow symlinks in SRC_PATH
+   * - **zh-CN**: 始终跟踪 SRC_PATH 中的符号链接
+   */
+  export const opt_follow_link: string;
+  /**
+   * - 🚩 **en**: Do not prompt for confirmation
+   * - **zh-CN**: 不提示确认
+   */
+  export const opt_force: string;
+  /**
+   * - 🚩 **en**: Recreate containers even if their configuration and image haven't changed
+   * - **zh-CN**: 即使配置和镜像未更改也重新创建容器
+   */
+  export const opt_force_recreate: string;
+  /**
+   * - 🚩 **en**: Always remove intermediate containers
+   * - **zh-CN**: 始终删除中间容器
+   */
+  export const opt_force_rm: string;
+  /**
+   * - 🚩 **en**: Format output using a custom template
+   * - **zh-CN**: 使用自定义模板格式化输出
+   */
+  export const opt_format: string;
+  /**
+   * - 🚩 **en**: Format the output (yaml|json)
+   * - **zh-CN**: 设置输出格式（yaml|json）
+   */
+  export const opt_format_config: string;
+  /**
+   * - 🚩 **en**: Create context from a named context
+   * - **zh-CN**: 从命名上下文创建上下文
+   */
+  export const opt_from_context: string;
+  /**
+   * - 🚩 **en**: IPv4 or IPv6 Gateway for the master subnet
+   * - **zh-CN**: 主子网的 IPv4 或 IPv6 网关
+   */
+  export const opt_gateway: string;
+  /**
+   * - 🚩 **en**: Builder persists context changes
+   * - **zh-CN**: 构建器持久化上下文变更
+   */
+  export const opt_global_builder: string;
+  /**
+   * - 🚩 **en**: GPU devices to add to the container
+   * - **zh-CN**: 要添加到容器的 GPU 设备
+   */
+  export const opt_gpu: string;
+  /**
+   * - 🚩 **en**: Grant all permissions necessary to run the plugin
+   * - **zh-CN**: 授予运行插件所需的所有权限
+   */
+  export const opt_grant_all_permissions: string;
+  /**
+   * - 🚩 **en**: Add additional groups to join
+   * - **zh-CN**: 添加附加组
+   */
+  export const opt_group_add: string;
+  /**
+   * - 🚩 **en**: Service group
+   * - **zh-CN**: 服务组
+   */
+  export const opt_group_svc: string;
+  /**
+   * - 🚩 **en**: Volume group
+   * - **zh-CN**: 卷组
+   */
+  export const opt_group_vol: string;
+  /**
+   * - 🚩 **en**: Highest gw-priority provides the default gateway
+   * - **zh-CN**: 最高 gw-priority 提供默认网关
+   */
+  export const opt_gw_priority: string;
+  /**
+   * - 🚩 **en**: Hash of the service configuration
+   * - **zh-CN**: 服务配置的哈希值
+   */
+  export const opt_hash: string;
+  /**
+   * - 🚩 **en**: Command to run to check health
+   * - **zh-CN**: 健康检查命令
+   */
+  export const opt_health_cmd: string;
+  /**
+   * - 🚩 **en**: Time between running the check (ms|s|m|h)
+   * - **zh-CN**: 健康检查间隔
+   */
+  export const opt_health_interval: string;
+  /**
+   * - 🚩 **en**: Consecutive failures needed to report unhealthy
+   * - **zh-CN**: 连续失败次数判定为不健康
+   */
+  export const opt_health_retries: string;
+  /**
+   * - 🚩 **en**: Time between running the check during the start period (ms|s|m|h)
+   * - **zh-CN**: 启动期间健康检查间隔（ms|s|m|h）
+   */
+  export const opt_health_start_interval: string;
+  /**
+   * - 🚩 **en**: Start period for the container to initialize before starting health-retries countdown (ms|s|m|h)
+   * - **zh-CN**: 容器启动后的健康检查预热时间
+   */
+  export const opt_health_start_period: string;
+  /**
+   * - 🚩 **en**: Start period for health checks
+   * - **zh-CN**: 健康检查的启动时间
+   */
+  export const opt_health_start_period_svc: string;
+  /**
+   * - 🚩 **en**: Maximum time to allow one check to run (ms|s|m|h)
+   * - **zh-CN**: 单次健康检查超时
+   */
+  export const opt_health_timeout: string;
+  /**
+   * - 🚩 **en**: Print usage
+   * - **zh-CN**: 打印帮助信息
+   */
+  export const opt_help: string;
+  /**
+   * - 🚩 **en**: Daemon socket to connect to
+   * - **zh-CN**: 守护进程 socket 地址
+   */
+  export const opt_host: string;
+  /**
+   * - 🚩 **en**: Container host name
+   * - **zh-CN**: 容器主机名
+   */
+  export const opt_hostname: string;
+  /**
+   * - 🚩 **en**: Print sizes and dates in human readable format
+   * - **zh-CN**: 以人类可读格式显示大小和日期
+   */
+  export const opt_human: string;
+  /**
+   * - 🚩 **en**: Ignore images that can be built
+   * - **zh-CN**: 忽略可以构建的镜像
+   */
+  export const opt_ignore_buildable: string;
+  /**
+   * - 🚩 **en**: Pull what it can and ignore images without access
+   * - **zh-CN**: 尽量拉取，忽略无权限的镜像
+   */
+  export const opt_ignore_pull_failures: string;
+  /**
+   * - 🚩 **en**: Push what it can and ignores images with push failures
+   * - **zh-CN**: 推送可推送的镜像，忽略推送失败的镜像
+   */
+  export const opt_ignore_push_failures: string;
+  /**
+   * - 🚩 **en**: Write the image ID to the file
+   * - **zh-CN**: 将镜像 ID 写入文件
+   */
+  export const opt_iidfile: string;
+  /**
+   * - 🚩 **en**: Print the image names, one per line
+   * - **zh-CN**: 打印镜像名称，每行一个
+   */
+  export const opt_images_config: string;
+  /**
+   * - 🚩 **en**: Also pull services declared as dependencies
+   * - **zh-CN**: 同时拉取声明为依赖的服务
+   */
+  export const opt_include_deps: string;
+  /**
+   * - 🚩 **en**: Index of the container if service has multiple replicas
+   * - **zh-CN**: 服务多副本时的容器索引
+   */
+  export const opt_index: string;
+  /**
+   * - 🚩 **en**: Swarm ingress network
+   * - **zh-CN**: Swarm 入口网络
+   */
+  export const opt_ingress: string;
+  /**
+   * - 🚩 **en**: Run an init inside the container that forwards signals and reaps processes
+   * - **zh-CN**: 在容器内运行 init 进程
+   */
+  export const opt_init: string;
+  /**
+   * - 🚩 **en**: Read from tar archive file, instead of STDIN
+   * - **zh-CN**: 从 tar 归档文件读取而不是 STDIN
+   */
+  export const opt_input: string;
+  /**
+   * - 🚩 **en**: Allow communication with an insecure registry
+   * - **zh-CN**: 允许与不安全的 registry 通信
+   */
+  export const opt_insecure: string;
+  /**
+   * - 🚩 **en**: Keep STDIN open even if not attached
+   * - **zh-CN**: 保持 STDIN 打开
+   */
+  export const opt_interactive: string;
+  /**
+   * - 🚩 **en**: Restrict external access to the network
+   * - **zh-CN**: 限制网络的外部访问
+   */
+  export const opt_internal: string;
+  /**
+   * - 🚩 **en**: Maximum IO bandwidth limit for the system drive (Windows only)
+   * - **zh-CN**: 系统盘最大 IO 带宽限制（仅 Windows）
+   */
+  export const opt_io_maxbandwidth: string;
+  /**
+   * - 🚩 **en**: Maximum IOps limit for the system drive (Windows only)
+   * - **zh-CN**: 系统盘最大 IOps 限制（仅 Windows）
+   */
+  export const opt_io_maxiops: string;
+  /**
+   * - 🚩 **en**: IPv4 address
+   * - **zh-CN**: IPv4 地址
+   */
+  export const opt_ip: string;
+  /**
+   * - 🚩 **en**: IPv6 address
+   * - **zh-CN**: IPv6 地址
+   */
+  export const opt_ip6: string;
+  /**
+   * - 🚩 **en**: Allocate container ip from a sub-range
+   * - **zh-CN**: 从子范围内分配容器 IP
+   */
+  export const opt_ip_range: string;
+  /**
+   * - 🚩 **en**: IP Address Management Driver
+   * - **zh-CN**: IP 地址管理驱动
+   */
+  export const opt_ipam_driver: string;
+  /**
+   * - 🚩 **en**: Set IPAM driver specific options
+   * - **zh-CN**: 设置 IPAM 驱动特定选项
+   */
+  export const opt_ipam_opt: string;
+  /**
+   * - 🚩 **en**: IPC mode to use
+   * - **zh-CN**: IPC 模式
+   */
+  export const opt_ipc: string;
+  /**
+   * - 🚩 **en**: Enable or disable IPv4 address assignment
+   * - **zh-CN**: 启用或禁用 IPv4 地址分配
+   */
+  export const opt_ipv4: string;
+  /**
+   * - 🚩 **en**: Enable or disable IPv6 address assignment
+   * - **zh-CN**: 启用或禁用 IPv6 地址分配
+   */
+  export const opt_ipv6: string;
+  /**
+   * - 🚩 **en**: Container isolation technology
+   * - **zh-CN**: 容器隔离技术
+   */
+  export const opt_isolation: string;
+  /**
+   * - 🚩 **en**: Output events as a stream of json objects
+   * - **zh-CN**: 以 JSON 对象流输出事件
+   */
+  export const opt_json: string;
+  /**
+   * - 🚩 **en**: Keep the BuildKit daemon running
+   * - **zh-CN**: 保持 BuildKit 守护进程运行
+   */
+  export const opt_keep_daemon: string;
+  /**
+   * - 🚩 **en**: Keep BuildKit state
+   * - **zh-CN**: 保持 BuildKit 状态
+   */
+  export const opt_keep_state: string;
+  /**
+   * - 🚩 **en**: Set meta data on a container
+   * - **zh-CN**: 设置容器元数据
+   */
+  export const opt_label: string;
+  /**
+   * - 🚩 **en**: Add or update a node label (key=value)
+   * - **zh-CN**: 添加或更新节点标签 (key=value)
+   */
+  export const opt_label_add_node: string;
+  /**
+   * - 🚩 **en**: Read in a line delimited file of labels
+   * - **zh-CN**: 从文件读取标签
+   */
+  export const opt_label_file: string;
+  /**
+   * - 🚩 **en**: Remove a node label if exists
+   * - **zh-CN**: 删除节点标签（如果存在）
+   */
+  export const opt_label_rm_node: string;
+  /**
+   * - 🚩 **en**: Show n last created containers
+   * - **zh-CN**: 显示最近 N 个创建的容器
+   */
+  export const opt_last: string;
+  /**
+   * - 🚩 **en**: Show the latest created container
+   * - **zh-CN**: 显示最新创建的容器
+   */
+  export const opt_latest: string;
+  /**
+   * - 🚩 **en**: Remove a node from builder instead of changing it
+   * - **zh-CN**: 从构建器中移除节点而非修改
+   */
+  export const opt_leave_builder: string;
+  /**
+   * - 🚩 **en**: Leave the container running after checkpoint creation
+   * - **zh-CN**: 创建检查点后保持容器运行
+   */
+  export const opt_leave_running: string;
+  /**
+   * - 🚩 **en**: Minimum size of the volume in bytes
+   * - **zh-CN**: 卷的最小字节数
+   */
+  export const opt_limit_bytes: string;
+  /**
+   * - 🚩 **en**: Limit CPUs
+   * - **zh-CN**: 限制 CPU
+   */
+  export const opt_limit_cpu: string;
+  /**
+   * - 🚩 **en**: Limit Memory
+   * - **zh-CN**: 限制内存
+   */
+  export const opt_limit_memory: string;
+  /**
+   * - 🚩 **en**: Limit maximum number of processes
+   * - **zh-CN**: 限制最大进程数
+   */
+  export const opt_limit_pids: string;
+  /**
+   * - 🚩 **en**: Max number of search results
+   * - **zh-CN**: 最大搜索结果数
+   */
+  export const opt_limit_search: string;
+  /**
+   * - 🚩 **en**: Add link to another container
+   * - **zh-CN**: 链接到另一个容器
+   */
+  export const opt_link: string;
+  /**
+   * - 🚩 **en**: Container IPv4/IPv6 link-local addresses
+   * - **zh-CN**: 容器 IPv4/IPv6 链路本地地址
+   */
+  export const opt_link_local_ip: string;
+  /**
+   * - 🚩 **en**: Remove the specified link
+   * - **zh-CN**: 删除指定链接
+   */
+  export const opt_link_rm: string;
+  /**
+   * - 🚩 **en**: List targets or variables
+   * - **zh-CN**: 列出目标或变量
+   */
+  export const opt_list: string;
+  /**
+   * - 🚩 **en**: Listen address
+   * - **zh-CN**: 监听地址
+   */
+  export const opt_listen_addr: string;
+  /**
+   * - 🚩 **en**: Shorthand for --output=type=docker
+   * - **zh-CN**: --output=type=docker 的简写
+   */
+  export const opt_load: string;
+  /**
+   * - 🚩 **en**: Produces an override file with image digests
+   * - **zh-CN**: 生成包含镜像摘要的覆盖文件
+   */
+  export const opt_lock_image_digests: string;
+  /**
+   * - 🚩 **en**: Logging driver for the container
+   * - **zh-CN**: 容器的日志驱动
+   */
+  export const opt_log_driver: string;
+  /**
+   * - 🚩 **en**: Set the logging level (debug|info|warn|error|fatal)
+   * - **zh-CN**: 设置日志级别
+   */
+  export const opt_log_level: string;
+  /**
+   * - 🚩 **en**: Log driver options
+   * - **zh-CN**: 日志驱动选项
+   */
+  export const opt_log_opt: string;
+  /**
+   * - 🚩 **en**: Container MAC address
+   * - **zh-CN**: 容器 MAC 地址
+   */
+  export const opt_mac_address: string;
+  /**
+   * - 🚩 **en**: Maximum number of concurrent jobs
+   * - **zh-CN**: 最大并发作业数
+   */
+  export const opt_max_concurrent: string;
+  /**
+   * - 🚩 **en**: Number of additional Raft snapshots to retain
+   * - **zh-CN**: 保留的额外 Raft 快照数量
+   */
+  export const opt_max_snapshots: string;
+  /**
+   * - 🚩 **en**: Maximum amount of disk space allowed to be used for the build data
+   * - **zh-CN**: 构建数据允许使用的最大磁盘空间量
+   */
+  export const opt_max_used_space: string;
+  /**
+   * - 🚩 **en**: Memory limit
+   * - **zh-CN**: 内存限制
+   */
+  export const opt_memory: string;
+  /**
+   * - 🚩 **en**: Memory soft limit
+   * - **zh-CN**: 内存软限制
+   */
+  export const opt_memory_reservation: string;
+  /**
+   * - 🚩 **en**: Swap limit equal to memory plus swap
+   * - **zh-CN**: 交换限制（内存+交换）
+   */
+  export const opt_memory_swap: string;
+  /**
+   * - 🚩 **en**: Tune container memory swappiness (0 to 100)
+   * - **zh-CN**: 调整容器内存 swappiness（0-100）
+   */
+  export const opt_memory_swappiness: string;
+  /**
+   * - 🚩 **en**: Enable interactive shortcuts when running attached
+   * - **zh-CN**: 附加运行时启用交互式快捷键
+   */
+  export const opt_menu: string;
+  /**
+   * - 🚩 **en**: Commit message
+   * - **zh-CN**: 提交信息
+   */
+  export const opt_message: string;
+  /**
+   * - 🚩 **en**: Write build result metadata to a file
+   * - **zh-CN**: 将构建结果元数据写入文件
+   */
+  export const opt_metadata_file: string;
+  /**
+   * - 🚩 **en**: Target amount of free disk space after pruning
+   * - **zh-CN**: 清理后的目标可用磁盘空间量
+   */
+  export const opt_min_free_space: string;
+  /**
+   * - 🚩 **en**: Service mode (replicated|global)
+   * - **zh-CN**: 服务模式 (replicated|global)
+   */
+  export const opt_mode: string;
+  /**
+   * - 🚩 **en**: Print the model names, one per line
+   * - **zh-CN**: 打印模型名称，每行一个
+   */
+  export const opt_models: string;
+  /**
+   * - 🚩 **en**: Attach a filesystem mount to the container
+   * - **zh-CN**: 附加文件系统挂载到容器
+   */
+  export const opt_mount: string;
+  /**
+   * - 🚩 **en**: Assign a name to the container
+   * - **zh-CN**: 为容器指定名称
+   */
+  export const opt_name: string;
+  /**
+   * - 🚩 **en**: Connect a container to a network
+   * - **zh-CN**: 将容器连接到网络
+   */
+  export const opt_network: string;
+  /**
+   * - 🚩 **en**: Driver to manage the Network
+   * - **zh-CN**: 网络驱动
+   */
+  export const opt_network_driver: string;
+  /**
+   * - 🚩 **en**: Print the network names, one per line
+   * - **zh-CN**: 打印网络名称，每行一个
+   */
+  export const opt_networks: string;
+  /**
+   * - 🚩 **en**: Do not attach (stream logs) to the specified services
+   * - **zh-CN**: 不附加（流日志）到指定服务
+   */
+  export const opt_no_attach: string;
+  /**
+   * - 🚩 **en**: Don't build an image, even if it's missing
+   * - **zh-CN**: 即使镜像缺失也不构建
+   */
+  export const opt_no_build: string;
+  /**
+   * - 🚩 **en**: Do not use cache when building the image
+   * - **zh-CN**: 构建镜像时不使用缓存
+   */
+  export const opt_no_cache: string;
+  /**
+   * - 🚩 **en**: Do not cache specified stages
+   * - **zh-CN**: 不缓存指定阶段
+   */
+  export const opt_no_cache_filter: string;
+  /**
+   * - 🚩 **en**: Produce monochrome output
+   * - **zh-CN**: 单色输出
+   */
+  export const opt_no_color: string;
+  /**
+   * - 🚩 **en**: Don't check model consistency
+   * - **zh-CN**: 不检查模型一致性
+   */
+  export const opt_no_consistency: string;
+  /**
+   * - 🚩 **en**: Don't start linked services
+   * - **zh-CN**: 不启动链接的服务
+   */
+  export const opt_no_deps: string;
+  /**
+   * - 🚩 **en**: Don't resolve service env files
+   * - **zh-CN**: 不解析服务环境文件
+   */
+  export const opt_no_env_resolution: string;
+  /**
+   * - 🚩 **en**: Disable any container-specified HEALTHCHECK
+   * - **zh-CN**: 禁用容器 HEALTHCHECK
+   */
+  export const opt_no_healthcheck: string;
+  /**
+   * - 🚩 **en**: Don't interpolate environment variables
+   * - **zh-CN**: 不插值环境变量
+   */
+  export const opt_no_interpolate: string;
+  /**
+   * - 🚩 **en**: Don't prefix log entries with timestamps
+   * - **zh-CN**: 不在日志前加时间戳前缀
+   */
+  export const opt_no_log_prefix: string;
+  /**
+   * - 🚩 **en**: Don't normalize compose model
+   * - **zh-CN**: 不标准化 compose 模型
+   */
+  export const opt_no_normalize: string;
+  /**
+   * - 🚩 **en**: Don't resolve file paths
+   * - **zh-CN**: 不解析文件路径
+   */
+  export const opt_no_path_resolution: string;
+  /**
+   * - 🚩 **en**: Disable pausing container during commit
+   * - **zh-CN**: 提交期间不暂停容器
+   */
+  export const opt_no_pause: string;
+  /**
+   * - 🚩 **en**: Do not delete untagged parents
+   * - **zh-CN**: 不删除未标记的父镜像
+   */
+  export const opt_no_prune: string;
+  /**
+   * - 🚩 **en**: If containers already exist, don't recreate them
+   * - **zh-CN**: 如果容器已存在，不重新创建
+   */
+  export const opt_no_recreate: string;
+  /**
+   * - 🚩 **en**: Do not map IDs to names
+   * - **zh-CN**: 不将 ID 映射为名称
+   */
+  export const opt_no_resolve: string;
+  /**
+   * - 🚩 **en**: Don't start the service after creating containers
+   * - **zh-CN**: 创建容器后不启动
+   */
+  export const opt_no_start: string;
+  /**
+   * - 🚩 **en**: Do not attach STDIN
+   * - **zh-CN**: 不附加 STDIN
+   */
+  export const opt_no_stdin: string;
+  /**
+   * - 🚩 **en**: Disable streaming stats and only pull the first result
+   * - **zh-CN**: 禁用流式统计，仅拉取第一个结果
+   */
+  export const opt_no_stream: string;
+  /**
+   * - 🚩 **en**: Do not include task IDs
+   * - **zh-CN**: 不包含任务 ID
+   */
+  export const opt_no_task_ids: string;
+  /**
+   * - 🚩 **en**: Don't truncate output
+   * - **zh-CN**: 不截断输出
+   */
+  export const opt_no_trunc: string;
+  /**
+   * - 🚩 **en**: Do not allocate a pseudo-TTY
+   * - **zh-CN**: 不分配伪 TTY
+   */
+  export const opt_no_tty: string;
+  /**
+   * - 🚩 **en**: Do not build and start services before watching
+   * - **zh-CN**: 不构建和启动服务
+   */
+  export const opt_no_up: string;
+  /**
+   * - 🚩 **en**: Create/modify node with given name
+   * - **zh-CN**: 创建/修改指定名称的节点
+   */
+  export const opt_node_builder: string;
+  /**
+   * - 🚩 **en**: Disable OOM Killer
+   * - **zh-CN**: 禁用 OOM Killer
+   */
+  export const opt_oom_kill_disable: string;
+  /**
+   * - 🚩 **en**: Tune host's OOM preferences (-1000 to 1000)
+   * - **zh-CN**: 调整宿主机 OOM 优先级（-1000 到 1000）
+   */
+  export const opt_oom_score_adj: string;
+  /**
+   * - 🚩 **en**: Set driver specific options
+   * - **zh-CN**: 设置驱动特定选项
+   */
+  export const opt_opt: string;
+  /**
+   * - 🚩 **en**: Include orphaned services (not declared by project)
+   * - **zh-CN**: 包含孤立服务（非项目声明的）
+   */
+  export const opt_orphans: string;
+  /**
+   * - 🚩 **en**: Target operating system
+   * - **zh-CN**: 目标操作系统
+   */
+  export const opt_os: string;
+  /**
+   * - 🚩 **en**: OS features
+   * - **zh-CN**: 操作系统特性
+   */
+  export const opt_os_features: string;
+  /**
+   * - 🚩 **en**: OS version
+   * - **zh-CN**: 操作系统版本
+   */
+  export const opt_os_version: string;
+  /**
+   * - 🚩 **en**: Output destination (format: type=local,dest=path)
+   * - **zh-CN**: 输出目标
+   */
+  export const opt_output: string;
+  /**
+   * - 🚩 **en**: Write to a file, instead of STDOUT
+   * - **zh-CN**: 写入文件而不是 STDOUT
+   */
+  export const opt_output_file: string;
+  /**
+   * - 🚩 **en**: Control max parallelism, -1 for unlimited
+   * - **zh-CN**: 控制最大并行数，-1 为无限制
+   */
+  export const opt_parallel: string;
+  /**
+   * - 🚩 **en**: Password or Personal Access Token (PAT)
+   * - **zh-CN**: 密码或个人访问令牌（PAT）
+   */
+  export const opt_password: string;
+  /**
+   * - 🚩 **en**: Take the Password or Personal Access Token (PAT) from stdin
+   * - **zh-CN**: 从 stdin 读取密码或 PAT
+   */
+  export const opt_password_stdin: string;
+  /**
+   * - 🚩 **en**: PID namespace to use
+   * - **zh-CN**: PID 命名空间
+   */
+  export const opt_pid: string;
+  /**
+   * - 🚩 **en**: Tune container pids limit (set -1 for unlimited)
+   * - **zh-CN**: 调整容器 PID 限制（-1 为无限制）
+   */
+  export const opt_pids_limit: string;
+  /**
+   * - 🚩 **en**: Add a placement preference
+   * - **zh-CN**: 添加放置偏好
+   */
+  export const opt_placement_pref: string;
+  /**
+   * - 🚩 **en**: Set platform if server is multi-platform capable
+   * - **zh-CN**: 设置平台
+   */
+  export const opt_platform: string;
+  /**
+   * - 🚩 **en**: Policy configuration for build
+   * - **zh-CN**: 构建的策略配置
+   */
+  export const opt_policy: string;
+  /**
+   * - 🚩 **en**: Pull policy (always|missing|never|build)
+   * - **zh-CN**: 拉取策略
+   */
+  export const opt_policy_compose: string;
+  /**
+   * - 🚩 **en**: Print the information in a human friendly format
+   * - **zh-CN**: 以人类友好的格式打印信息
+   */
+  export const opt_pretty_inspect: string;
+  /**
+   * - 🚩 **en**: Print equivalent bake file
+   * - **zh-CN**: 打印等效的 bake 文件
+   */
+  export const opt_print: string;
+  /**
+   * - 🚩 **en**: Give extended privileges to this container
+   * - **zh-CN**: 赋予容器扩展权限
+   */
+  export const opt_privileged: string;
+  /**
+   * - 🚩 **en**: Specify a profile to enable
+   * - **zh-CN**: 指定要启用的 profile
+   */
+  export const opt_profile: string;
+  /**
+   * - 🚩 **en**: Display profiles
+   * - **zh-CN**: 显示 profiles
+   */
+  export const opt_profiles: string;
+  /**
+   * - 🚩 **en**: Set type of progress output
+   * - **zh-CN**: 设置进度输出类型
+   */
+  export const opt_progress: string;
+  /**
+   * - 🚩 **en**: Work directory
+   * - **zh-CN**: 工作目录
+   */
+  export const opt_project_dir: string;
+  /**
+   * - 🚩 **en**: Project name
+   * - **zh-CN**: 项目名称
+   */
+  export const opt_project_name: string;
+  /**
+   * - 🚩 **en**: Protocol (tcp|udp)
+   * - **zh-CN**: 协议（tcp|udp）
+   */
+  export const opt_protocol: string;
+  /**
+   * - 🚩 **en**: Shorthand for --attest=type=provenance
+   * - **zh-CN**: --attest=type=provenance 的简写
+   */
+  export const opt_provenance: string;
+  /**
+   * - 🚩 **en**: Prune services that are no longer referenced
+   * - **zh-CN**: 清理不再被引用的服务
+   */
+  export const opt_prune_stack: string;
+  /**
+   * - 🚩 **en**: Prune dangling images on rebuild
+   * - **zh-CN**: 重建时清理悬空镜像
+   */
+  export const opt_prune_watch: string;
+  /**
+   * - 🚩 **en**: Publish a container's port(s) to the host
+   * - **zh-CN**: 发布容器端口到宿主机
+   */
+  export const opt_publish: string;
+  /**
+   * - 🚩 **en**: Publish all exposed ports to random ports
+   * - **zh-CN**: 将所有暴露端口发布到随机端口
+   */
+  export const opt_publish_all: string;
+  /**
+   * - 🚩 **en**: Always attempt to pull a newer version of the image
+   * - **zh-CN**: 始终尝试拉取镜像新版本
+   */
+  export const opt_pull: string;
+  /**
+   * - 🚩 **en**: Pull image before running (always|missing|never)
+   * - **zh-CN**: 运行前拉取镜像（always|missing|never）
+   */
+  export const opt_pull_compose_up: string;
+  /**
+   * - 🚩 **en**: Remove the manifest list from local storage
+   * - **zh-CN**: 从本地存储中移除 manifest 列表
+   */
+  export const opt_purge: string;
+  /**
+   * - 🚩 **en**: Shorthand for --output=type=registry
+   * - **zh-CN**: --output=type=registry 的简写
+   */
+  export const opt_push_build: string;
+  /**
+   * - 🚩 **en**: Only display IDs
+   * - **zh-CN**: 仅显示 ID
+   */
+  export const opt_quiet: string;
+  /**
+   * - 🚩 **en**: Suppress the build output
+   * - **zh-CN**: 抑制构建输出
+   */
+  export const opt_quiet_build: string;
+  /**
+   * - 🚩 **en**: Pull without printing progress information
+   * - **zh-CN**: 拉取时不打印进度信息
+   */
+  export const opt_quiet_pull: string;
+  /**
+   * - 🚩 **en**: Do not truncate output
+   * - **zh-CN**: 不截断输出
+   */
+  export const opt_raw: string;
+  /**
+   * - 🚩 **en**: Mount the container's root filesystem as read only
+   * - **zh-CN**: 将容器根文件系统挂载为只读
+   */
+  export const opt_read_only: string;
+  /**
+   * - 🚩 **en**: Remove containers for services not defined in the Compose file
+   * - **zh-CN**: 删除未在 Compose 文件中定义的服务容器
+   */
+  export const opt_remove_orphans: string;
+  /**
+   * - 🚩 **en**: Re-create anonymous volumes instead of retrieving data from the previous containers
+   * - **zh-CN**: 重新创建匿名卷
+   */
+  export const opt_renew_anon_volumes: string;
+  /**
+   * - 🚩 **en**: Number of replicas
+   * - **zh-CN**: 副本数量
+   */
+  export const opt_replicas: string;
+  /**
+   * - 🚩 **en**: Required size of the volume in bytes
+   * - **zh-CN**: 卷的所需字节数
+   */
+  export const opt_required_bytes: string;
+  /**
+   * - 🚩 **en**: Reserve CPUs
+   * - **zh-CN**: 预留 CPU
+   */
+  export const opt_reserve_cpu: string;
+  /**
+   * - 🚩 **en**: Reserve Memory
+   * - **zh-CN**: 预留内存
+   */
+  export const opt_reserve_memory: string;
+  /**
+   * - 🚩 **en**: Amount of disk space always allowed to be used for build data
+   * - **zh-CN**: 始终允许用于构建数据的磁盘空间量
+   */
+  export const opt_reserved_space: string;
+  /**
+   * - 🚩 **en**: Query the registry to resolve image digest and supported platforms
+   * - **zh-CN**: 查询 registry 以解析镜像摘要和受支持的平台
+   */
+  export const opt_resolve_image: string;
+  /**
+   * - 🚩 **en**: Pin image tags to digests
+   * - **zh-CN**: 将镜像标签固定为摘要
+   */
+  export const opt_resolve_image_digests: string;
+  /**
+   * - 🚩 **en**: Resource limits for build containers
+   * - **zh-CN**: 构建容器的资源限制
+   */
+  export const opt_resource: string;
+  /**
+   * - 🚩 **en**: Restart policy to apply when a container exits
+   * - **zh-CN**: 容器退出时的重启策略
+   */
+  export const opt_restart: string;
+  /**
+   * - 🚩 **en**: Restart when condition is met (none|on-failure|any)
+   * - **zh-CN**: 重启条件 (none|on-failure|any)
+   */
+  export const opt_restart_condition: string;
+  /**
+   * - 🚩 **en**: Delay between restart attempts
+   * - **zh-CN**: 重启尝试之间的延迟
+   */
+  export const opt_restart_delay: string;
+  /**
+   * - 🚩 **en**: Maximum number of restart attempts
+   * - **zh-CN**: 最大重启尝试次数
+   */
+  export const opt_restart_max_attempts: string;
+  /**
+   * - 🚩 **en**: Window used to evaluate restart attempts
+   * - **zh-CN**: 评估重启尝试的窗口时间
+   */
+  export const opt_restart_window: string;
+  /**
+   * - 🚩 **en**: Automatically remove the container when it exits
+   * - **zh-CN**: 容器退出时自动删除
+   */
+  export const opt_rm: string;
+  /**
+   * - 🚩 **en**: Remove intermediate containers after a successful build
+   * - **zh-CN**: 构建成功后删除中间容器
+   */
+  export const opt_rm_cache: string;
+  /**
+   * - 🚩 **en**: Remove images used by services (local|all)
+   * - **zh-CN**: 删除服务使用的镜像（local|all）
+   */
+  export const opt_rmi_type: string;
+  /**
+   * - 🚩 **en**: Role of the node (worker|manager)
+   * - **zh-CN**: 节点角色 (worker|manager)
+   */
+  export const opt_role_node: string;
+  /**
+   * - 🚩 **en**: Delay between rollback attempts
+   * - **zh-CN**: 回滚尝试之间的延迟
+   */
+  export const opt_rollback_delay: string;
+  /**
+   * - 🚩 **en**: Action on rollback failure (pause|continue)
+   * - **zh-CN**: 回滚失败时的操作 (pause|continue)
+   */
+  export const opt_rollback_failure_action: string;
+  /**
+   * - 🚩 **en**: Failure rate to tolerate during rollback
+   * - **zh-CN**: 回滚期间可容忍的失败率
+   */
+  export const opt_rollback_max_failure_ratio: string;
+  /**
+   * - 🚩 **en**: Duration after each task to monitor for failure
+   * - **zh-CN**: 每个任务后监视失败的持续时间
+   */
+  export const opt_rollback_monitor: string;
+  /**
+   * - 🚩 **en**: Rollback order (start-first|stop-first)
+   * - **zh-CN**: 回滚顺序 (start-first|stop-first)
+   */
+  export const opt_rollback_order: string;
+  /**
+   * - 🚩 **en**: Maximum number of tasks rolled back simultaneously
+   * - **zh-CN**: 同时回滚的最大任务数
+   */
+  export const opt_rollback_parallelism: string;
+  /**
+   * - 🚩 **en**: Rotate the swarm CA - if no certificate or key are provided, new ones will be generated
+   * - **zh-CN**: 轮换 swarm CA——如果未提供证书或密钥，将生成新的
+   */
+  export const opt_rotate: string;
+  /**
+   * - 🚩 **en**: Runtime to use for this container
+   * - **zh-CN**: 容器使用的运行时
+   */
+  export const opt_runtime: string;
+  /**
+   * - 🚩 **en**: Shorthand for --attest=type=sbom
+   * - **zh-CN**: --attest=type=sbom 的简写
+   */
+  export const opt_sbom: string;
+  /**
+   * - 🚩 **en**: Set number of containers for a service
+   * - **zh-CN**: 设置服务的容器数量
+   */
+  export const opt_scale: string;
+  /**
+   * - 🚩 **en**: Set the scope of the network
+   * - **zh-CN**: 设置网络范围
+   */
+  export const opt_scope: string;
+  /**
+   * - 🚩 **en**: Volume scope (single|multi)
+   * - **zh-CN**: 卷范围（single|multi）
+   */
+  export const opt_scope_vol: string;
+  /**
+   * - 🚩 **en**: Secret file to expose to the build
+   * - **zh-CN**: 暴露给构建的密钥文件
+   */
+  export const opt_secret: string;
+  /**
+   * - 🚩 **en**: Secret used to create the volume
+   * - **zh-CN**: 用于创建卷的密钥
+   */
+  export const opt_secret_vol: string;
+  /**
+   * - 🚩 **en**: Security Options
+   * - **zh-CN**: 安全选项
+   */
+  export const opt_security_opt: string;
+  /**
+   * - 🚩 **en**: Fetch the logs of a service or task
+   * - **zh-CN**: 获取服务或任务的日志
+   */
+  export const opt_service_logs: string;
+  /**
+   * - 🚩 **en**: Run command with the service's ports enabled and mapped to the host
+   * - **zh-CN**: 启用服务端口并映射到宿主机运行命令
+   */
+  export const opt_service_ports: string;
+  /**
+   * - 🚩 **en**: Display services
+   * - **zh-CN**: 显示服务
+   */
+  export const opt_services: string;
+  /**
+   * - 🚩 **en**: Override target value (e.g., targetpattern.key=value)
+   * - **zh-CN**: 覆盖目标值（例如 targetpattern.key=value）
+   */
+  export const opt_set: string;
+  /**
+   * - 🚩 **en**: Volume sharing (none|readonly|onewriter|all)
+   * - **zh-CN**: 卷共享模式（none|readonly|onewriter|all）
+   */
+  export const opt_sharing: string;
+  /**
+   * - 🚩 **en**: Size of /dev/shm
+   * - **zh-CN**: /dev/shm 的大小
+   */
+  export const opt_shm_size: string;
+  /**
+   * - 🚩 **en**: Show only version number
+   * - **zh-CN**: 仅显示版本号
+   */
+  export const opt_short: string;
+  /**
+   * - 🚩 **en**: Proxy received signals to the process
+   * - **zh-CN**: 将接收到的信号代理到进程
+   */
+  export const opt_sig_proxy: string;
+  /**
+   * - 🚩 **en**: Signal to send to the container
+   * - **zh-CN**: 发送给容器的信号
+   */
+  export const opt_signal: string;
+  /**
+   * - 🚩 **en**: Show logs since timestamp
+   * - **zh-CN**: 显示自某个时间戳起的日志
+   */
+  export const opt_since: string;
+  /**
+   * - 🚩 **en**: Display total file sizes
+   * - **zh-CN**: 显示总文件大小
+   */
+  export const opt_size: string;
+  /**
+   * - 🚩 **en**: Skip interpolation of environment variables
+   * - **zh-CN**: 跳过环境变量插值
+   */
+  export const opt_skip_interpolation: string;
+  /**
+   * - 🚩 **en**: Do not check if the plugin is available remotely
+   * - **zh-CN**: 不检查插件是否在远程可用
+   */
+  export const opt_skip_remote_check: string;
+  /**
+   * - 🚩 **en**: Number of log entries between Raft snapshots
+   * - **zh-CN**: Raft 快照之间的日志条目数
+   */
+  export const opt_snapshot_interval: string;
+  /**
+   * - 🚩 **en**: Squash newly built layers into a single new layer
+   * - **zh-CN**: 将新构建的层压缩为单个新层
+   */
+  export const opt_squash: string;
+  /**
+   * - 🚩 **en**: SSH agent socket or keys to expose to the build
+   * - **zh-CN**: 暴露给构建的 SSH agent socket 或密钥
+   */
+  export const opt_ssh: string;
+  /**
+   * - 🚩 **en**: Filter by status (paused|running|stopped|removing|exited)
+   * - **zh-CN**: 按状态过滤
+   */
+  export const opt_status: string;
+  /**
+   * - 🚩 **en**: Stop the containers before removing
+   * - **zh-CN**: 移除前停止容器
+   */
+  export const opt_stop_compose: string;
+  /**
+   * - 🚩 **en**: Time to wait before force killing the container
+   * - **zh-CN**: 强制终止容器前的等待时间
+   */
+  export const opt_stop_grace_period: string;
+  /**
+   * - 🚩 **en**: Signal to stop the container
+   * - **zh-CN**: 停止容器的信号
+   */
+  export const opt_stop_signal: string;
+  /**
+   * - 🚩 **en**: Timeout (in seconds) to stop the container
+   * - **zh-CN**: 停止容器的超时时间（秒）
+   */
+  export const opt_stop_timeout: string;
+  /**
+   * - 🚩 **en**: Storage driver options for the container
+   * - **zh-CN**: 容器的存储驱动选项
+   */
+  export const opt_storage_opt: string;
+  /**
+   * - 🚩 **en**: Subnet in CIDR format
+   * - **zh-CN**: CIDR 格式的子网
+   */
+  export const opt_subnet: string;
+  /**
+   * - 🚩 **en**: Sysctl options
+   * - **zh-CN**: Sysctl 选项
+   */
+  export const opt_sysctl: string;
+  /**
+   * - 🚩 **en**: Tag for the image
+   * - **zh-CN**: 镜像标签
+   */
+  export const opt_tag: string;
+  /**
+   * - 🚩 **en**: Number of lines to show from the end of the logs
+   * - **zh-CN**: 从日志末尾显示的行数
+   */
+  export const opt_tail: string;
+  /**
+   * - 🚩 **en**: Set the target build stage to build
+   * - **zh-CN**: 设置目标构建阶段
+   */
+  export const opt_target: string;
+  /**
+   * - 🚩 **en**: Task history retention limit
+   * - **zh-CN**: 任务历史保留限制
+   */
+  export const opt_task_history_limit: string;
+  /**
+   * - 🚩 **en**: Template driver
+   * - **zh-CN**: 模板驱动
+   */
+  export const opt_template_driver: string;
+  /**
+   * - 🚩 **en**: Timeout in seconds
+   * - **zh-CN**: 超时时间（秒）
+   */
+  export const opt_timeout: string;
+  /**
+   * - 🚩 **en**: Show timestamps
+   * - **zh-CN**: 显示时间戳
+   */
+  export const opt_timestamps: string;
+  /**
+   * - 🚩 **en**: Use TLS; implied by --tlsverify
+   * - **zh-CN**: 使用 TLS
+   */
+  export const opt_tls: string;
+  /**
+   * - 🚩 **en**: Trust certs signed only by this CA
+   * - **zh-CN**: 信任仅由此 CA 签发的证书
+   */
+  export const opt_tlscacert: string;
+  /**
+   * - 🚩 **en**: Path to TLS certificate file
+   * - **zh-CN**: TLS 证书文件路径
+   */
+  export const opt_tlscert: string;
+  /**
+   * - 🚩 **en**: Path to TLS key file
+   * - **zh-CN**: TLS 密钥文件路径
+   */
+  export const opt_tlskey: string;
+  /**
+   * - 🚩 **en**: Use TLS and verify the remote
+   * - **zh-CN**: 使用 TLS 并验证远程端
+   */
+  export const opt_tlsverify: string;
+  /**
+   * - 🚩 **en**: Mount a tmpfs directory
+   * - **zh-CN**: 挂载 tmpfs 目录
+   */
+  export const opt_tmpfs: string;
+  /**
+   * - 🚩 **en**: Token for entry into the swarm
+   * - **zh-CN**: 加入 swarm 的令牌
+   */
+  export const opt_token: string;
+  /**
+   * - 🚩 **en**: Topology that the volume should be provisioned in
+   * - **zh-CN**: 卷应配置到的拓扑
+   */
+  export const opt_topology_preferred: string;
+  /**
+   * - 🚩 **en**: Topology that the volume must be provisioned in
+   * - **zh-CN**: 卷必须配置到的拓扑
+   */
+  export const opt_topology_required: string;
+  /**
+   * - 🚩 **en**: List multi-platform images as a tree (EXPERIMENTAL)
+   * - **zh-CN**: 以树形列出多平台镜像（实验性）
+   */
+  export const opt_tree: string;
+  /**
+   * - 🚩 **en**: Allocate a pseudo-TTY
+   * - **zh-CN**: 分配伪 TTY
+   */
+  export const opt_tty: string;
+  /**
+   * - 🚩 **en**: Return JSON for specified type
+   * - **zh-CN**: 返回指定类型的 JSON
+   */
+  export const opt_type: string;
+  /**
+   * - 🚩 **en**: Volume type (block|file|mount)
+   * - **zh-CN**: 卷类型（block|file|mount）
+   */
+  export const opt_type_vol: string;
+  /**
+   * - 🚩 **en**: Ulimit options
+   * - **zh-CN**: Ulimit 选项
+   */
+  export const opt_ulimit: string;
+  /**
+   * - 🚩 **en**: Show logs before timestamp
+   * - **zh-CN**: 显示某个时间戳之前的日志
+   */
+  export const opt_until: string;
+  /**
+   * - 🚩 **en**: Delay between updates
+   * - **zh-CN**: 更新之间的延迟
+   */
+  export const opt_update_delay: string;
+  /**
+   * - 🚩 **en**: Action on update failure (pause|continue|rollback)
+   * - **zh-CN**: 更新失败时的操作 (pause|continue|rollback)
+   */
+  export const opt_update_failure_action: string;
+  /**
+   * - 🚩 **en**: Failure rate to tolerate during update
+   * - **zh-CN**: 更新期间可容忍的失败率
+   */
+  export const opt_update_max_failure_ratio: string;
+  /**
+   * - 🚩 **en**: Duration after each task to monitor for failure
+   * - **zh-CN**: 每个任务后监视失败的持续时间
+   */
+  export const opt_update_monitor: string;
+  /**
+   * - 🚩 **en**: Update order (start-first|stop-first)
+   * - **zh-CN**: 更新顺序 (start-first|stop-first)
+   */
+  export const opt_update_order: string;
+  /**
+   * - 🚩 **en**: Maximum number of tasks updated simultaneously
+   * - **zh-CN**: 同时更新的最大任务数
+   */
+  export const opt_update_parallelism: string;
+  /**
+   * - 🚩 **en**: Use the service's network aliases in the network(s) the container connects to
+   * - **zh-CN**: 使用服务的网络别名
+   */
+  export const opt_use_aliases: string;
+  /**
+   * - 🚩 **en**: Bind mount Docker API socket and required auth
+   * - **zh-CN**: 挂载 Docker API 套接字和所需认证
+   */
+  export const opt_use_api_socket: string;
+  /**
+   * - 🚩 **en**: Set the current builder instance
+   * - **zh-CN**: 设置当前构建器实例
+   */
+  export const opt_use_builder: string;
+  /**
+   * - 🚩 **en**: Username or UID (format: <name|uid>[:<group|gid>])
+   * - **zh-CN**: 用户名或 UID
+   */
+  export const opt_user: string;
+  /**
+   * - 🚩 **en**: Username
+   * - **zh-CN**: 用户名
+   */
+  export const opt_username: string;
+  /**
+   * - 🚩 **en**: User namespace to use
+   * - **zh-CN**: 用户命名空间
+   */
+  export const opt_userns: string;
+  /**
+   * - 🚩 **en**: UTS namespace to use
+   * - **zh-CN**: UTS 命名空间
+   */
+  export const opt_uts: string;
+  /**
+   * - 🚩 **en**: Set a variable value (e.g., name=value)
+   * - **zh-CN**: 设置变量值（例如 name=value）
+   */
+  export const opt_var: string;
+  /**
+   * - 🚩 **en**: Print model variables and default values
+   * - **zh-CN**: 打印模型变量和默认值
+   */
+  export const opt_variables: string;
+  /**
+   * - 🚩 **en**: Variant of the CPU architecture
+   * - **zh-CN**: CPU 架构变体
+   */
+  export const opt_variant: string;
+  /**
+   * - 🚩 **en**: Show verbose output
+   * - **zh-CN**: 显示详细输出
+   */
+  export const opt_verbose: string;
+  /**
+   * - 🚩 **en**: Show additional information
+   * - **zh-CN**: 显示额外信息
+   */
+  export const opt_verbose_manifest: string;
+  /**
+   * - 🚩 **en**: Print version information and quit
+   * - **zh-CN**: 打印版本信息并退出
+   */
+  export const opt_version_global: string;
+  /**
+   * - 🚩 **en**: Bind mount a volume
+   * - **zh-CN**: 挂载卷
+   */
+  export const opt_volume: string;
+  /**
+   * - 🚩 **en**: Optional volume driver for the container
+   * - **zh-CN**: 可选卷驱动
+   */
+  export const opt_volume_driver: string;
+  /**
+   * - 🚩 **en**: Driver to manage the Volume
+   * - **zh-CN**: 卷驱动
+   */
+  export const opt_volume_driver_create: string;
+  /**
+   * - 🚩 **en**: Update a volume (cluster volumes only)
+   * - **zh-CN**: 更新卷（仅集群卷）
+   */
+  export const opt_volume_update: string;
+  /**
+   * - 🚩 **en**: Remove named volumes declared in the anonymous volumes section
+   * - **zh-CN**: 删除匿名卷中声明的命名卷
+   */
+  export const opt_volumes: string;
+  /**
+   * - 🚩 **en**: Display volumes
+   * - **zh-CN**: 显示卷
+   */
+  export const opt_volumes_compose: string;
+  /**
+   * - 🚩 **en**: Mount volumes from the specified container(s)
+   * - **zh-CN**: 从指定容器挂载卷
+   */
+  export const opt_volumes_from: string;
+  /**
+   * - 🚩 **en**: Remove anonymous volumes associated with the container
+   * - **zh-CN**: 删除与容器关联的匿名卷
+   */
+  export const opt_volumes_rm: string;
+  /**
+   * - 🚩 **en**: Prune volumes
+   * - **zh-CN**: 清理卷
+   */
+  export const opt_volumes_system: string;
+  /**
+   * - 🚩 **en**: Maximum duration in seconds to wait for the project to be running|healthy
+   * - **zh-CN**: 等待项目变为 running|healthy 的最大秒数
+   */
+  export const opt_wait_timeout: string;
+  /**
+   * - 🚩 **en**: Wait for services to be running|healthy
+   * - **zh-CN**: 等待服务变为 running|healthy
+   */
+  export const opt_wait_up: string;
+  /**
+   * - 🚩 **en**: Watch source code and rebuild/refresh containers when files are updated
+   * - **zh-CN**: 监视源代码并在文件更新时重建/刷新容器
+   */
+  export const opt_watch_up: string;
+  /**
+   * - 🚩 **en**: Also build dependencies (transitively)
+   * - **zh-CN**: 同时构建依赖（传递性）
+   */
+  export const opt_with_dependencies: string;
+  /**
+   * - 🚩 **en**: Send registry authentication details to swarm agents
+   * - **zh-CN**: 向 swarm 代理发送 registry 认证信息
+   */
+  export const opt_with_registry_auth: string;
+  /**
+   * - 🚩 **en**: Send registry authentication details to Swarm agents
+   * - **zh-CN**: 向 Swarm 代理发送 registry 认证信息
+   */
+  export const opt_with_registry_auth_svc: string;
+  /**
+   * - 🚩 **en**: Working directory inside the container
+   * - **zh-CN**: 容器内的工作目录
+   */
+  export const opt_workdir: string;
+  /**
+   * - 🚩 **en**: Assume "yes" as answer to all prompts and run non-interactively
+   * - **zh-CN**: 对所有提示回答"是"并以非交互模式运行
+   */
+  export const opt_yes: string;
+}
+
 declare module "virtual:i18n/git" {
   /**
    * - 🚩 **en**: Add file contents to the index
@@ -3722,6 +6850,879 @@ declare module "virtual:i18n/npm" {
   export const suggestion_workspace: string;
 }
 
+declare module "virtual:i18n/pnpm" {
+  /**
+   * - 🚩 **en**: Installs a package and any packages that it depends on. By default, any new package is installed as a prod dependency
+   * - **zh-CN**: 安装包及其依赖
+   */
+  export const cmd_add: string;
+  /**
+   * - 🚩 **en**: Checks for known security issues with the installed packages
+   * - **zh-CN**: 检查已安装包的安全问题
+   */
+  export const cmd_audit: string;
+  /**
+   * - 🚩 **en**: Print the directory where pnpm will install executables
+   * - **zh-CN**: 打印可执行文件安装目录
+   */
+  export const cmd_bin: string;
+  /**
+   * - 🚩 **en**: Prints the contents of a file based on the hash value stored in the index file
+   * - **zh-CN**: 根据索引文件中的哈希值打印文件内容
+   */
+  export const cmd_catFile: string;
+  /**
+   * - 🚩 **en**: Prints the index file of a specific package from the store
+   * - **zh-CN**: 打印存储中指定包的索引文件
+   */
+  export const cmd_catIndex: string;
+  /**
+   * - 🚩 **en**: Manage the pnpm configuration files
+   * - **zh-CN**: 管理 pnpm 配置文件
+   */
+  export const cmd_config: string;
+  /**
+   * - 🚩 **en**: Remove the config key from the config file
+   * - **zh-CN**: 删除配置键
+   */
+  export const cmd_config_delete: string;
+  /**
+   * - 🚩 **en**: Print the config value for the provided key
+   * - **zh-CN**: 打印配置值
+   */
+  export const cmd_config_get: string;
+  /**
+   * - 🚩 **en**: Show all the config settings
+   * - **zh-CN**: 显示所有配置
+   */
+  export const cmd_config_list: string;
+  /**
+   * - 🚩 **en**: Set the config key to the value provided
+   * - **zh-CN**: 设置配置键值
+   */
+  export const cmd_config_set: string;
+  /**
+   * - 🚩 **en**: Creates a project from a `create-*` starter kit
+   * - **zh-CN**: 从 create-* 模板创建项目
+   */
+  export const cmd_create: string;
+  /**
+   * - 🚩 **en**: Perform an install removing older dependencies in the lockfile if a newer version can be used
+   * - **zh-CN**: 消除 lockfile 中的重复依赖
+   */
+  export const cmd_dedupe: string;
+  /**
+   * - 🚩 **en**: Run a package in a temporary environment
+   * - **zh-CN**: 在临时环境中运行包
+   */
+  export const cmd_dlx: string;
+  /**
+   * - 🚩 **en**: Checks for known common issues
+   * - **zh-CN**: 检查常见的已知问题
+   */
+  export const cmd_doctor: string;
+  /**
+   * - 🚩 **en**: Manage Node.js versions
+   * - **zh-CN**: 管理 Node.js 版本
+   */
+  export const cmd_env: string;
+  /**
+   * - 🚩 **en**: Installs the specified version(s) of Node.js without activating them as the current version
+   * - **zh-CN**: 安装指定版本 Node.js
+   */
+  export const cmd_env_add: string;
+  /**
+   * - 🚩 **en**: List Node.js versions available locally or remotely
+   * - **zh-CN**: 列出本地或远程 Node.js 版本
+   */
+  export const cmd_env_list: string;
+  /**
+   * - 🚩 **en**: Removes the specified version(s) of Node.js
+   * - **zh-CN**: 删除指定版本 Node.js
+   */
+  export const cmd_env_remove: string;
+  /**
+   * - 🚩 **en**: Installs the specified version of Node.js. The npm CLI bundled with the given Node.js version gets installed as well. This sets this version of Node.js as the current version
+   * - **zh-CN**: 安装并切换 Node.js 版本
+   */
+  export const cmd_env_use: string;
+  /**
+   * - 🚩 **en**: Executes a shell command in scope of a project
+   * - **zh-CN**: 在项目范围内执行 shell 命令
+   */
+  export const cmd_exec: string;
+  /**
+   * - 🚩 **en**: Fetch packages from a lockfile into virtual store, package manifest is ignored
+   * - **zh-CN**: 从 lockfile 中获取包到虚拟 store
+   */
+  export const cmd_fetch: string;
+  /**
+   * - 🚩 **en**: Experimental! Lists the packages that include the file with the specified hash
+   * - **zh-CN**: 实验性：列出包含指定哈希文件的包
+   */
+  export const cmd_findHash: string;
+  /**
+   * - 🚩 **en**: Generates pnpm-lock.yaml from an npm package-lock.json (or npm-shrinkwrap.json, yarn.lock) file
+   * - **zh-CN**: 从 npm/yarn lockfile 生成 pnpm-lock.yaml
+   */
+  export const cmd_import: string;
+  /**
+   * - 🚩 **en**: Install all dependencies for a project
+   * - **zh-CN**: 安装项目所有依赖
+   */
+  export const cmd_install: string;
+  /**
+   * - 🚩 **en**: Runs a `pnpm install` followed immediately by a `pnpm test`. It takes exactly the same arguments as `pnpm install`
+   * - **zh-CN**: 运行 install 后立即执行 test
+   */
+  export const cmd_installTest: string;
+  /**
+   * - 🚩 **en**: Check licenses in consumed packages
+   * - **zh-CN**: 检查已安装包的许可证
+   */
+  export const cmd_licenses: string;
+  /**
+   * - 🚩 **en**: Check the licenses of the installed packages
+   * - **zh-CN**: 列出许可证信息
+   */
+  export const cmd_licenses_list: string;
+  /**
+   * - 🚩 **en**: Connect the local project to another one
+   * - **zh-CN**: 将本地项目链接到另一个项目
+   */
+  export const cmd_link: string;
+  /**
+   * - 🚩 **en**: Print all the versions of packages that are installed, as well as their dependencies, in a tree-structure
+   * - **zh-CN**: 以树状结构打印已安装包的版本
+   */
+  export const cmd_list: string;
+  /**
+   * - 🚩 **en**: Check for outdated packages
+   * - **zh-CN**: 检查过时的包
+   */
+  export const cmd_outdated: string;
+  /**
+   * - 🚩 **en**: Create a tarball from a package
+   * - **zh-CN**: 从包创建 tarball
+   */
+  export const cmd_pack: string;
+  /**
+   * - 🚩 **en**: Prepare a package for patching
+   * - **zh-CN**: 准备修补包
+   */
+  export const cmd_patch: string;
+  /**
+   * - 🚩 **en**: Generate a patch out of a directory
+   * - **zh-CN**: 从目录生成补丁
+   */
+  export const cmd_patchCommit: string;
+  /**
+   * - 🚩 **en**: Fast, disk space efficient package manager
+   * - **zh-CN**: 快速、节省磁盘空间的包管理器
+   */
+  export const cmd_pnpm: string;
+  /**
+   * - 🚩 **en**: Removes extraneous packages
+   * - **zh-CN**: 删除无关的包
+   */
+  export const cmd_prune: string;
+  /**
+   * - 🚩 **en**: Publishes a package to the registry
+   * - **zh-CN**: 将包发布到注册表
+   */
+  export const cmd_publish: string;
+  /**
+   * - 🚩 **en**: Rebuild a package
+   * - **zh-CN**: 重新构建包
+   */
+  export const cmd_rebuild: string;
+  /**
+   * - 🚩 **en**: Concurrently performs some actions in all subdirectories with a `package.json` (excluding node_modules). A `pnpm-workspace.yaml` file may be used to control what directories are searched for packages
+   * - **zh-CN**: 在子目录或 workspace 中并发执行操作
+   */
+  export const cmd_recursive: string;
+  /**
+   * - 🚩 **en**: Removes packages from `node_modules` and from the project's `package.json`
+   * - **zh-CN**: 删除包
+   */
+  export const cmd_remove: string;
+  /**
+   * - 🚩 **en**: Print the effective `node_modules` directory
+   * - **zh-CN**: 打印有效的 node_modules 目录
+   */
+  export const cmd_root: string;
+  /**
+   * - 🚩 **en**: Runs a defined package script
+   * - **zh-CN**: 运行定义在 package.json 中的脚本
+   */
+  export const cmd_run: string;
+  /**
+   * - 🚩 **en**: Manage a store server
+   * - **zh-CN**: 管理 store 服务器
+   */
+  export const cmd_server: string;
+  /**
+   * - 🚩 **en**: Starts a service that does all interactions with the store. Other commands will delegate any store-related tasks to this service
+   * - **zh-CN**: 启动 store 服务器
+   */
+  export const cmd_server_start: string;
+  /**
+   * - 🚩 **en**: Prints information about the running server
+   * - **zh-CN**: 打印服务器信息
+   */
+  export const cmd_server_status: string;
+  /**
+   * - 🚩 **en**: Stops the store server
+   * - **zh-CN**: 停止 store 服务器
+   */
+  export const cmd_server_stop: string;
+  /**
+   * - 🚩 **en**: Sets up pnpm
+   * - **zh-CN**: 设置 pnpm
+   */
+  export const cmd_setup: string;
+  /**
+   * - 🚩 **en**: Runs an arbitrary command specified in the package's "start" property of its "scripts" object
+   * - **zh-CN**: 运行包的 start 脚本
+   */
+  export const cmd_start: string;
+  /**
+   * - 🚩 **en**: Reads and performs actions on pnpm store that is on the current filesystem
+   * - **zh-CN**: 读取和执行 store 操作
+   */
+  export const cmd_store: string;
+  /**
+   * - 🚩 **en**: Adds new packages to the pnpm store directly. Does not modify any projects or files outside the store
+   * - **zh-CN**: 直接添加新包到 store
+   */
+  export const cmd_store_add: string;
+  /**
+   * - 🚩 **en**: Returns the path to the active store directory
+   * - **zh-CN**: 打印 store 目录路径
+   */
+  export const cmd_store_path: string;
+  /**
+   * - 🚩 **en**: Removes unreferenced (extraneous, orphan) packages from the store. Pruning the store is not harmful, but might slow down future installations
+   * - **zh-CN**: 删除 store 中未引用的包
+   */
+  export const cmd_store_prune: string;
+  /**
+   * - 🚩 **en**: Checks for modified packages in the store. Returns exit code 0 if the content of the package is the same as it was at the time of unpacking
+   * - **zh-CN**: 检查 store 中已修改的包
+   */
+  export const cmd_store_status: string;
+  /**
+   * - 🚩 **en**: Runs a package's "test" script, if one was provided
+   * - **zh-CN**: 运行包的 test 脚本
+   */
+  export const cmd_test: string;
+  /**
+   * - 🚩 **en**: Removes the link created by `pnpm link` and reinstalls package if it is saved in `package.json`
+   * - **zh-CN**: 取消链接包
+   */
+  export const cmd_unlink: string;
+  /**
+   * - 🚩 **en**: Updates packages to their latest version based on the specified range. You can use "*" in package name to update all packages with the same pattern
+   * - **zh-CN**: 更新包到最新版本
+   */
+  export const cmd_update: string;
+  /**
+   * - 🚩 **en**: Shows the packages that depend on <pkg>
+   * - **zh-CN**: 显示哪些包依赖于指定包
+   */
+  export const cmd_why: string;
+  /**
+   * - 🚩 **en**: Tells the registry whether this package should be published as public or restricted
+   * - **zh-CN**: 包访问级别
+   */
+  export const opt_access: string;
+  /**
+   * - 🚩 **en**: Aggregate output from child processes that are run in parallel, and only print output when child process is finished. It makes reading large logs after running `pnpm recursive` with `--parallel` or with `--workspace-concurrency` much easier (especially on CI). Only `--reporter=append-only` is supported
+   * - **zh-CN**: 聚合并行子进程的输出
+   */
+  export const opt_aggregateOutput: string;
+  /**
+   * - 🚩 **en**: A list of package names that are allowed to run postinstall scripts during installation
+   * - **zh-CN**: 允许运行 postinstall 脚本的包名列表
+   */
+  export const opt_allowBuild: string;
+  /**
+   * - 🚩 **en**: Add overrides to the package.json file in order to force non-vulnerable versions of the dependencies
+   * - **zh-CN**: 添加 override 修复漏洞
+   */
+  export const opt_auditFix: string;
+  /**
+   * - 🚩 **en**: Ignore a vulnerability by CVE
+   * - **zh-CN**: 按 CVE 忽略漏洞
+   */
+  export const opt_auditIgnore: string;
+  /**
+   * - 🚩 **en**: Only print advisories with severity greater than or equal to one of the following: low|moderate|high|critical. Default: low
+   * - **zh-CN**: 最低安全建议等级
+   */
+  export const opt_auditLevel: string;
+  /**
+   * - 🚩 **en**: Runs the server in the background
+   * - **zh-CN**: 后台运行服务器
+   */
+  export const opt_background: string;
+  /**
+   * - 🚩 **en**: Defines files to ignore when filtering for changed projects since the specified commit/branch
+   * - **zh-CN**: 过滤变更项目时忽略的文件
+   */
+  export const opt_changedFilesIgnorePattern: string;
+  /**
+   * - 🚩 **en**: Controls the number of child processes run parallelly to build node modules
+   * - **zh-CN**: 并行构建 node_modules 的子进程数
+   */
+  export const opt_childConcurrency: string;
+  /**
+   * - 🚩 **en**: Controls colors in the output. By default, output is always colored when it goes directly to a terminal
+   * - **zh-CN**: 控制输出颜色
+   */
+  export const opt_color: string;
+  /**
+   * - 🚩 **en**: Print only versions that satisfy specs in package.json
+   * - **zh-CN**: 仅打印满足 package.json 规范的版本
+   */
+  export const opt_compatible: string;
+  /**
+   * - 🚩 **en**: Save the dependency to configurational dependencies
+   * - **zh-CN**: 保存到 configurational dependencies
+   */
+  export const opt_configDep: string;
+  /**
+   * - 🚩 **en**: Check if running dedupe would result in changes without installing packages or editing the lockfile. Exits with a non-zero status code if changes are possible
+   * - **zh-CN**: 检查执行 dedupe 是否会产生变更
+   */
+  export const opt_dedupeCheck: string;
+  /**
+   * - 🚩 **en**: Max display depth of the dependency tree
+   * - **zh-CN**: 依赖树最大显示深度
+   */
+  export const opt_depth: string;
+  /**
+   * - 🚩 **en**: Only `devDependencies` are installed
+   * - **zh-CN**: 仅处理 devDependencies
+   */
+  export const opt_dev: string;
+  /**
+   * - 🚩 **en**: Change to directory <dir>
+   * - **zh-CN**: 切换到指定目录
+   */
+  export const opt_dir: string;
+  /**
+   * - 🚩 **en**: The package to install before running the command
+   * - **zh-CN**: 运行命令前安装的包
+   */
+  export const opt_dlxPackage: string;
+  /**
+   * - 🚩 **en**: Does everything a publish would do except actually publishing to the registry
+   * - **zh-CN**: 试运行模式
+   */
+  export const opt_dryRun: string;
+  /**
+   * - 🚩 **en**: The package that needs to be modified will be extracted to this directory
+   * - **zh-CN**: 要修补的包提取到该目录
+   */
+  export const opt_editDir: string;
+  /**
+   * - 🚩 **en**: Exclude peer dependencies
+   * - **zh-CN**: 排除 peer 依赖
+   */
+  export const opt_excludePeers: string;
+  /**
+   * - 🚩 **en**: If no projects are matched by the command, exit with exit code 1 (fail)
+   * - **zh-CN**: 无匹配项目时退出码 1
+   */
+  export const opt_failIfNoMatch: string;
+  /**
+   * - 🚩 **en**: Restricts the scope to package names matching the given pattern. E.g.: foo, "@bar/*"
+   * - **zh-CN**: 按包名模式过滤范围
+   */
+  export const opt_filter: string;
+  /**
+   * - 🚩 **en**: Restricts the scope to package names matching the given pattern similar to --filter, but it ignores devDependencies when searching for dependencies and dependents
+   * - **zh-CN**: 类似 --filter 但忽略 devDependencies
+   */
+  export const opt_filterProd: string;
+  /**
+   * - 🚩 **en**: Fix broken lockfile entries automatically
+   * - **zh-CN**: 自动修复损坏的 lockfile
+   */
+  export const opt_fixLockfile: string;
+  /**
+   * - 🚩 **en**: Force reinstall dependencies: refetch packages modified in store, recreate a lockfile and/or modules directory created by a non-compatible version of pnpm. Install all optionalDependencies even they don't satisfy the current environment(cpu, os, arch)
+   * - **zh-CN**: 强制重新安装依赖
+   */
+  export const opt_force: string;
+  /**
+   * - 🚩 **en**: Don't generate a lockfile and fail if an update is needed. This setting is on by default in CI environments, so use --no-frozen-lockfile if you need to disable it for some reason
+   * - **zh-CN**: 不生成 lockfile，更新时报错
+   */
+  export const opt_frozenLockfile: string;
+  /**
+   * - 🚩 **en**: Install as a global package
+   * - **zh-CN**: 全局操作
+   */
+  export const opt_global: string;
+  /**
+   * - 🚩 **en**: Specify a custom directory to store global packages
+   * - **zh-CN**: 指定全局包存储目录
+   */
+  export const opt_globalDir: string;
+  /**
+   * - 🚩 **en**: Output usage information
+   * - **zh-CN**: 输出使用信息
+   */
+  export const opt_help: string;
+  /**
+   * - 🚩 **en**: Hoist all dependencies matching the pattern to `node_modules/.pnpm/node_modules`. The default pattern is * and matches everything. Hoisted packages can be required by any dependencies, so it is an emulation of a flat node_modules
+   * - **zh-CN**: 提升依赖匹配到 node_modules/.pnpm
+   */
+  export const opt_hoistPattern: string;
+  /**
+   * - 🚩 **en**: Avoid exiting with a non-zero exit code when the script is undefined
+   * - **zh-CN**: 脚本未定义时也不报错
+   */
+  export const opt_ifPresent: string;
+  /**
+   * - 🚩 **en**: Ignore existing patch files when patching
+   * - **zh-CN**: 修补时忽略已有补丁文件
+   */
+  export const opt_ignoreExisting: string;
+  /**
+   * - 🚩 **en**: Disable pnpm hooks defined in .pnpmfile.cjs
+   * - **zh-CN**: 禁用 .pnpmfile.cjs 钩子
+   */
+  export const opt_ignorePnpmfile: string;
+  /**
+   * - 🚩 **en**: Use exit code 0 if the registry responds with an error. Useful when audit checks are used in CI. A build should fail because the registry has issues
+   * - **zh-CN**: 注册表报错时仍用退出码 0
+   */
+  export const opt_ignoreRegistryErrors: string;
+  /**
+   * - 🚩 **en**: Don't run lifecycle scripts
+   * - **zh-CN**: 不运行生命周期脚本
+   */
+  export const opt_ignoreScripts: string;
+  /**
+   * - 🚩 **en**: Disallows stopping the server using `pnpm server stop`
+   * - **zh-CN**: 禁止通过 pnpm server stop 停止
+   */
+  export const opt_ignoreStopRequests: string;
+  /**
+   * - 🚩 **en**: Ignore all CVEs with no resolution
+   * - **zh-CN**: 忽略所有无法修复的 CVE
+   */
+  export const opt_ignoreUnfixable: string;
+  /**
+   * - 🚩 **en**: Disallows creating new side effect cache during install
+   * - **zh-CN**: 禁止在安装时创建 side effect 缓存
+   */
+  export const opt_ignoreUploadRequests: string;
+  /**
+   * - 🚩 **en**: Ignore pnpm-workspace.yaml if exists in the parent directory, and treat the installation as normal non-workspace installation
+   * - **zh-CN**: 忽略 pnpm-workspace.yaml
+   */
+  export const opt_ignoreWorkspace: string;
+  /**
+   * - 🚩 **en**: When executing commands recursively in a workspace, execute them on the root workspace project as well
+   * - **zh-CN**: 包含根 workspace 项目
+   */
+  export const opt_includeWorkspaceRoot: string;
+  /**
+   * - 🚩 **en**: Show outdated dependencies and select which ones to update
+   * - **zh-CN**: 交互式选择要更新的包
+   */
+  export const opt_interactive: string;
+  /**
+   * - 🚩 **en**: Show information in JSON format
+   * - **zh-CN**: 以 JSON 格式输出
+   */
+  export const opt_json: string;
+  /**
+   * - 🚩 **en**: Ignore version ranges in package.json
+   * - **zh-CN**: 忽略 package.json 中的版本范围
+   */
+  export const opt_latest: string;
+  /**
+   * - 🚩 **en**: Locally available packages are linked to node_modules instead of being downloaded from the registry. Convenient to use in a multi-package repository
+   * - **zh-CN**: 本地可用包链接到 node_modules
+   */
+  export const opt_linkWorkspacePackages: string;
+  /**
+   * - 🚩 **en**: When set to "project", the .npmrc file at the nearest package.json will be used. If no .npmrc file is present in the directory, the setting will be written to a pnpm-workspace.yaml file
+   * - **zh-CN**: 配置位置
+   */
+  export const opt_location: string;
+  /**
+   * - 🚩 **en**: Enable/disable lock
+   * - **zh-CN**: 启用/禁用锁
+   */
+  export const opt_lock: string;
+  /**
+   * - 🚩 **en**: The directory in which the pnpm-lock.yaml of the package will be created. Several projects may share a single lockfile
+   * - **zh-CN**: pnpm-lock.yaml 创建目录
+   */
+  export const opt_lockfileDir: string;
+  /**
+   * - 🚩 **en**: Dependencies are not downloaded. Only `pnpm-lock.yaml` is updated
+   * - **zh-CN**: 仅更新 pnpm-lock.yaml，不下载依赖
+   */
+  export const opt_lockfileOnly: string;
+  /**
+   * - 🚩 **en**: What level of logs to report. Any logs at or higher than the given level will be shown. Levels (lowest to highest): debug, info, warn, error. Or use "--silent" to turn off all logging
+   * - **zh-CN**: 设置日志级别：debug, info, warn, error
+   */
+  export const opt_loglevel: string;
+  /**
+   * - 🚩 **en**: Show extended information
+   * - **zh-CN**: 显示详细信息
+   */
+  export const opt_long: string;
+  /**
+   * - 🚩 **en**: Merge lockfiles were generated on git branch
+   * - **zh-CN**: 合并 git 分支生成的 lockfile
+   */
+  export const opt_mergeGitBranchLockfiles: string;
+  /**
+   * - 🚩 **en**: The directory in which dependencies will be installed (instead of node_modules)
+   * - **zh-CN**: 依赖安装目录
+   */
+  export const opt_modulesDir: string;
+  /**
+   * - 🚩 **en**: Maximum number of concurrent network requests
+   * - **zh-CN**: 最大并发网络请求数
+   */
+  export const opt_networkConcurrency: string;
+  /**
+   * - 🚩 **en**: Continues executing other tasks even if a task threw an error
+   * - **zh-CN**: 出错后继续执行
+   */
+  export const opt_noBail: string;
+  /**
+   * - 🚩 **en**: Don't check if current branch is your publish branch, clean, and up to date
+   * - **zh-CN**: 不检查 git 分支
+   */
+  export const opt_noGitChecks: string;
+  /**
+   * - 🚩 **en**: Dependencies inside the modules directory will have access only to their listed dependencies
+   * - **zh-CN**: 依赖只能访问自身声明的依赖
+   */
+  export const opt_noHoist: string;
+  /**
+   * - 🚩 **en**: Don't read or generate a `pnpm-lock.yaml` file
+   * - **zh-CN**: 不读取或生成 pnpm-lock.yaml
+   */
+  export const opt_noLockfile: string;
+  /**
+   * - 🚩 **en**: Don't display packages from `optionalDependencies`
+   * - **zh-CN**: 不处理 optionalDependencies
+   */
+  export const opt_noOptional: string;
+  /**
+   * - 🚩 **en**: Prints the outdated packages in a list. Good for small consoles
+   * - **zh-CN**: 以列表形式打印
+   */
+  export const opt_noTable: string;
+  /**
+   * - 🚩 **en**: Trigger an error if any required dependencies are not available in local store
+   * - **zh-CN**: 离线模式下报错
+   */
+  export const opt_offline: string;
+  /**
+   * - 🚩 **en**: Display only dependencies that are also projects within the workspace
+   * - **zh-CN**: 仅显示 workspace 内的项目依赖
+   */
+  export const opt_onlyProjects: string;
+  /**
+   * - 🚩 **en**: Skip reinstall if the workspace state is up-to-date
+   * - **zh-CN**: 跳过最新状态的重复安装
+   */
+  export const opt_optimisticRepeatInstall: string;
+  /**
+   * - 🚩 **en**: When publishing packages that require two-factor authentication, this option can specify a one-time password
+   * - **zh-CN**: 一次性密码（两步验证）
+   */
+  export const opt_otp: string;
+  /**
+   * - 🚩 **en**: Customizes the output path for the tarball. Use `%s` and `%v` to include the package name and version, e.g., `%s.tgz` or `some-dir/%s-%v.tgz`. By default, the tarball is saved in the current working directory with the name `<package-name>-<version>.tgz`
+   * - **zh-CN**: 自定义 tarball 输出路径
+   */
+  export const opt_out: string;
+  /**
+   * - 🚩 **en**: Prints the outdated dependencies in the given format. Default is "table". Supported options: "table, list, json"
+   * - **zh-CN**: 过时依赖的输出格式
+   */
+  export const opt_outdatedFormat: string;
+  /**
+   * - 🚩 **en**: Directory in which `pnpm pack` will save tarballs. The default is the current working directory
+   * - **zh-CN**: tarball 保存目录
+   */
+  export const opt_packDestination: string;
+  /**
+   * - 🚩 **en**: Clones/hardlinks or copies packages. The selected method depends from the file system
+   * - **zh-CN**: 包导入方式
+   */
+  export const opt_packageImportMethod: string;
+  /**
+   * - 🚩 **en**: Show parseable output instead of tree view
+   * - **zh-CN**: 以可解析格式输出
+   */
+  export const opt_parseable: string;
+  /**
+   * - 🚩 **en**: The generated patch file will be saved to this directory
+   * - **zh-CN**: 补丁文件保存目录
+   */
+  export const opt_patchesDir: string;
+  /**
+   * - 🚩 **en**: Rebuild packages that were not build during installation. Packages are not build when installing with the --ignore-scripts flag
+   * - **zh-CN**: 重建安装时未构建的包
+   */
+  export const opt_pending: string;
+  /**
+   * - 🚩 **en**: The port number to use, when TCP is used for communication
+   * - **zh-CN**: TCP 通信端口
+   */
+  export const opt_port: string;
+  /**
+   * - 🚩 **en**: If the available `pnpm-lock.yaml` satisfies the `package.json` then perform a headless installation
+   * - **zh-CN**: 满足条件时执行 headless 安装
+   */
+  export const opt_preferFrozenLockfile: string;
+  /**
+   * - 🚩 **en**: Skip staleness checks for cached data, but request missing data from the server
+   * - **zh-CN**: 优先使用缓存数据
+   */
+  export const opt_preferOffline: string;
+  /**
+   * - 🚩 **en**: Packages in `devDependencies` won't be installed
+   * - **zh-CN**: 仅处理 dependencies 和 optionalDependencies
+   */
+  export const opt_prod: string;
+  /**
+   * - 🚩 **en**: The communication protocol used by the server
+   * - **zh-CN**: 服务器通信协议
+   */
+  export const opt_protocol: string;
+  /**
+   * - 🚩 **en**: Hoist all dependencies matching the pattern to the root of the modules directory
+   * - **zh-CN**: 提升模式匹配到根 node_modules
+   */
+  export const opt_publicHoistPattern: string;
+  /**
+   * - 🚩 **en**: Sets branch name to publish. Default is master
+   * - **zh-CN**: 发布分支名
+   */
+  export const opt_publishBranch: string;
+  /**
+   * - 🚩 **en**: Run the command for each project in the workspace
+   * - **zh-CN**: 递归执行命令
+   */
+  export const opt_recursive: string;
+  /**
+   * - 🚩 **en**: List the remote versions of Node.js
+   * - **zh-CN**: 列出远程 Node.js 版本
+   */
+  export const opt_remote: string;
+  /**
+   * - 🚩 **en**: Save the execution results of every package to "pnpm-exec-summary.json". Useful to inspect the execution time and status of each package
+   * - **zh-CN**: 保存执行结果到摘要 JSON
+   */
+  export const opt_reportSummary: string;
+  /**
+   * - 🚩 **en**: The output is always appended to the end. No cursor manipulations are performed
+   * - **zh-CN**: 输出格式
+   */
+  export const opt_reporter: string;
+  /**
+   * - 🚩 **en**: Hide project name prefix from output of running scripts. Useful when running in CI like GitHub Actions and the output from a script may create an annotation
+   * - **zh-CN**: 隐藏输出中的项目名前缀
+   */
+  export const opt_reporterHidePrefix: string;
+  /**
+   * - 🚩 **en**: Re-runs resolution: useful for printing out peer dependency issues
+   * - **zh-CN**: 仅重新解析依赖
+   */
+  export const opt_resolutionOnly: string;
+  /**
+   * - 🚩 **en**: Command executed from given package
+   * - **zh-CN**: 从指定包开始执行命令
+   */
+  export const opt_resumeFrom: string;
+  /**
+   * - 🚩 **en**: Reverse the order that packages get ordered in. Disabled by default
+   * - **zh-CN**: 反转包顺序
+   */
+  export const opt_reverse: string;
+  /**
+   * - 🚩 **en**: Completely disregard concurrency and topological sorting, running a given script immediately in all matching packages with prefixed streaming output. This is the preferred flag for long-running processes such as watch run over many packages
+   * - **zh-CN**: 完全忽略并发和拓扑排序立即运行
+   */
+  export const opt_runParallel: string;
+  /**
+   * - 🚩 **en**: Save package to the default catalog
+   * - **zh-CN**: 保存包到默认目录
+   */
+  export const opt_saveCatalog: string;
+  /**
+   * - 🚩 **en**: Save package to the specified catalog
+   * - **zh-CN**: 保存包到指定目录
+   */
+  export const opt_saveCatalogName: string;
+  /**
+   * - 🚩 **en**: Save package to your `devDependencies`
+   * - **zh-CN**: 保存到 devDependencies
+   */
+  export const opt_saveDev: string;
+  /**
+   * - 🚩 **en**: Install exact version
+   * - **zh-CN**: 安装精确版本
+   */
+  export const opt_saveExact: string;
+  /**
+   * - 🚩 **en**: Save package to your `optionalDependencies`
+   * - **zh-CN**: 保存到 optionalDependencies
+   */
+  export const opt_saveOptional: string;
+  /**
+   * - 🚩 **en**: Save package to your `peerDependencies` and `devDependencies`
+   * - **zh-CN**: 保存到 peerDependencies
+   */
+  export const opt_savePeer: string;
+  /**
+   * - 🚩 **en**: Save package to your `dependencies`. The default behavior
+   * - **zh-CN**: 保存到 dependencies
+   */
+  export const opt_saveProd: string;
+  /**
+   * - 🚩 **en**: Save packages from the workspace with a "workspace:" protocol. True by default
+   * - **zh-CN**: 从 workspace 包使用 workspace: 协议
+   */
+  export const opt_saveWorkspaceProtocol: string;
+  /**
+   * - 🚩 **en**: Run the specified scripts one by one
+   * - **zh-CN**: 按顺序运行脚本
+   */
+  export const opt_sequential: string;
+  /**
+   * - 🚩 **en**: Override the PNPM_HOME env variable in case it already exists
+   * - **zh-CN**: 覆盖已有的 PNPM_HOME 环境变量
+   */
+  export const opt_setupForce: string;
+  /**
+   * - 🚩 **en**: All the subdeps will be hoisted into the root node_modules. Your code will have access to them
+   * - **zh-CN**: 所有子依赖提升到根 node_modules
+   */
+  export const opt_shamefullyHoist: string;
+  /**
+   * - 🚩 **en**: Creates a single pnpm-lock.yaml file in the root of the workspace. A shared lockfile also means that all dependencies of all projects will be in a single node_modules
+   * - **zh-CN**: 在 workspace 根目录创建共享 lockfile
+   */
+  export const opt_sharedWorkspaceLockfile: string;
+  /**
+   * - 🚩 **en**: Runs the script inside of a shell. Uses /bin/sh on UNIX and \cmd.exe on Windows
+   * - **zh-CN**: 在 shell 中运行脚本
+   */
+  export const opt_shellMode: string;
+  /**
+   * - 🚩 **en**: Use or cache the results of (pre/post)install hooks
+   * - **zh-CN**: 使用或缓存 pre/postinstall 钩子结果
+   */
+  export const opt_sideEffectsCache: string;
+  /**
+   * - 🚩 **en**: Only use the side effects cache if present, do not create it for new packages
+   * - **zh-CN**: 只读使用 side effects 缓存
+   */
+  export const opt_sideEffectsCacheReadonly: string;
+  /**
+   * - 🚩 **en**: No output is logged to the console, not even fatal errors
+   * - **zh-CN**: 不输出任何日志
+   */
+  export const opt_silent: string;
+  /**
+   * - 🚩 **en**: Sort packages topologically (dependencies before dependents). Pass --no-sort to disable
+   * - **zh-CN**: 按拓扑排序包
+   */
+  export const opt_sort: string;
+  /**
+   * - 🚩 **en**: Specify the sorting method. Currently only `name` is supported
+   * - **zh-CN**: 排序方式
+   */
+  export const opt_sortBy: string;
+  /**
+   * - 🚩 **en**: The directory in which all the packages are saved on the disk
+   * - **zh-CN**: 包在磁盘上的存储目录
+   */
+  export const opt_storeDir: string;
+  /**
+   * - 🚩 **en**: Stream output from child processes immediately, prefixed with the originating package directory. This allows output from different packages to be interleaved
+   * - **zh-CN**: 立即流式输出子进程结果
+   */
+  export const opt_stream: string;
+  /**
+   * - 🚩 **en**: Fail on missing or invalid peer dependencies
+   * - **zh-CN**: 缺少或不匹配的 peer 依赖时报错
+   */
+  export const opt_strictPeerDependencies: string;
+  /**
+   * - 🚩 **en**: Registers the published package with the given tag. By default, the "latest" tag is used
+   * - **zh-CN**: 发布标签
+   */
+  export const opt_tag: string;
+  /**
+   * - 🚩 **en**: Defines files related to tests. Useful with the changed since filter. When selecting only changed packages and their dependent packages, the dependent packages will be ignored in case a package has changes only in tests
+   * - **zh-CN**: 定义与测试相关的文件
+   */
+  export const opt_testPattern: string;
+  /**
+   * - 🚩 **en**: How deep should levels of dependencies be inspected. Infinity is default. 0 would mean top-level dependencies only
+   * - **zh-CN**: 更新依赖的深度
+   */
+  export const opt_updateDepth: string;
+  /**
+   * - 🚩 **en**: Only allows installation with a store server. If no store server is running, installation will fail
+   * - **zh-CN**: 仅允许配合运行中的 store 服务器安装
+   */
+  export const opt_useRunningStoreServer: string;
+  /**
+   * - 🚩 **en**: Divert all output to stderr
+   * - **zh-CN**: 将所有输出重定向到 stderr
+   */
+  export const opt_useStderr: string;
+  /**
+   * - 🚩 **en**: Starts a store server in the background. The store server will keep running after installation is done. To stop the store server, run `pnpm server stop`
+   * - **zh-CN**: 启动后台 store 服务器
+   */
+  export const opt_useStoreServer: string;
+  /**
+   * - 🚩 **en**: If false, doesn't check whether packages in the store were mutated
+   * - **zh-CN**: 检查 store 中包是否被修改
+   */
+  export const opt_verifyStoreIntegrity: string;
+  /**
+   * - 🚩 **en**: The directory with links to the store (default is node_modules/.pnpm). All direct and indirect dependencies of the project are linked into this directory
+   * - **zh-CN**: 指向 store 的链接目录
+   */
+  export const opt_virtualStoreDir: string;
+  /**
+   * - 🚩 **en**: Only adds the new dependency if it is found in the workspace
+   * - **zh-CN**: 仅当新依赖在 workspace 中时添加
+   */
+  export const opt_workspace: string;
+  /**
+   * - 🚩 **en**: Set the maximum number of concurrency. Default is 4. For unlimited concurrency use Infinity
+   * - **zh-CN**: 最大并发数
+   */
+  export const opt_workspaceConcurrency: string;
+  /**
+   * - 🚩 **en**: Run the command on the root workspace project
+   * - **zh-CN**: 在根 workspace 项目上运行命令
+   */
+  export const opt_workspaceRoot: string;
+}
+
 declare module "virtual:i18n/scoop" {
   /**
    * - 🚩 **en**: 32-bit architecture
@@ -4091,6 +8092,11 @@ declare module "virtual:i18n/sugg" {
    * - **zh-CN**: 初始化工作区：写出类型定义、指南和 tsconfig
    */
   export const dev_init_desc: string;
+  /**
+   * - 🚩 **en**: Watch completions directory and automatically rebuild on changes
+   * - **zh-CN**: 监听补全脚本目录并自动重新构建
+   */
+  export const dev_watch_desc: string;
   /**
    * - 🚩 **en**: Print this message or the help of the given subcommand
    * - **zh-CN**: 打印此帮助或指定子命令的帮助
