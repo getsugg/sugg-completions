@@ -20,51 +20,35 @@ async function getInstalledPackages(): Promise<Suggestion[]> {
 
 async function getWorkspaceNames(): Promise<Suggestion[]> {
   return cache.get("workspace-names", 5000, async () => {
-    try {
-      const pkg = await readJson("package.json");
-      const workspaces = pkg.workspaces || [];
-      if (Array.isArray(workspaces)) {
-        return workspaces.map((w: string) => ({
-          display: w,
-          description: t.suggestion_workspace,
-        }));
-      }
-      if (workspaces && Array.isArray(workspaces.packages)) {
-        return workspaces.packages.map((w: string) => ({
-          display: w,
-          description: t.suggestion_workspace,
-        }));
-      }
-    } catch {}
-    try {
-      const out = await exec("npm ls -w --depth=0 --json");
-      const json = JSON.parse(out);
-      if (json.workspaces) {
-        return Object.keys(json.workspaces).map((name) => ({
-          display: name,
-          description: t.suggestion_workspace,
-        }));
-      }
-    } catch {}
+    const pkg = await readJson("package.json");
+    const workspaces = pkg.workspaces;
+    if (Array.isArray(workspaces)) {
+      return workspaces.map((w: string) => ({
+        display: w,
+        description: t.suggestion_workspace,
+      }));
+    }
+    if (workspaces && Array.isArray(workspaces.packages)) {
+      return workspaces.packages.map((w: string) => ({
+        display: w,
+        description: t.suggestion_workspace,
+      }));
+    }
     return [];
   });
 }
 
 async function getGlobalPackages(): Promise<Suggestion[]> {
   return cache.get("global-packages", 30000, async () => {
-    try {
-      const out = await exec("npm ls -g --depth=0 --json");
-      const json = JSON.parse(out);
-      const deps = json.dependencies || {};
-      return Object.entries(deps)
-        .filter(([_, info]: [string, any]) => !info.missing)
-        .map(([name, _]: [string, any]) => ({
-          display: name,
-          description: t.suggestion_global,
-        }));
-    } catch {
-      return [];
-    }
+    const out = await exec("npm ls -g --depth=0 --json");
+    const json = JSON.parse(out);
+    const deps = json.dependencies || {};
+    return Object.entries(deps)
+      .filter(([_, info]: [string, any]) => !info.missing)
+      .map(([name, _]: [string, any]) => ({
+        display: name,
+        description: t.suggestion_global,
+      }));
   });
 }
 

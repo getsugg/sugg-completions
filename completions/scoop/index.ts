@@ -1,58 +1,49 @@
 import { exec, scanPath, cache } from "sugg";
 import * as t from "virtual:i18n/scoop";
 
-
 function stripAnsi(s: string): string {
   // eslint-disable-next-line no-control-regex
   return s.replace(/\u001B\[[0-?]*[ -/]*[@-~]/g, "");
 }
 
 async function getInstalledApps(): Promise<Suggestion[]> {
-  try {
-    const out = await exec("scoop list");
-    return out
-      .split(/\r?\n/)
-      .map((l) => stripAnsi(l).trim())
-      .filter((l) => l && !/^installed/i.test(l) && !/^name/i.test(l) && !/^-+/.test(l))
-      .map((l) => {
-        const name = l.split(/\s+/)[0];
-        return name ? { display: name } : null;
-      })
-      .filter(Boolean) as Suggestion[];
-  } catch {
-    return [];
-  }
+  const out = await exec("scoop list");
+  return out
+    .split(/\r?\n/)
+    .map((l) => stripAnsi(l).trim())
+    .filter((l) => l && !/^installed/i.test(l) && !/^name/i.test(l) && !/^-+/.test(l))
+    .map((l) => {
+      const name = l.split(/\s+/)[0];
+      return name ? { display: name } : null;
+    })
+    .filter(Boolean) as Suggestion[];
 }
 
 async function getAvailableApps(): Promise<Suggestion[]> {
-  try {
-    const out = await exec("scoop search");
-    return out
-      .split(/\r?\n/)
-      .map((l) => stripAnsi(l).trim())
-      .filter((l) => l && !/^results/i.test(l) && !/^name/i.test(l) && !/^-+/.test(l))
-      .map((l) => {
-        const name = l.split(/\s+/)[0];
-        const rest = l.slice(name.length).trim();
-        return name ? { display: name, description: rest || undefined } : null;
-      })
-      .filter(Boolean) as Suggestion[];
-  } catch {
-    return [];
-  }
+  const out = await exec("scoop search");
+  return out
+    .split(/\r?\n/)
+    .map((l) => stripAnsi(l).trim())
+    .filter((l) => l && !/^results/i.test(l) && !/^name/i.test(l) && !/^-+/.test(l))
+    .map((l) => {
+      const name = l.split(/\s+/)[0];
+      const rest = l.slice(name.length).trim();
+      return name ? { display: name, description: rest || undefined } : null;
+    })
+    .filter(Boolean) as Suggestion[];
 }
 
 async function getShimNames(): Promise<Suggestion[]> {
-  try {
-    const out = await exec("scoop shim list");
-    return out
-      .split(/\r?\n/)
-      .map((l) => stripAnsi(l).trim())
-      .filter((l) => l && !/^name/i.test(l) && !/^-+/.test(l))
-      .map((l) => ({ display: l.split(/\s+/)[0] }));
-  } catch {
-    return [];
-  }
+  const out = await exec("scoop shim list");
+  return out
+    .split(/\r?\n/)
+    .map((l) => stripAnsi(l).trim())
+    .filter((l) => l && !/^name/i.test(l) && !/^-+/.test(l))
+    .map((l) => {
+      const name = l.split(/\s+/)[0];
+      return name ? { display: name } : null;
+    })
+    .filter(Boolean) as Suggestion[];
 }
 
 const allApps = dynamic(async (ctx) => {
@@ -65,7 +56,6 @@ const installedApps = dynamic(async (ctx) => {
   const apps = await cache.get(ctx, 30000, getInstalledApps);
   return apps ?? [];
 });
-
 
 const globalOpts: OptionNode[] = [{ labels: ["-h", "--help"], description: t.opt_help }];
 
@@ -109,7 +99,6 @@ const forceOpt: OptionNode = {
   description: t.opt_force,
 };
 
-
 export default createCompletion({
   scoop: {
     description: t.cmd_scoop,
@@ -151,10 +140,13 @@ export default createCompletion({
           { labels: ["-q", "--quiet"], description: t.opt_quiet },
           { labels: ["-a", "--all"], description: t.opt_all },
         ],
-        args: { count: Infinity, items: dynamic(async (ctx) => {
-          const installed = await cache.get(ctx, 30000, getInstalledApps);
-          return [{ display: "*", description: t.arg_update_all }, ...(installed ?? [])];
-        }) },
+        args: {
+          count: Infinity,
+          items: dynamic(async (ctx) => {
+            const installed = await cache.get(ctx, 30000, getInstalledApps);
+            return [{ display: "*", description: t.arg_update_all }, ...(installed ?? [])];
+          }),
+        },
       },
 
       list: {

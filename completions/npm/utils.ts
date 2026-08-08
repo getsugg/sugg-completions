@@ -1,11 +1,7 @@
 import { readJson, scanPath } from "sugg";
 
 export async function readPkg(): Promise<Record<string, any>> {
-  try {
-    return await readJson("package.json");
-  } catch {
-    return {};
-  }
+  return await readJson("package.json");
 }
 
 export async function getPkgScripts(): Promise<string[]> {
