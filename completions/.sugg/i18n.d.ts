@@ -6850,6 +6850,2087 @@ declare module "virtual:i18n/npm" {
   export const suggestion_workspace: string;
 }
 
+declare module "virtual:i18n/nub" {
+  /**
+   * - 🚩 **en**: Delete metadata cache for specified package(s)
+   * - **zh-CN**: 删除指定包的元数据缓存
+   */
+  export const cache_delete: string;
+  /**
+   * - 🚩 **en**: List available packages in the metadata cache
+   * - **zh-CN**: 列出元数据缓存中的可用包
+   */
+  export const cache_list: string;
+  /**
+   * - 🚩 **en**: List configured registries
+   * - **zh-CN**: 列出已配置的注册表
+   */
+  export const cache_list_registries: string;
+  /**
+   * - 🚩 **en**: Remove stale extracted primer files
+   * - **zh-CN**: 移除过期的元数据缓存文件
+   */
+  export const cache_prune: string;
+  /**
+   * - 🚩 **en**: View cached metadata for a single package
+   * - **zh-CN**: 查看单个包的缓存元数据
+   */
+  export const cache_view: string;
+  /**
+   * - 🚩 **en**: Add dependencies
+   * - **zh-CN**: 添加依赖
+   */
+  export const cmd_add: string;
+  /**
+   * - 🚩 **en**: Manage build-script approval
+   * - **zh-CN**: 管理构建脚本审批
+   */
+  export const cmd_approve_builds: string;
+  /**
+   * - 🚩 **en**: Audit installed packages for security issues
+   * - **zh-CN**: 审计已安装包的安全漏洞
+   */
+  export const cmd_audit: string;
+  /**
+   * - 🚩 **en**: Print bin directory path
+   * - **zh-CN**: 打印 bin 目录路径
+   */
+  export const cmd_bin: string;
+  /**
+   * - 🚩 **en**: Manage metadata cache
+   * - **zh-CN**: 管理元数据缓存
+   */
+  export const cmd_cache: string;
+  /**
+   * - 🚩 **en**: Check for dependency issues
+   * - **zh-CN**: 检查依赖问题
+   */
+  export const cmd_check: string;
+  /**
+   * - 🚩 **en**: Clean, strict install from the lockfile
+   * - **zh-CN**: 从 lockfile 执行干净、严格的安装
+   */
+  export const cmd_ci: string;
+  /**
+   * - 🚩 **en**: Manage configuration
+   * - **zh-CN**: 管理配置
+   */
+  export const cmd_config: string;
+  /**
+   * - 🚩 **en**: Remove duplicated packages
+   * - **zh-CN**: 移除重复的包
+   */
+  export const cmd_dedupe: string;
+  /**
+   * - 🚩 **en**: Manage dist-tags for a package
+   * - **zh-CN**: 管理包的 dist-tag
+   */
+  export const cmd_dist_tag: string;
+  /**
+   * - 🚩 **en**: Fetch-and-run a package's bin
+   * - **zh-CN**: 获取并运行一个包的二进制文件
+   */
+  export const cmd_dlx: string;
+  /**
+   * - 🚩 **en**: Run a node_modules/.bin binary
+   * - **zh-CN**: 运行 node_modules/.bin 中的二进制文件
+   */
+  export const cmd_exec: string;
+  /**
+   * - 🚩 **en**: Print the effective value of a config key
+   * - **zh-CN**: 打印配置键的值
+   */
+  export const cmd_get: string;
+  /**
+   * - 🚩 **en**: Manage ignored builds
+   * - **zh-CN**: 管理已忽略的构建
+   */
+  export const cmd_ignored_builds: string;
+  /**
+   * - 🚩 **en**: Generate a lockfile from another PM's lockfile
+   * - **zh-CN**: 从另一个包管理器的 lockfile 生成锁文件
+   */
+  export const cmd_import: string;
+  /**
+   * - 🚩 **en**: Scaffold a new TypeScript-first project
+   * - **zh-CN**: 搭建一个新的 TypeScript 项目
+   */
+  export const cmd_init: string;
+  /**
+   * - 🚩 **en**: Install dependencies from package.json + lockfile
+   * - **zh-CN**: 从 package.json + lockfile 安装依赖
+   */
+  export const cmd_install: string;
+  /**
+   * - 🚩 **en**: Check licenses of installed packages
+   * - **zh-CN**: 检查已安装包的许可证
+   */
+  export const cmd_licenses: string;
+  /**
+   * - 🚩 **en**: Link a local package
+   * - **zh-CN**: 链接本地包
+   */
+  export const cmd_link: string;
+  /**
+   * - 🚩 **en**: List installed packages
+   * - **zh-CN**: 列出已安装的包
+   */
+  export const cmd_list: string;
+  /**
+   * - 🚩 **en**: Login to the registry
+   * - **zh-CN**: 登录到注册表
+   */
+  export const cmd_login: string;
+  /**
+   * - 🚩 **en**: Logout from the registry
+   * - **zh-CN**: 从注册表登出
+   */
+  export const cmd_logout: string;
+  /**
+   * - 🚩 **en**: Manage Node versions
+   * - **zh-CN**: 管理 Node 版本
+   */
+  export const cmd_node: string;
+  /**
+   * - 🚩 **en**: Check outdated packages
+   * - **zh-CN**: 检查过时的包
+   */
+  export const cmd_outdated: string;
+  /**
+   * - 🚩 **en**: Manage package maintainers
+   * - **zh-CN**: 管理包维护者
+   */
+  export const cmd_owner: string;
+  /**
+   * - 🚩 **en**: Create a package tarball
+   * - **zh-CN**: 创建包 tarball
+   */
+  export const cmd_pack: string;
+  /**
+   * - 🚩 **en**: Author a package patch
+   * - **zh-CN**: 编写一个包补丁
+   */
+  export const cmd_patch: string;
+  /**
+   * - 🚩 **en**: Commit a package patch
+   * - **zh-CN**: 提交一个包补丁
+   */
+  export const cmd_patch_commit: string;
+  /**
+   * - 🚩 **en**: Remove a package patch
+   * - **zh-CN**: 移除包补丁
+   */
+  export const cmd_patch_remove: string;
+  /**
+   * - 🚩 **en**: Manage the project's package manager
+   * - **zh-CN**: 管理项目的包管理器
+   */
+  export const cmd_pm: string;
+  /**
+   * - 🚩 **en**: Remove extraneous packages
+   * - **zh-CN**: 移除无关的包
+   */
+  export const cmd_prune: string;
+  /**
+   * - 🚩 **en**: Publish a package to the registry
+   * - **zh-CN**: 发布包到注册表
+   */
+  export const cmd_publish: string;
+  /**
+   * - 🚩 **en**: Query the dependency graph
+   * - **zh-CN**: 使用选择器查询依赖图
+   */
+  export const cmd_query: string;
+  /**
+   * - 🚩 **en**: Rebuild native modules
+   * - **zh-CN**: 重新构建原生模块
+   */
+  export const cmd_rebuild: string;
+  /**
+   * - 🚩 **en**: Remove dependencies
+   * - **zh-CN**: 移除依赖
+   */
+  export const cmd_remove: string;
+  /**
+   * - 🚩 **en**: Print project root directory
+   * - **zh-CN**: 打印项目根目录路径
+   */
+  export const cmd_root: string;
+  /**
+   * - 🚩 **en**: Run a package.json script (workspace-aware)
+   * - **zh-CN**: 运行 package.json 脚本（工作区感知）
+   */
+  export const cmd_run: string;
+  /**
+   * - 🚩 **en**: Generate software bill of materials
+   * - **zh-CN**: 生成软件物料清单
+   */
+  export const cmd_sbom: string;
+  /**
+   * - 🚩 **en**: Search registry for packages
+   * - **zh-CN**: 在注册表中搜索包
+   */
+  export const cmd_search: string;
+  /**
+   * - 🚩 **en**: Write a key=value pair to config
+   * - **zh-CN**: 写入配置键值对
+   */
+  export const cmd_set: string;
+  /**
+   * - 🚩 **en**: Manage the content-addressable store
+   * - **zh-CN**: 管理内容寻址存储
+   */
+  export const cmd_store: string;
+  /**
+   * - 🚩 **en**: Manage auth tokens
+   * - **zh-CN**: 管理认证令牌
+   */
+  export const cmd_token: string;
+  /**
+   * - 🚩 **en**: Unlink a local package
+   * - **zh-CN**: 取消链接本地包
+   */
+  export const cmd_unlink: string;
+  /**
+   * - 🚩 **en**: Update within range
+   * - **zh-CN**: 在范围内更新依赖
+   */
+  export const cmd_update: string;
+  /**
+   * - 🚩 **en**: Upgrade nub itself
+   * - **zh-CN**: 升级 nub 自身
+   */
+  export const cmd_upgrade: string;
+  /**
+   * - 🚩 **en**: Manage package version
+   * - **zh-CN**: 管理包版本
+   */
+  export const cmd_version: string;
+  /**
+   * - 🚩 **en**: View package metadata from registry
+   * - **zh-CN**: 查看注册表中的包元数据
+   */
+  export const cmd_view: string;
+  /**
+   * - 🚩 **en**: Run a file in watch mode
+   * - **zh-CN**: 以监视模式运行文件
+   */
+  export const cmd_watch: string;
+  /**
+   * - 🚩 **en**: Print the current npm username
+   * - **zh-CN**: 打印当前 npm 用户名
+   */
+  export const cmd_whoami: string;
+  /**
+   * - 🚩 **en**: Explain why a package is installed
+   * - **zh-CN**: 解释为何安装了某个包
+   */
+  export const cmd_why: string;
+  /**
+   * - 🚩 **en**: Delete a key from nub config
+   * - **zh-CN**: 删除配置键
+   */
+  export const config_delete: string;
+  /**
+   * - 🚩 **en**: Explain a known setting
+   * - **zh-CN**: 解释已知配置项
+   */
+  export const config_explain: string;
+  /**
+   * - 🚩 **en**: Search known settings by name, source key, or description
+   * - **zh-CN**: 搜索配置项
+   */
+  export const config_find: string;
+  /**
+   * - 🚩 **en**: Print the effective value of a key
+   * - **zh-CN**: 打印配置键的值
+   */
+  export const config_get: string;
+  /**
+   * - 🚩 **en**: Print every key/value from nub config
+   * - **zh-CN**: 列出所有配置
+   */
+  export const config_list: string;
+  /**
+   * - 🚩 **en**: Write a key=value pair to nub config
+   * - **zh-CN**: 写入配置键值对
+   */
+  export const config_set: string;
+  /**
+   * - 🚩 **en**: Browse known settings in an interactive terminal UI
+   * - **zh-CN**: 交互式浏览配置
+   */
+  export const config_tui: string;
+  /**
+   * - 🚩 **en**: nub — the all-in-one Node.js toolkit
+   * - **zh-CN**: nub — Node.js 全功能工具包
+   */
+  export const description: string;
+  /**
+   * - 🚩 **en**: Add or update a dist-tag on a package
+   * - **zh-CN**: 添加或更新 dist-tag
+   */
+  export const dtag_add: string;
+  /**
+   * - 🚩 **en**: List every dist-tag for a package
+   * - **zh-CN**: 列出所有 dist-tag
+   */
+  export const dtag_ls: string;
+  /**
+   * - 🚩 **en**: Remove a dist-tag from a package
+   * - **zh-CN**: 移除 dist-tag
+   */
+  export const dtag_rm: string;
+  /**
+   * - 🚩 **en**: Provision version(s) into nub's cache
+   * - **zh-CN**: 安装指定版本的 Node
+   */
+  export const node_install: string;
+  /**
+   * - 🚩 **en**: List versions in nub's cache
+   * - **zh-CN**: 列出缓存的 Node 版本
+   */
+  export const node_ls: string;
+  /**
+   * - 🚩 **en**: Write the project's Node pin
+   * - **zh-CN**: 写入项目的 Node 版本锁定
+   */
+  export const node_pin: string;
+  /**
+   * - 🚩 **en**: Make `node` on PATH resolve through nub
+   * - **zh-CN**: 创建 node 的 shim
+   */
+  export const node_shim: string;
+  /**
+   * - 🚩 **en**: Remove a version from nub's cache
+   * - **zh-CN**: 移除缓存的 Node 版本
+   */
+  export const node_uninstall: string;
+  /**
+   * - 🚩 **en**: Remove the `node` shim and its PATH block
+   * - **zh-CN**: 移除 node 的 shim
+   */
+  export const node_unshim: string;
+  /**
+   * - 🚩 **en**: Print the resolved Node binary path
+   * - **zh-CN**: 打印已解析的 Node 二进制路径
+   */
+  export const node_which: string;
+  /**
+   * - 🚩 **en**: Activate inspector and break at start
+   * - **zh-CN**: 激活调试器并在启动时中断
+   */
+  export const opt_activate_inspector_and_break_at_start: string;
+  /**
+   * - 🚩 **en**: Activate the inspector
+   * - **zh-CN**: 激活调试器
+   */
+  export const opt_activate_the_inspector: string;
+  /**
+   * - 🚩 **en**: Add as dev dependency
+   * - **zh-CN**: 作为开发依赖添加
+   */
+  export const opt_add_as_dev_dependency: string;
+  /**
+   * - 🚩 **en**: Add as optional dependency
+   * - **zh-CN**: 作为可选依赖添加
+   */
+  export const opt_add_as_optional_dependency: string;
+  /**
+   * - 🚩 **en**: Add as peer dependency
+   * - **zh-CN**: 作为 peer 依赖添加
+   */
+  export const opt_add_as_peer_dependency: string;
+  /**
+   * - 🚩 **en**: Add to workspace root
+   * - **zh-CN**: 添加到工作区根包
+   */
+  export const opt_add_to_workspace_root: string;
+  /**
+   * - 🚩 **en**: Allow setting to current value
+   * - **zh-CN**: 允许设置为当前值
+   */
+  export const opt_allow_setting_to_current_value: string;
+  /**
+   * - 🚩 **en**: Also remove optionalDependencies
+   * - **zh-CN**: 同时移除 optionalDependencies
+   */
+  export const opt_also_remove_optionaldependencies: string;
+  /**
+   * - 🚩 **en**: Authentication flow: legacy or web
+   * - **zh-CN**: 认证方式：legacy 或 web
+   */
+  export const opt_authentication_flow_legacy_or_web: string;
+  /**
+   * - 🚩 **en**: Buffer output and flush on completion
+   * - **zh-CN**: 缓冲输出并在完成时刷新
+   */
+  export const opt_buffer_output_and_flush_on_completion: string;
+  /**
+   * - 🚩 **en**: Change to directory before running
+   * - **zh-CN**: 运行前切换目录
+   */
+  export const opt_change_to_directory_before_running: string;
+  /**
+   * - 🚩 **en**: Check whether dedupe would change lockfile
+   * - **zh-CN**: 检查 dedupe 是否会修改 lockfile
+   */
+  export const opt_check_whether_dedupe_would_change_lockfile: string;
+  /**
+   * - 🚩 **en**: Commit message template
+   * - **zh-CN**: 提交消息模板
+   */
+  export const opt_commit_message_template: string;
+  /**
+   * - 🚩 **en**: Deny lifecycle scripts
+   * - **zh-CN**: 拒绝生命周期脚本
+   */
+  export const opt_deny_lifecycle_scripts: string;
+  /**
+   * - 🚩 **en**: Directory to extract the writable copy into
+   * - **zh-CN**: 可写副本的提取目录
+   */
+  export const opt_directory_to_extract_the_writable_copy_into: string;
+  /**
+   * - 🚩 **en**: Directory to write tarball into
+   * - **zh-CN**: tarball 文件的输出目录
+   */
+  export const opt_directory_to_write_tarball_into: string;
+  /**
+   * - 🚩 **en**: Don't create git commit or tag
+   * - **zh-CN**: 不创建 git 提交或标签
+   */
+  export const opt_dont_create_git_commit_or_tag: string;
+  /**
+   * - 🚩 **en**: Don't stop on first failure
+   * - **zh-CN**: 遇到失败时不停止运行
+   */
+  export const opt_dont_stop_on_first_failure: string;
+  /**
+   * - 🚩 **en**: Drop advisories matching ID
+   * - **zh-CN**: 忽略匹配 ID 的公告
+   */
+  export const opt_drop_advisories_matching_id: string;
+  /**
+   * - 🚩 **en**: Drop advisories with no non-vulnerable upgrade
+   * - **zh-CN**: 忽略没有非易受攻击版本升级的公告
+   */
+  export const opt_drop_advisories_with_no_nonvulnerable_upgrade: string;
+  /**
+   * - 🚩 **en**: Drop the <dir> <script>: prefix from streamed output
+   * - **zh-CN**: 从流式输出中去掉 <目录> <脚本>: 前缀
+   */
+  export const opt_drop_the_dir_script_prefix_from_streamed_output: string;
+  /**
+   * - 🚩 **en**: Enable source-map support
+   * - **zh-CN**: 启用 source-map 支持
+   */
+  export const opt_enable_sourcemap_support: string;
+  /**
+   * - 🚩 **en**: Evaluate <code>
+   * - **zh-CN**: 求值指定代码
+   */
+  export const opt_evaluate_code: string;
+  /**
+   * - 🚩 **en**: Evaluate <code> and print
+   * - **zh-CN**: 求值指定代码并打印
+   */
+  export const opt_evaluate_code_and_print: string;
+  /**
+   * - 🚩 **en**: Exponential backoff factor between retries
+   * - **zh-CN**: 重试指数退避因子
+   */
+  export const opt_exponential_backoff_factor_between_retries: string;
+  /**
+   * - 🚩 **en**: Fix advisories
+   * - **zh-CN**: 修复公告
+   */
+  export const opt_fix_advisories: string;
+  /**
+   * - 🚩 **en**: Force shared global virtual store off
+   * - **zh-CN**: 强制关闭共享全局虚拟存储
+   */
+  export const opt_force_shared_global_virtual_store_off: string;
+  /**
+   * - 🚩 **en**: Force shared global virtual store on
+   * - **zh-CN**: 强制开启共享全局虚拟存储
+   */
+  export const opt_force_shared_global_virtual_store_on: string;
+  /**
+   * - 🚩 **en**: Generate SLSA provenance attestation
+   * - **zh-CN**: 生成 SLSA 来源证明
+   */
+  export const opt_generate_slsa_provenance_attestation: string;
+  /**
+   * - 🚩 **en**: GPG-sign the tag
+   * - **zh-CN**: 用 GPG 签名标签
+   */
+  export const opt_gpgsign_the_tag: string;
+  /**
+   * - 🚩 **en**: Ignore any existing patch entry
+   * - **zh-CN**: 忽略任何已有的补丁条目
+   */
+  export const opt_ignore_any_existing_patch_entry: string;
+  /**
+   * - 🚩 **en**: Install without persisting to package.json
+   * - **zh-CN**: 安装但不写入 package.json
+   */
+  export const opt_install_without_persisting_to_packagejson: string;
+  /**
+   * - 🚩 **en**: Interactive update picker
+   * - **zh-CN**: 交互式更新选择器
+   */
+  export const opt_interactive_update_picker: string;
+  /**
+   * - 🚩 **en**: JavaScript variant, no tsconfig
+   * - **zh-CN**: JavaScript 变体，无 tsconfig
+   */
+  export const opt_javascript_variant_no_tsconfig: string;
+  /**
+   * - 🚩 **en**: Lower bound for retry backoff (ms)
+   * - **zh-CN**: 重试退避下限（毫秒）
+   */
+  export const opt_lower_bound_for_retry_backoff_ms: string;
+  /**
+   * - 🚩 **en**: Max concurrent packages per chunk
+   * - **zh-CN**: 每个块的最大并发包数
+   */
+  export const opt_max_concurrent_packages_per_chunk: string;
+  /**
+   * - 🚩 **en**: Max concurrent packages per topological chunk
+   * - **zh-CN**: 每个拓扑块的最大并发包数
+   */
+  export const opt_max_concurrent_packages_per_topological_chunk: string;
+  /**
+   * - 🚩 **en**: Maximum number of results
+   * - **zh-CN**: 最大结果数量
+   */
+  export const opt_maximum_number_of_results: string;
+  /**
+   * - 🚩 **en**: npm-style member selection
+   * - **zh-CN**: npm 风格的成员选择
+   */
+  export const opt_npmstyle_member_selection: string;
+  /**
+   * - 🚩 **en**: Only audit devDependencies
+   * - **zh-CN**: 仅审计 devDependencies
+   */
+  export const opt_only_audit_devdependencies: string;
+  /**
+   * - 🚩 **en**: Only audit production deps
+   * - **zh-CN**: 仅审计生产依赖
+   */
+  export const opt_only_audit_production_deps: string;
+  /**
+   * - 🚩 **en**: Only follow devDependency chains
+   * - **zh-CN**: 仅追踪 devDependency 链
+   */
+  export const opt_only_follow_devdependency_chains: string;
+  /**
+   * - 🚩 **en**: Only follow prod chains
+   * - **zh-CN**: 仅追踪生产依赖链
+   */
+  export const opt_only_follow_prod_chains: string;
+  /**
+   * - 🚩 **en**: Only match devDependency roots
+   * - **zh-CN**: 仅匹配 devDependency 根包
+   */
+  export const opt_only_match_devdependency_roots: string;
+  /**
+   * - 🚩 **en**: Only match production roots
+   * - **zh-CN**: 仅匹配生产依赖根包
+   */
+  export const opt_only_match_production_roots: string;
+  /**
+   * - 🚩 **en**: Only print advisories at or above this severity
+   * - **zh-CN**: 仅打印等于或高于此严重程度的公告
+   */
+  export const opt_only_print_advisories_at_or_above_this_severity: string;
+  /**
+   * - 🚩 **en**: Operate on workspace root
+   * - **zh-CN**: 在工作区根包上操作
+   */
+  export const opt_operate_on_workspace_root: string;
+  /**
+   * - 🚩 **en**: Output format: default, json, or parseable
+   * - **zh-CN**: 输出格式：default、json 或 parseable
+   */
+  export const opt_output_format_default_json_or_parseable: string;
+  /**
+   * - 🚩 **en**: Output reporter: default, silent, or ndjson
+   * - **zh-CN**: 输出报告器：default、silent 或 ndjson
+   */
+  export const opt_output_reporter_default_silent_or_ndjson: string;
+  /**
+   * - 🚩 **en**: Override the shell used to invoke the script
+   * - **zh-CN**: 覆盖用于调用脚本的 shell
+   */
+  export const opt_override_the_shell_used_to_invoke_the_script: string;
+  /**
+   * - 🚩 **en**: Overwrite existing files
+   * - **zh-CN**: 覆盖已有文件
+   */
+  export const opt_overwrite_existing_files: string;
+  /**
+   * - 🚩 **en**: Overwrite existing lockfile
+   * - **zh-CN**: 覆盖已有的 lockfile
+   */
+  export const opt_overwrite_existing_lockfile: string;
+  /**
+   * - 🚩 **en**: Pick advisories to fix interactively
+   * - **zh-CN**: 交互式选择要修复的公告
+   */
+  export const opt_pick_advisories_to_fix_interactively: string;
+  /**
+   * - 🚩 **en**: Pin exact version
+   * - **zh-CN**: 锁定精确版本
+   */
+  export const opt_pin_exact_version: string;
+  /**
+   * - 🚩 **en**: Pin to exact version
+   * - **zh-CN**: 锁定到精确版本
+   */
+  export const opt_pin_to_exact_version: string;
+  /**
+   * - 🚩 **en**: Pre-approve lifecycle scripts
+   * - **zh-CN**: 预批准生命周期脚本
+   */
+  export const opt_preapprove_lifecycle_scripts: string;
+  /**
+   * - 🚩 **en**: Preload a CommonJS module
+   * - **zh-CN**: 预加载一个 CommonJS 模块
+   */
+  export const opt_preload_a_commonjs_module: string;
+  /**
+   * - 🚩 **en**: Preload an ES module
+   * - **zh-CN**: 预加载一个 ES 模块
+   */
+  export const opt_preload_an_es_module: string;
+  /**
+   * - 🚩 **en**: Prerelease identifier
+   * - **zh-CN**: 预发布标识符
+   */
+  export const opt_prerelease_identifier: string;
+  /**
+   * - 🚩 **en**: Project name
+   * - **zh-CN**: 项目名称
+   */
+  export const opt_project_name: string;
+  /**
+   * - 🚩 **en**: Publish as public or restricted
+   * - **zh-CN**: 发布为公共或受限
+   */
+  export const opt_publish_as_public_or_restricted: string;
+  /**
+   * - 🚩 **en**: Refresh lockfile without rewriting package.json
+   * - **zh-CN**: 刷新 lockfile 而不重写 package.json
+   */
+  export const opt_refresh_lockfile_without_rewriting_packagejson: string;
+  /**
+   * - 🚩 **en**: Remove devDependencies
+   * - **zh-CN**: 移除 devDependencies
+   */
+  export const opt_remove_devdependencies: string;
+  /**
+   * - 🚩 **en**: Remove from devDependencies
+   * - **zh-CN**: 从 devDependencies 中移除
+   */
+  export const opt_remove_from_devdependencies: string;
+  /**
+   * - 🚩 **en**: Remove from workspace root
+   * - **zh-CN**: 从工作区根包中移除
+   */
+  export const opt_remove_from_workspace_root: string;
+  /**
+   * - 🚩 **en**: Republish even when version exists
+   * - **zh-CN**: 即使版本已存在也重新发布
+   */
+  export const opt_republish_even_when_version_exists: string;
+  /**
+   * - 🚩 **en**: Reverse topological order
+   * - **zh-CN**: 反转拓扑排序
+   */
+  export const opt_reverse_topological_order: string;
+  /**
+   * - 🚩 **en**: Run all packages concurrently
+   * - **zh-CN**: 在所有包中并行运行
+   */
+  export const opt_run_all_packages_concurrently: string;
+  /**
+   * - 🚩 **en**: Run from workspace root
+   * - **zh-CN**: 从工作区根目录运行
+   */
+  export const opt_run_from_workspace_root: string;
+  /**
+   * - 🚩 **en**: Run in all packages concurrently
+   * - **zh-CN**: 在所有包中并行运行
+   */
+  export const opt_run_in_all_packages_concurrently: string;
+  /**
+   * - 🚩 **en**: Run in watch mode
+   * - **zh-CN**: 以监视模式运行
+   */
+  export const opt_run_in_watch_mode: string;
+  /**
+   * - 🚩 **en**: Run packages strictly one at a time
+   * - **zh-CN**: 严格按顺序逐个运行包
+   */
+  export const opt_run_packages_strictly_one_at_a_time: string;
+  /**
+   * - 🚩 **en**: Scope to bind this registry to
+   * - **zh-CN**: 绑定此注册表的 scope
+   */
+  export const opt_scope_to_bind_this_registry_to: string;
+  /**
+   * - 🚩 **en**: Scope whose registry mapping to remove
+   * - **zh-CN**: 要移除注册表映射的 scope
+   */
+  export const opt_scope_whose_registry_mapping_to_remove: string;
+  /**
+   * - 🚩 **en**: Show only devDependencies
+   * - **zh-CN**: 仅显示 devDependencies
+   */
+  export const opt_show_only_devdependencies: string;
+  /**
+   * - 🚩 **en**: Show only production deps
+   * - **zh-CN**: 仅显示生产依赖
+   */
+  export const opt_show_only_production_deps: string;
+  /**
+   * - 🚩 **en**: Skip clean working tree check
+   * - **zh-CN**: 跳过工作目录清洁检查
+   */
+  export const opt_skip_clean_working_tree_check: string;
+  /**
+   * - 🚩 **en**: Skip git hooks
+   * - **zh-CN**: 跳过 git hooks
+   */
+  export const opt_skip_git_hooks: string;
+  /**
+   * - 🚩 **en**: Skip git init
+   * - **zh-CN**: 跳过 git init
+   */
+  export const opt_skip_git_init: string;
+  /**
+   * - 🚩 **en**: Skip nub install step
+   * - **zh-CN**: 跳过 nub install 步骤
+   */
+  export const opt_skip_nub_install_step: string;
+  /**
+   * - 🚩 **en**: Skip packages that don't have the named script
+   * - **zh-CN**: 跳过没有该脚本的包
+   */
+  export const opt_skip_packages_that_dont_have_the_named_script: string;
+  /**
+   * - 🚩 **en**: Skip prepack/prepare/postpack scripts
+   * - **zh-CN**: 跳过 prepack/prepare/postpack 脚本
+   */
+  export const opt_skip_prepackpreparepostpack_scripts: string;
+  /**
+   * - 🚩 **en**: Skip pre-run dependency-freshness check
+   * - **zh-CN**: 跳过运行前的依赖新鲜度检查
+   */
+  export const opt_skip_prerun_check: string;
+  /**
+   * - 🚩 **en**: Skip pre-run install step
+   * - **zh-CN**: 跳过运行前的安装步骤
+   */
+  export const opt_skip_prerun_install: string;
+  /**
+   * - 🚩 **en**: Skip publish lifecycle scripts
+   * - **zh-CN**: 跳过发布生命周期脚本
+   */
+  export const opt_skip_publish_lifecycle_scripts: string;
+  /**
+   * - 🚩 **en**: Skip topological predecessors of <pkg>
+   * - **zh-CN**: 跳过 <包> 的拓扑前置包
+   */
+  export const opt_skip_topological_predecessors_of_pkg: string;
+  /**
+   * - 🚩 **en**: Skip topological sort
+   * - **zh-CN**: 跳过拓扑排序
+   */
+  export const opt_skip_topological_sort: string;
+  /**
+   * - 🚩 **en**: Skip version lifecycle scripts
+   * - **zh-CN**: 跳过版本生命周期脚本
+   */
+  export const opt_skip_version_lifecycle_scripts: string;
+  /**
+   * - 🚩 **en**: Stop the run on first failure
+   * - **zh-CN**: 遇到第一个失败时停止运行
+   */
+  export const opt_stop_the_run_on_first_failure: string;
+  /**
+   * - 🚩 **en**: Stream output with package-name prefix
+   * - **zh-CN**: 以包名为前缀流式输出
+   */
+  export const opt_stream_output_with_packagename_prefix: string;
+  /**
+   * - 🚩 **en**: Syntax-check the script
+   * - **zh-CN**: 对脚本进行语法检查
+   */
+  export const opt_syntaxcheck_the_script: string;
+  /**
+   * - 🚩 **en**: Target version
+   * - **zh-CN**: 目标版本
+   */
+  export const opt_target_version: string;
+  /**
+   * - 🚩 **en**: Update in workspace root
+   * - **zh-CN**: 在工作区根包中更新
+   */
+  export const opt_update_in_workspace_root: string;
+  /**
+   * - 🚩 **en**: Update only devDependencies
+   * - **zh-CN**: 仅更新 devDependencies
+   */
+  export const opt_update_only_devdependencies: string;
+  /**
+   * - 🚩 **en**: Update past manifest range
+   * - **zh-CN**: 更新超出 manifest 范围的版本
+   */
+  export const opt_update_past_manifest_range: string;
+  /**
+   * - 🚩 **en**: Upgrade to latest canary
+   * - **zh-CN**: 升级到最新 canary 版本
+   */
+  export const opt_upgrade_to_latest_canary: string;
+  /**
+   * - 🚩 **en**: Upgrade to latest stable
+   * - **zh-CN**: 升级到最新稳定版本
+   */
+  export const opt_upgrade_to_latest_stable: string;
+  /**
+   * - 🚩 **en**: Upper bound for retry backoff (ms)
+   * - **zh-CN**: 重试退避上限（毫秒）
+   */
+  export const opt_upper_bound_for_retry_backoff_ms: string;
+  /**
+   * - 🚩 **en**: Use exit code 0 if registry responds with error
+   * - **zh-CN**: 注册表返回错误时仍使用退出码 0
+   */
+  export const opt_use_exit_code_0_if_registry_responds_with_error: string;
+  /**
+   * - 🚩 **en**: Where to write the generated .patch file
+   * - **zh-CN**: 生成的 .patch 文件的写入位置
+   */
+  export const opt_where_to_write_the_generated_patch_file: string;
+  /**
+   * - 🚩 **en**: Write only the converted lockfile
+   * - **zh-CN**: 仅写入转换后的 lockfile
+   */
+  export const opt_write_only_the_converted_lockfile: string;
+  /**
+   * - 🚩 **en**: Select all
+   * - **zh-CN**: 选择全部
+   */
+  export const option_all: string;
+  /**
+   * - 🚩 **en**: Color mode: auto (default), always, never
+   * - **zh-CN**: 颜色模式：auto（默认）、always、never
+   */
+  export const option_color: string;
+  /**
+   * - 🚩 **en**: Run as if started in <dir>
+   * - **zh-CN**: 指定工作目录
+   */
+  export const option_cwd: string;
+  /**
+   * - 🚩 **en**: Traversal depth
+   * - **zh-CN**: 依赖遍历深度
+   */
+  export const option_depth: string;
+  /**
+   * - 🚩 **en**: Install only devDependencies
+   * - **zh-CN**: 仅安装开发依赖
+   */
+  export const option_dev: string;
+  /**
+   * - 🚩 **en**: Show what would happen without doing it
+   * - **zh-CN**: 试运行，不实际执行
+   */
+  export const option_dry_run: string;
+  /**
+   * - 🚩 **en**: Load environment variables from <file>
+   * - **zh-CN**: 从文件加载环境变量
+   */
+  export const option_env_file: string;
+  /**
+   * - 🚩 **en**: Like --env-file, but skip silently if absent
+   * - **zh-CN**: 从文件加载环境变量（文件不存在时静默跳过）
+   */
+  export const option_env_file_if_exists: string;
+  /**
+   * - 🚩 **en**: Error when a workspace selector matches no packages
+   * - **zh-CN**: 筛选器未匹配时出错
+   */
+  export const option_fail_if_no_match: string;
+  /**
+   * - 🚩 **en**: Number of retry attempts for registry fetches
+   * - **zh-CN**: 注册表获取的重试次数
+   */
+  export const option_fetch_retries: string;
+  /**
+   * - 🚩 **en**: Per-request HTTP timeout in milliseconds
+   * - **zh-CN**: HTTP 请求超时毫秒数
+   */
+  export const option_fetch_timeout: string;
+  /**
+   * - 🚩 **en**: Filter workspace packages by name or glob
+   * - **zh-CN**: 按名称或 glob 过滤工作区包
+   */
+  export const option_filter: string;
+  /**
+   * - 🚩 **en**: Production-only variant of --filter
+   * - **zh-CN**: 生产环境版本的 --filter
+   */
+  export const option_filter_prod: string;
+  /**
+   * - 🚩 **en**: Re-resolve and relink even when up-to-date
+   * - **zh-CN**: 强制执行操作
+   */
+  export const option_force: string;
+  /**
+   * - 🚩 **en**: Hard-fail if the lockfile is out of date
+   * - **zh-CN**: lockfile 过期时硬失败
+   */
+  export const option_frozen_lockfile: string;
+  /**
+   * - 🚩 **en**: Operate globally
+   * - **zh-CN**: 全局安装/操作
+   */
+  export const option_global: string;
+  /**
+   * - 🚩 **en**: Print help
+   * - **zh-CN**: 打印帮助信息
+   */
+  export const option_help: string;
+  /**
+   * - 🚩 **en**: Skip all lifecycle scripts
+   * - **zh-CN**: 跳过生命周期脚本
+   */
+  export const option_ignore_scripts: string;
+  /**
+   * - 🚩 **en**: Include the workspace root in recursive set
+   * - **zh-CN**: 包含工作区根包
+   */
+  export const option_include_workspace_root: string;
+  /**
+   * - 🚩 **en**: Emit output as JSON
+   * - **zh-CN**: 以 JSON 格式输出
+   */
+  export const option_json: string;
+  /**
+   * - 🚩 **en**: Shortcut for --location project
+   * - **zh-CN**: 项目级配置的快捷方式
+   */
+  export const option_local: string;
+  /**
+   * - 🚩 **en**: Which config location to use
+   * - **zh-CN**: 配置位置
+   */
+  export const option_location: string;
+  /**
+   * - 🚩 **en**: Write lockfile only, skip linking
+   * - **zh-CN**: 仅写入 lockfile，跳过 node_modules
+   */
+  export const option_lockfile_only: string;
+  /**
+   * - 🚩 **en**: Log level
+   * - **zh-CN**: 日志级别
+   */
+  export const option_loglevel: string;
+  /**
+   * - 🚩 **en**: Show additional details
+   * - **zh-CN**: 显示更多细节
+   */
+  export const option_long: string;
+  /**
+   * - 🚩 **en**: Load no env files
+   * - **zh-CN**: 不加载任何 .env 文件
+   */
+  export const option_no_env_file: string;
+  /**
+   * - 🚩 **en**: Always re-resolve, even if lockfile is fresh
+   * - **zh-CN**: 即使 lockfile 是最新的也重新解析
+   */
+  export const option_no_frozen_lockfile: string;
+  /**
+   * - 🚩 **en**: Skip optionalDependencies
+   * - **zh-CN**: 跳过可选依赖
+   */
+  export const option_no_optional: string;
+  /**
+   * - 🚩 **en**: Run on plain Node, no augmentation
+   * - **zh-CN**: 使用纯 Node 运行，不进行增强
+   */
+  export const option_node: string;
+  /**
+   * - 🚩 **en**: node_modules layout: isolated or hoisted
+   * - **zh-CN**: node_modules 布局：isolated 或 hoisted
+   */
+  export const option_node_linker: string;
+  /**
+   * - 🚩 **en**: Never hit the network
+   * - **zh-CN**: 从不访问网络
+   */
+  export const option_offline: string;
+  /**
+   * - 🚩 **en**: One-time password
+   * - **zh-CN**: 一次性密码
+   */
+  export const option_otp: string;
+  /**
+   * - 🚩 **en**: Tab-separated output
+   * - **zh-CN**: 以可解析格式输出
+   */
+  export const option_parseable: string;
+  /**
+   * - 🚩 **en**: Use lockfile when fresh, re-resolve when stale
+   * - **zh-CN**: lockfile 最新时使用，过期时重新解析
+   */
+  export const option_prefer_frozen_lockfile: string;
+  /**
+   * - 🚩 **en**: Use cached packages when available
+   * - **zh-CN**: 优先使用缓存的包
+   */
+  export const option_prefer_offline: string;
+  /**
+   * - 🚩 **en**: Skip devDependencies
+   * - **zh-CN**: 仅安装生产依赖
+   */
+  export const option_prod: string;
+  /**
+   * - 🚩 **en**: Run across every workspace package
+   * - **zh-CN**: 在所有工作区包中运行
+   */
+  export const option_recursive: string;
+  /**
+   * - 🚩 **en**: Override registry URL
+   * - **zh-CN**: 覆盖注册表 URL
+   */
+  export const option_registry: string;
+  /**
+   * - 🚩 **en**: Output format
+   * - **zh-CN**: 输出格式
+   */
+  export const option_reporter: string;
+  /**
+   * - 🚩 **en**: Suppress nub's non-error output
+   * - **zh-CN**: 抑制 nub 的非错误输出
+   */
+  export const option_silent: string;
+  /**
+   * - 🚩 **en**: Dist-tag to publish under
+   * - **zh-CN**: 指定 dist-tag
+   */
+  export const option_tag: string;
+  /**
+   * - 🚩 **en**: Increase nub's log verbosity (repeatable)
+   * - **zh-CN**: 增加日志详细程度（可重复）
+   */
+  export const option_verbose: string;
+  /**
+   * - 🚩 **en**: Print the nub version
+   * - **zh-CN**: 打印 nub 版本
+   */
+  export const option_version: string;
+  /**
+   * - 🚩 **en**: Run from workspace root
+   * - **zh-CN**: 从工作区根目录运行
+   */
+  export const option_workspace_root: string;
+  /**
+   * - 🚩 **en**: Skip confirmation prompt
+   * - **zh-CN**: 跳过确认提示
+   */
+  export const option_yes: string;
+  /**
+   * - 🚩 **en**: Add a maintainer to a package
+   * - **zh-CN**: 添加包维护者
+   */
+  export const owner_add: string;
+  /**
+   * - 🚩 **en**: List the maintainers of a package
+   * - **zh-CN**: 列出包维护者
+   */
+  export const owner_ls: string;
+  /**
+   * - 🚩 **en**: Remove a maintainer from a package
+   * - **zh-CN**: 移除包维护者
+   */
+  export const owner_rm: string;
+  /**
+   * - 🚩 **en**: List cached package managers (or clear the cache)
+   * - **zh-CN**: 列出或清除缓存的包管理器
+   */
+  export const pm_cache: string;
+  /**
+   * - 🚩 **en**: Lock this project to an exact nub version
+   * - **zh-CN**: 锁定项目的 nub 版本
+   */
+  export const pm_pin: string;
+  /**
+   * - 🚩 **en**: Link npm/pnpm/yarn shims into ~/.nub/shims
+   * - **zh-CN**: 创建包管理器 shim
+   */
+  export const pm_shim: string;
+  /**
+   * - 🚩 **en**: Remove the shims and their PATH block
+   * - **zh-CN**: 移除包管理器 shim
+   */
+  export const pm_unshim: string;
+  /**
+   * - 🚩 **en**: Re-resolve within the pinned range and bump the pin
+   * - **zh-CN**: 重新解析并更新锁定版本
+   */
+  export const pm_update: string;
+  /**
+   * - 🚩 **en**: Declare the project's package manager (npm|pnpm|yarn|bun|nub)
+   * - **zh-CN**: 声明项目的包管理器
+   */
+  export const pm_use: string;
+  /**
+   * - 🚩 **en**: Print the resolved package-manager path
+   * - **zh-CN**: 打印已解析的包管理器路径
+   */
+  export const pm_which: string;
+  /**
+   * - 🚩 **en**: Add packages to the global store without linking
+   * - **zh-CN**: 将包添加到全局存储而不链接
+   */
+  export const store_add: string;
+  /**
+   * - 🚩 **en**: Show the store path
+   * - **zh-CN**: 显示存储路径
+   */
+  export const store_path: string;
+  /**
+   * - 🚩 **en**: Remove unreferenced packages from the global store
+   * - **zh-CN**: 移除全局存储中未引用的包
+   */
+  export const store_prune: string;
+  /**
+   * - 🚩 **en**: Verify the store against cached package indexes
+   * - **zh-CN**: 验证存储完整性
+   */
+  export const store_status: string;
+  /**
+   * - 🚩 **en**: Create a new auth token
+   * - **zh-CN**: 创建认证令牌
+   */
+  export const token_create: string;
+  /**
+   * - 🚩 **en**: List the account's auth tokens
+   * - **zh-CN**: 列出认证令牌
+   */
+  export const token_list: string;
+  /**
+   * - 🚩 **en**: Revoke a token
+   * - **zh-CN**: 撤销认证令牌
+   */
+  export const token_revoke: string;
+}
+
+declare module "virtual:i18n/pm2" {
+  /**
+   * - 🚩 **en**: Attach stdin/stdout to application identified by pm_id
+   * - **zh-CN**: 将 stdin/stdout 挂载到指定 pm_id 的应用
+   */
+  export const cmd_attach: string;
+  /**
+   * - 🚩 **en**: Install module automatically
+   * - **zh-CN**: 自动安装模块
+   */
+  export const cmd_autoinstall: string;
+  /**
+   * - 🚩 **en**: Downgrades repository to the previous commit for a given app
+   * - **zh-CN**: 回退仓库到上一个提交
+   */
+  export const cmd_backward: string;
+  /**
+   * - 🚩 **en**: Create empty dump file
+   * - **zh-CN**: 创建空的转储文件
+   */
+  export const cmd_cleardump: string;
+  /**
+   * - 🚩 **en**: Install or uninstall tab completion
+   * - **zh-CN**: 安装或卸载 Tab 补全
+   */
+  export const cmd_completion: string;
+  /**
+   * - 🚩 **en**: Get / set module config values
+   * - **zh-CN**: 获取 / 设置模块配置值
+   */
+  export const cmd_conf: string;
+  /**
+   * - 🚩 **en**: Get / set module config values
+   * - **zh-CN**: 获取 / 设置模块配置值
+   */
+  export const cmd_config: string;
+  /**
+   * - 🚩 **en**: Create a boilerplate
+   * - **zh-CN**: 创建一个样板应用
+   */
+  export const cmd_create: string;
+  /**
+   * - 🚩 **en**: Launch dashboard with monitoring and logs
+   * - **zh-CN**: 启动带监控和日志的面板
+   */
+  export const cmd_dashboard: string;
+  /**
+   * - 🚩 **en**: Performs a deep update of PM2
+   * - **zh-CN**: 深度更新 PM2
+   */
+  export const cmd_deep_update: string;
+  /**
+   * - 🚩 **en**: Stop and delete a process from pm2 process list
+   * - **zh-CN**: 停止并从 pm2 进程列表删除
+   */
+  export const cmd_delete: string;
+  /**
+   * - 🚩 **en**: Deploy your json
+   * - **zh-CN**: 部署 json
+   */
+  export const cmd_deploy: string;
+  /**
+   * - 🚩 **en**: Describe all parameters of a process
+   * - **zh-CN**: 描述进程的所有参数
+   */
+  export const cmd_describe: string;
+  /**
+   * - 🚩 **en**: Dump all processes for resurrecting them later
+   * - **zh-CN**: 转储所有进程以便稍后恢复
+   */
+  export const cmd_dump: string;
+  /**
+   * - 🚩 **en**: List all environment variables of a process id
+   * - **zh-CN**: 列出指定进程 id 的所有环境变量
+   */
+  export const cmd_env: string;
+  /**
+   * - 🚩 **en**: Display pm2 usage examples
+   * - **zh-CN**: 显示 pm2 使用示例
+   */
+  export const cmd_examples: string;
+  /**
+   * - 🚩 **en**: Flush logs
+   * - **zh-CN**: 清空日志
+   */
+  export const cmd_flush: string;
+  /**
+   * - 🚩 **en**: Updates repository to the next commit for a given app
+   * - **zh-CN**: 更新仓库到下一个提交
+   */
+  export const cmd_forward: string;
+  /**
+   * - 🚩 **en**: Get value for key
+   * - **zh-CN**: 获取 key 的值
+   */
+  export const cmd_get: string;
+  /**
+   * - 🚩 **en**: Get process id by name
+   * - **zh-CN**: 按名称获取进程 id
+   */
+  export const cmd_id: string;
+  /**
+   * - 🚩 **en**: Launch legacy termcaps monitoring
+   * - **zh-CN**: 启动旧版 termcaps 监控
+   */
+  export const cmd_imonit: string;
+  /**
+   * - 🚩 **en**: Generate a process conf file
+   * - **zh-CN**: 生成进程配置文件
+   */
+  export const cmd_init: string;
+  /**
+   * - 🚩 **en**: Inspect a process
+   * - **zh-CN**: 检查进程
+   */
+  export const cmd_inspect: string;
+  /**
+   * - 🚩 **en**: Install or update a module and run it forever
+   * - **zh-CN**: 安装或更新一个模块并永久运行
+   */
+  export const cmd_install: string;
+  /**
+   * - 🚩 **en**: Install OpenTelemetry tracing packages
+   * - **zh-CN**: 安装 OpenTelemetry 追踪包
+   */
+  export const cmd_install_otel: string;
+  /**
+   * - 🚩 **en**: List all processes in JSON format
+   * - **zh-CN**: 以 JSON 格式列出所有进程
+   */
+  export const cmd_jlist: string;
+  /**
+   * - 🚩 **en**: Kill daemon
+   * - **zh-CN**: 终止守护进程
+   */
+  export const cmd_kill: string;
+  /**
+   * - 🚩 **en**: Link with the pm2 monitoring dashboard
+   * - **zh-CN**: 关联 pm2 监控面板
+   */
+  export const cmd_link: string;
+  /**
+   * - 🚩 **en**: List all processes
+   * - **zh-CN**: 列出所有进程
+   */
+  export const cmd_list_all: string;
+  /**
+   * - 🚩 **en**: Login to pm2 plus
+   * - **zh-CN**: 登录 pm2 plus
+   */
+  export const cmd_login: string;
+  /**
+   * - 🚩 **en**: Logout from pm2 plus
+   * - **zh-CN**: 登出 pm2 plus
+   */
+  export const cmd_logout: string;
+  /**
+   * - 🚩 **en**: Copy default logrotate configuration
+   * - **zh-CN**: 复制默认 logrotate 配置
+   */
+  export const cmd_logrotate: string;
+  /**
+   * - 🚩 **en**: Stream logs file. Default stream all logs
+   * - **zh-CN**: 流式输出日志文件，默认输出全部日志
+   */
+  export const cmd_logs: string;
+  /**
+   * - 🚩 **en**: Generate a sample module in current folder
+   * - **zh-CN**: 在当前文件夹生成模块示例
+   */
+  export const cmd_module_generate: string;
+  /**
+   * - 🚩 **en**: Update a module and run it forever
+   * - **zh-CN**: 更新模块并永久运行
+   */
+  export const cmd_module_update: string;
+  /**
+   * - 🚩 **en**: Launch termcaps monitoring
+   * - **zh-CN**: 启动 termcaps 监控
+   */
+  export const cmd_monit: string;
+  /**
+   * - 🚩 **en**: Monitor target process
+   * - **zh-CN**: 监控目标进程
+   */
+  export const cmd_monitor: string;
+  /**
+   * - 🚩 **en**: Multiset eg 'key1 val1 key2 val2'
+   * - **zh-CN**: 多重设置，如 "key1 val1 key2 val2"
+   */
+  export const cmd_multiset: string;
+  /**
+   * - 🚩 **en**: Open the pm2 monitoring dashboard
+   * - **zh-CN**: 打开 pm2 监控面板
+   */
+  export const cmd_open: string;
+  /**
+   * - 🚩 **en**: Check & Package TAR type module
+   * - **zh-CN**: 检查并打包 TAR 类型模块
+   */
+  export const cmd_package: string;
+  /**
+   * - 🚩 **en**: Return pid of app name or all
+   * - **zh-CN**: 返回指定应用或所有进程的 pid
+   */
+  export const cmd_pid: string;
+  /**
+   * - 🚩 **en**: Ping pm2 daemon - if not up it will launch it
+   * - **zh-CN**: Ping pm2 守护进程 - 若未启动则启动之
+   */
+  export const cmd_ping: string;
+  /**
+   * - 🚩 **en**: Enable pm2 plus
+   * - **zh-CN**: 启用 pm2 plus
+   */
+  export const cmd_plus: string;
+  /**
+   * - 🚩 **en**: Print json in a prettified JSON
+   * - **zh-CN**: 以美化后的 JSON 输出
+   */
+  export const cmd_prettylist: string;
+  /**
+   * - 🚩 **en**: Profile PM2 cpu
+   * - **zh-CN**: 分析 PM2 CPU
+   */
+  export const cmd_profile_cpu: string;
+  /**
+   * - 🚩 **en**: Sample PM2 heap memory
+   * - **zh-CN**: 采样 PM2 堆内存
+   */
+  export const cmd_profile_mem: string;
+  /**
+   * - 🚩 **en**: Publish the module you are currently on
+   * - **zh-CN**: 发布当前所在的模块
+   */
+  export const cmd_publish: string;
+  /**
+   * - 🚩 **en**: Updates repository for a given app
+   * - **zh-CN**: 更新指定应用的仓库
+   */
+  export const cmd_pull: string;
+  /**
+   * - 🚩 **en**: Reload processes (for apps using HTTP/HTTPS)
+   * - **zh-CN**: 平滑重载进程（适用于 HTTP/HTTPS 应用）
+   */
+  export const cmd_reload: string;
+  /**
+   * - 🚩 **en**: Reload all logs
+   * - **zh-CN**: 重载所有日志
+   */
+  export const cmd_reload_logs: string;
+  /**
+   * - 🚩 **en**: Give a full pm2 report
+   * - **zh-CN**: 生成完整的 pm2 报告
+   */
+  export const cmd_report: string;
+  /**
+   * - 🚩 **en**: Reset counters for process
+   * - **zh-CN**: 重置进程计数器
+   */
+  export const cmd_reset: string;
+  /**
+   * - 🚩 **en**: Restart a process
+   * - **zh-CN**: 重启进程
+   */
+  export const cmd_restart: string;
+  /**
+   * - 🚩 **en**: Resurrect previously dumped processes
+   * - **zh-CN**: 恢复此前转储的进程
+   */
+  export const cmd_resurrect: string;
+  /**
+   * - 🚩 **en**: Scale up/down a process in cluster mode
+   * - **zh-CN**: 在集群模式下按参数扩缩进程
+   */
+  export const cmd_scale: string;
+  /**
+   * - 🚩 **en**: Send stdin to pm_id
+   * - **zh-CN**: 向 pm_id 发送 stdin
+   */
+  export const cmd_send: string;
+  /**
+   * - 🚩 **en**: Send a system signal to the target process
+   * - **zh-CN**: 向目标进程发送系统信号
+   */
+  export const cmd_send_signal: string;
+  /**
+   * - 🚩 **en**: Serve a directory over http via port
+   * - **zh-CN**: 通过 http 端口托管目录
+   */
+  export const cmd_serve: string;
+  /**
+   * - 🚩 **en**: Set the specified config key value
+   * - **zh-CN**: 设置指定的配置键值
+   */
+  export const cmd_set: string;
+  /**
+   * - 🚩 **en**: Start and daemonize an app
+   * - **zh-CN**: 启动并守护化一个应用
+   */
+  export const cmd_start: string;
+  /**
+   * - 🚩 **en**: Start or gracefully reload JSON file
+   * - **zh-CN**: 启动或优雅重载 JSON 文件
+   */
+  export const cmd_start_or_graceful_reload: string;
+  /**
+   * - 🚩 **en**: Start or gracefully reload JSON file
+   * - **zh-CN**: 启动或平滑重载 JSON 文件
+   */
+  export const cmd_start_or_reload: string;
+  /**
+   * - 🚩 **en**: Start or restart JSON file
+   * - **zh-CN**: 启动或重启 JSON 文件
+   */
+  export const cmd_start_or_restart: string;
+  /**
+   * - 🚩 **en**: Enable the pm2 startup hook
+   * - **zh-CN**: 启用 pm2 开机启动钩子
+   */
+  export const cmd_startup: string;
+  /**
+   * - 🚩 **en**: Stop a process
+   * - **zh-CN**: 停止进程
+   */
+  export const cmd_stop: string;
+  /**
+   * - 🚩 **en**: List system infos in JSON
+   * - **zh-CN**: 以 JSON 格式列出系统信息
+   */
+  export const cmd_sysinfos: string;
+  /**
+   * - 🚩 **en**: Trigger process action
+   * - **zh-CN**: 触发进程动作
+   */
+  export const cmd_trigger: string;
+  /**
+   * - 🚩 **en**: Stop and uninstall a module
+   * - **zh-CN**: 停止并卸载模块
+   */
+  export const cmd_uninstall: string;
+  /**
+   * - 🚩 **en**: Remove OpenTelemetry tracing packages
+   * - **zh-CN**: 移除 OpenTelemetry 追踪包
+   */
+  export const cmd_uninstall_otel: string;
+  /**
+   * - 🚩 **en**: Unlink with the pm2 monitoring dashboard
+   * - **zh-CN**: 取消关联 pm2 监控面板
+   */
+  export const cmd_unlink: string;
+  /**
+   * - 🚩 **en**: Unmonitor target process
+   * - **zh-CN**: 取消监控目标进程
+   */
+  export const cmd_unmonitor: string;
+  /**
+   * - 🚩 **en**: Clear the specified config key
+   * - **zh-CN**: 清除指定的配置 key
+   */
+  export const cmd_unset: string;
+  /**
+   * - 🚩 **en**: Disable the pm2 startup hook
+   * - **zh-CN**: 禁用 pm2 开机启动钩子
+   */
+  export const cmd_unstartup: string;
+  /**
+   * - 🚩 **en**: Update in-memory PM2 with local PM2
+   * - **zh-CN**: 用本地 PM2 更新内存中的 PM2
+   */
+  export const cmd_update: string;
+  /**
+   * - 🚩 **en**: Production process manager for Node.js applications
+   * - **zh-CN**: Node.js 应用的生产级进程管理器
+   */
+  export const description: string;
+  /**
+   * - 🚩 **en**: Attach logging after your start/restart/stop/reload
+   * - **zh-CN**: 在 start/restart/stop/reload 后附加日志输出
+   */
+  export const opt_attach: string;
+  /**
+   * - 🚩 **en**: Restart a running process based on a cron pattern
+   * - **zh-CN**: 基于 cron 模式重启运行中的进程
+   */
+  export const opt_cron: string;
+  /**
+   * - 🚩 **en**: Run target script from path cwd
+   * - **zh-CN**: 从指定路径运行目标脚本
+   */
+  export const opt_cwd: string;
+  /**
+   * - 🚩 **en**: Enable all monitoring tools (equivalent to --v8 --event-loop-inspector --trace)
+   * - **zh-CN**: 启用所有监控工具（等价于 --v8 --event-loop-inspector --trace）
+   */
+  export const opt_deep_monitoring: string;
+  /**
+   * - 🚩 **en**: Disable all logs storage
+   * - **zh-CN**: 禁用所有日志存储
+   */
+  export const opt_disable_logs: string;
+  /**
+   * - 🚩 **en**: Disable source map support
+   * - **zh-CN**: 禁用 source map 支持
+   */
+  export const opt_disable_source_map_support: string;
+  /**
+   * - 🚩 **en**: Disable transaction tracing with km
+   * - **zh-CN**: 禁用 km 事务追踪
+   */
+  export const opt_disable_trace: string;
+  /**
+   * - 🚩 **en**: Force deletion of dump file, even if empty
+   * - **zh-CN**: 即使为空也强制删除转储文件
+   */
+  export const opt_dump_force: string;
+  /**
+   * - 🚩 **en**: Specify which set of environment variables from ecosystem file must be injected
+   * - **zh-CN**: 指定注入的 ecosystem 文件环境变量集
+   */
+  export const opt_env: string;
+  /**
+   * - 🚩 **en**: Specify log file for stderr
+   * - **zh-CN**: 指定 stderr 的日志文件
+   */
+  export const opt_error: string;
+  /**
+   * - 🚩 **en**: Enable event-loop-inspector dump in pmx
+   * - **zh-CN**: 在 pmx 中启用事件循环检查器转储
+   */
+  export const opt_event_loop_inspector: string;
+  /**
+   * - 🚩 **en**: Execute a program using fork system
+   * - **zh-CN**: 使用 fork 系统执行程序
+   */
+  export const opt_execute_command: string;
+  /**
+   * - 🚩 **en**: Specify a delay between restarts (in milliseconds)
+   * - **zh-CN**: 指定重启间隔（毫秒）
+   */
+  export const opt_exp_backoff_restart_delay: string;
+  /**
+   * - 🚩 **en**: Filter out outgoing global values that contain provided strings
+   * - **zh-CN**: 过滤掉包含指定字符串的全局环境变量
+   */
+  export const opt_filter_env: string;
+  /**
+   * - 🚩 **en**: Force actions
+   * - **zh-CN**: 强制执行动作
+   */
+  export const opt_force: string;
+  /**
+   * - 🚩 **en**: Run target script with gid rights
+   * - **zh-CN**: 以 gid 权限运行目标脚本
+   */
+  export const opt_gid: string;
+  /**
+   * - 🚩 **en**: Output usage information
+   * - **zh-CN**: 输出使用信息
+   */
+  export const opt_help: string;
+  /**
+   * - 🚩 **en**: Define home path when generating startup script
+   * - **zh-CN**: 生成启动脚本时指定 home 路径
+   */
+  export const opt_hp: string;
+  /**
+   * - 🚩 **en**: List of paths to ignore (name or regex)
+   * - **zh-CN**: 需要忽略的路径列表（名称或正则）
+   */
+  export const opt_ignore_watch: string;
+  /**
+   * - 🚩 **en**: Is docker container
+   * - **zh-CN**: 是否为 docker 容器
+   */
+  export const opt_install_docker: string;
+  /**
+   * - 🚩 **en**: Run yarn install before starting module
+   * - **zh-CN**: 启动模块前运行 yarn install
+   */
+  export const opt_install_install: string;
+  /**
+   * - 🚩 **en**: Keep module backup, if new module fail = restore with previous
+   * - **zh-CN**: 保留模块备份，新模块失败则回滚
+   */
+  export const opt_install_safe: string;
+  /**
+   * - 🚩 **en**: Is local tarball
+   * - **zh-CN**: 是否为本地 tarball
+   */
+  export const opt_install_tarball: string;
+  /**
+   * - 🚩 **en**: Install module in v1 manner (do not use it)
+   * - **zh-CN**: 以 v1 方式安装模块（不要使用）
+   */
+  export const opt_install_v1: string;
+  /**
+   * - 🚩 **en**: Launch number instances (for networked app, load balanced)
+   * - **zh-CN**: 启动指定数量的实例（网络应用负载均衡）
+   */
+  export const opt_instances: string;
+  /**
+   * - 🚩 **en**: Set a specific interpreter to use for executing app, default: node
+   * - **zh-CN**: 指定执行应用的解释器，默认：node
+   */
+  export const opt_interpreter: string;
+  /**
+   * - 🚩 **en**: Set arguments to pass to the interpreter (alias of --node-args)
+   * - **zh-CN**: 设置传给解释器的参数（--node-args 的别名）
+   */
+  export const opt_interpreter_args: string;
+  /**
+   * - 🚩 **en**: Delay before sending final SIGKILL signal to process
+   * - **zh-CN**: 发送最终 SIGKILL 信号前的延迟
+   */
+  export const opt_kill_timeout: string;
+  /**
+   * - 🚩 **en**: Set url info node
+   * - **zh-CN**: 设置 info node 地址
+   */
+  export const opt_link_info_node: string;
+  /**
+   * - 🚩 **en**: Listen timeout on application reload
+   * - **zh-CN**: 应用重载时的监听超时
+   */
+  export const opt_listen_timeout: string;
+  /**
+   * - 🚩 **en**: Specify log file which gathers both stdout and stderr
+   * - **zh-CN**: 指定同时收集 stdout 与 stderr 的日志文件
+   */
+  export const opt_log: string;
+  /**
+   * - 🚩 **en**: Add custom prefix timestamp to logs
+   * - **zh-CN**: 为日志添加自定义时间戳前缀
+   */
+  export const opt_log_date_format: string;
+  /**
+   * - 🚩 **en**: Specify log output style (raw by default, json optional)
+   * - **zh-CN**: 指定日志输出格式（默认为 raw，可选 json）
+   */
+  export const opt_log_type: string;
+  /**
+   * - 🚩 **en**: Only shows error output
+   * - **zh-CN**: 仅显示错误输出
+   */
+  export const opt_logs_err: string;
+  /**
+   * - 🚩 **en**: Formated log output
+   * - **zh-CN**: 格式化日志输出
+   */
+  export const opt_logs_format: string;
+  /**
+   * - 🚩 **en**: Highlights the given value
+   * - **zh-CN**: 高亮给定值
+   */
+  export const opt_logs_highlight: string;
+  /**
+   * - 🚩 **en**: Json log output
+   * - **zh-CN**: JSON 日志输出
+   */
+  export const opt_logs_json: string;
+  /**
+   * - 🚩 **en**: Output the last N lines, instead of the last 15 by default
+   * - **zh-CN**: 输出最后 N 行，默认最后 15 行
+   */
+  export const opt_logs_lines: string;
+  /**
+   * - 🚩 **en**: Print logs without launching the log stream
+   * - **zh-CN**: 打印日志但不启动日志流
+   */
+  export const opt_logs_nostream: string;
+  /**
+   * - 🚩 **en**: Only shows standard output
+   * - **zh-CN**: 仅显示标准输出
+   */
+  export const opt_logs_out: string;
+  /**
+   * - 🚩 **en**: Raw output
+   * - **zh-CN**: 原始输出
+   */
+  export const opt_logs_raw: string;
+  /**
+   * - 🚩 **en**: Add timestamps (default format YYYY-MM-DD-HH:mm:ss)
+   * - **zh-CN**: 添加时间戳（默认格式 YYYY-MM-DD-HH:mm:ss）
+   */
+  export const opt_logs_timestamp: string;
+  /**
+   * - 🚩 **en**: Restart the app if an amount of memory is exceeded (in bytes)
+   * - **zh-CN**: 内存超过指定值（字节）时重启应用
+   */
+  export const opt_max_memory_restart: string;
+  /**
+   * - 🚩 **en**: Only restart the script COUNT times
+   * - **zh-CN**: 仅重启脚本 COUNT 次
+   */
+  export const opt_max_restarts: string;
+  /**
+   * - 🚩 **en**: Merge logs from different instances but keep error and out separated
+   * - **zh-CN**: 合并多实例日志，但保持错误与标准输出分离
+   */
+  export const opt_merge_logs: string;
+  /**
+   * - 🚩 **en**: Display a compacted list without formatting
+   * - **zh-CN**: 显示精简列表，不进行格式化
+   */
+  export const opt_mini_list: string;
+  /**
+   * - 🚩 **en**: Set a name for the process in the process list
+   * - **zh-CN**: 在进程列表中为进程设置名称
+   */
+  export const opt_name: string;
+  /**
+   * - 🚩 **en**: Start application within specified namespace
+   * - **zh-CN**: 在指定的命名空间内启动应用
+   */
+  export const opt_namespace: string;
+  /**
+   * - 🚩 **en**: Start an app without pmx
+   * - **zh-CN**: 不启用 pmx 启动应用
+   */
+  export const opt_no_automation: string;
+  /**
+   * - 🚩 **en**: Start an app without automatic restart
+   * - **zh-CN**: 启动应用但不自动重启
+   */
+  export const opt_no_autorestart: string;
+  /**
+   * - 🚩 **en**: Add an app without automatic start
+   * - **zh-CN**: 添加应用但不自动启动
+   */
+  export const opt_no_autostart: string;
+  /**
+   * - 🚩 **en**: Skip colors
+   * - **zh-CN**: 跳过颜色
+   */
+  export const opt_no_color: string;
+  /**
+   * - 🚩 **en**: Run pm2 daemon in the foreground if it doesn't exist already
+   * - **zh-CN**: 若守护进程不存在，则在前台运行
+   */
+  export const opt_no_daemon: string;
+  /**
+   * - 🚩 **en**: Start an app without pmx
+   * - **zh-CN**: 不启用 pmx 启动应用
+   */
+  export const opt_no_pmx: string;
+  /**
+   * - 🚩 **en**: Only kill the main process, not detached children
+   * - **zh-CN**: 仅杀死主进程而不杀死子进程
+   */
+  export const opt_no_treekill: string;
+  /**
+   * - 🚩 **en**: Start an app without vizion feature (versioning control)
+   * - **zh-CN**: 不启用 vizion（版本控制）功能启动应用
+   */
+  export const opt_no_vizion: string;
+  /**
+   * - 🚩 **en**: Space delimited arguments to pass to node
+   * - **zh-CN**: 传给 node 的以空格分隔的参数
+   */
+  export const opt_node_args: string;
+  /**
+   * - 🚩 **en**: With json declaration, allow to only act on one application
+   * - **zh-CN**: 使用 json 声明时，仅作用于一个应用
+   */
+  export const opt_only: string;
+  /**
+   * - 🚩 **en**: Specify log file for stdout
+   * - **zh-CN**: 指定 stdout 的日志文件
+   */
+  export const opt_output: string;
+  /**
+   * - 🚩 **en**: Number of parallel actions (for restart/reload)
+   * - **zh-CN**: 并行执行的动作数量（用于重启/重载）
+   */
+  export const opt_parallel: string;
+  /**
+   * - 🚩 **en**: Specify pid file
+   * - **zh-CN**: 指定 pid 文件
+   */
+  export const opt_pid: string;
+  /**
+   * - 🚩 **en**: Silent mode
+   * - **zh-CN**: 静默模式
+   */
+  export const opt_plus_discrete: string;
+  /**
+   * - 🚩 **en**: Set url info node for on-premise pm2 plus
+   * - **zh-CN**: 为内网部署的 pm2 plus 设置 info node 地址
+   */
+  export const opt_plus_info_node: string;
+  /**
+   * - 🚩 **en**: Install all modules (force yes)
+   * - **zh-CN**: 安装所有模块（强制确认）
+   */
+  export const opt_plus_install_all: string;
+  /**
+   * - 🚩 **en**: Publish on npm
+   * - **zh-CN**: 发布到 npm
+   */
+  export const opt_publish_npm: string;
+  /**
+   * - 🚩 **en**: Specify a delay between restarts (in milliseconds)
+   * - **zh-CN**: 指定重启间隔（毫秒）
+   */
+  export const opt_restart_delay: string;
+  /**
+   * - 🚩 **en**: Toggle watching folder for changes
+   * - **zh-CN**: 切换监视文件夹变化
+   */
+  export const opt_restart_watch: string;
+  /**
+   * - 🚩 **en**: Set basic auth password
+   * - **zh-CN**: 设置 basic auth 密码
+   */
+  export const opt_serve_basic_auth_password: string;
+  /**
+   * - 🚩 **en**: Set basic auth username
+   * - **zh-CN**: 设置 basic auth 用户名
+   */
+  export const opt_serve_basic_auth_username: string;
+  /**
+   * - 🚩 **en**: Directory listing like python http.server
+   * - **zh-CN**: 类似 python http.server 的目录列表
+   */
+  export const opt_serve_ftp: string;
+  /**
+   * - 🚩 **en**: Frontend app monitoring (auto integrate snippet on html files)
+   * - **zh-CN**: 前端应用监控（自动在 html 文件中集成代码片段）
+   */
+  export const opt_serve_monitor: string;
+  /**
+   * - 🚩 **en**: Specify port to listen to
+   * - **zh-CN**: 指定监听端口
+   */
+  export const opt_serve_port: string;
+  /**
+   * - 🚩 **en**: Always serving index.html on inexistant sub path
+   * - **zh-CN**: 在不存在子路径时始终提供 index.html
+   */
+  export const opt_serve_spa: string;
+  /**
+   * - 🚩 **en**: Define service name when generating startup script
+   * - **zh-CN**: 生成启动脚本时指定服务名
+   */
+  export const opt_service_name: string;
+  /**
+   * - 🚩 **en**: Shutdown an application with process.send('shutdown') instead of process.kill(pid, SIGINT)
+   * - **zh-CN**: 通过 process.send('shutdown') 而非 process.kill(pid, SIGINT) 关闭应用
+   */
+  export const opt_shutdown_with_message: string;
+  /**
+   * - 🚩 **en**: Hide all messages
+   * - **zh-CN**: 隐藏所有消息
+   */
+  export const opt_silent: string;
+  /**
+   * - 🚩 **en**: Sort process according to field's name
+   * - **zh-CN**: 按指定字段排序进程
+   */
+  export const opt_sort: string;
+  /**
+   * - 🚩 **en**: Force source map support
+   * - **zh-CN**: 强制启用 source map 支持
+   */
+  export const opt_source_map_support: string;
+  /**
+   * - 🚩 **en**: Start application in container mode
+   * - **zh-CN**: 以容器模式启动应用
+   */
+  export const opt_start_container: string;
+  /**
+   * - 🚩 **en**: Run container in Daemon mode (debug purposes)
+   * - **zh-CN**: 以守护模式运行容器（调试目的）
+   */
+  export const opt_start_daemon: string;
+  /**
+   * - 🚩 **en**: With --container; change local Dockerfile to containerize all files in current directory
+   * - **zh-CN**: 配合 --container 使用；修改本地 Dockerfile 以容器化当前目录所有文件
+   */
+  export const opt_start_dist: string;
+  /**
+   * - 🚩 **en**: For debugging purpose
+   * - **zh-CN**: 用于调试
+   */
+  export const opt_start_dockerdaemon: string;
+  /**
+   * - 🚩 **en**: Rebuild Dockerfile
+   * - **zh-CN**: 重建 Dockerfile
+   */
+  export const opt_start_fresh: string;
+  /**
+   * - 🚩 **en**: With --dist; set the exported image name
+   * - **zh-CN**: 配合 --dist 使用；设置导出的镜像名称
+   */
+  export const opt_start_image_name: string;
+  /**
+   * - 🚩 **en**: With --container, set a specific major Node.js version
+   * - **zh-CN**: 配合 --container 使用，指定 Node.js 大版本
+   */
+  export const opt_start_node_version: string;
+  /**
+   * - 🚩 **en**: Watch folder for changes
+   * - **zh-CN**: 监视文件夹变化
+   */
+  export const opt_start_watch: string;
+  /**
+   * - 🚩 **en**: Specify a list of exit codes that should skip automatic restart
+   * - **zh-CN**: 指定应跳过自动重启的退出码列表
+   */
+  export const opt_stop_exit_codes: string;
+  /**
+   * - 🚩 **en**: Stop watching folder for changes
+   * - **zh-CN**: 停止监视文件夹变化
+   */
+  export const opt_stop_watch: string;
+  /**
+   * - 🚩 **en**: Show as tree
+   * - **zh-CN**: 以树状显示
+   */
+  export const opt_sysinfos_tree: string;
+  /**
+   * - 🚩 **en**: Enable time logging
+   * - **zh-CN**: 启用时间记录
+   */
+  export const opt_time: string;
+  /**
+   * - 🚩 **en**: Enable transaction tracing with km
+   * - **zh-CN**: 启用 km 事务追踪
+   */
+  export const opt_trace: string;
+  /**
+   * - 🚩 **en**: Run target script with uid rights
+   * - **zh-CN**: 以 uid 权限运行目标脚本
+   */
+  export const opt_uid: string;
+  /**
+   * - 🚩 **en**: Force an update of the environment with restart/reload
+   * - **zh-CN**: 重启/重载时强制刷新环境变量
+   */
+  export const opt_update_env: string;
+  /**
+   * - 🚩 **en**: Define user when generating startup script
+   * - **zh-CN**: 生成启动脚本时指定用户
+   */
+  export const opt_user: string;
+  /**
+   * - 🚩 **en**: Enable v8 data collecting
+   * - **zh-CN**: 启用 v8 数据收集
+   */
+  export const opt_v8: string;
+  /**
+   * - 🚩 **en**: Output the version number
+   * - **zh-CN**: 输出版本号
+   */
+  export const opt_version: string;
+  /**
+   * - 🚩 **en**: Override systemd script to wait for full internet connectivity to launch pm2
+   * - **zh-CN**: 覆盖 systemd 脚本以等待网络完全连通后再启动 pm2
+   */
+  export const opt_wait_ip: string;
+  /**
+   * - 🚩 **en**: Ask pm2 to wait for ready event from your app
+   * - **zh-CN**: 要求 pm2 等待应用发出 ready 事件
+   */
+  export const opt_wait_ready: string;
+  /**
+   * - 🚩 **en**: Watch application folder for changes
+   * - **zh-CN**: 监视应用目录变化
+   */
+  export const opt_watch: string;
+  /**
+   * - 🚩 **en**: Specify a restart delay after changing files (--watch-delay 4 (in sec) or 4000ms)
+   * - **zh-CN**: 指定文件变化后的重启延迟（--watch-delay 4（秒）或 4000ms）
+   */
+  export const opt_watch_delay: string;
+  /**
+   * - 🚩 **en**: Watch only this file extensions
+   * - **zh-CN**: 仅监视这些文件扩展名
+   */
+  export const opt_watch_ext: string;
+  /**
+   * - 🚩 **en**: Write configuration in local folder
+   * - **zh-CN**: 将配置写入本地文件
+   */
+  export const opt_write: string;
+  /**
+   * - 🚩 **en**: All processes
+   * - **zh-CN**: 所有进程
+   */
+  export const sugg_all: string;
+  /**
+   * - 🚩 **en**: Process id
+   * - **zh-CN**: 进程 id
+   */
+  export const sugg_id: string;
+}
+
 declare module "virtual:i18n/pnpm" {
   /**
    * - 🚩 **en**: Installs a package and any packages that it depends on. By default, any new package is installed as a prod dependency

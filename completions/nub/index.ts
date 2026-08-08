@@ -192,9 +192,7 @@ export default createCompletion({
       exec: {
         aliases: ["nubx"],
         description: t.cmd_exec,
-        args: {
-          items: dynamic(async (ctx) => scanPath(ctx.prefix, "node_modules/.bin")),
-        },
+        args: dynamic(async (ctx) => scanPath(ctx.prefix, "node_modules/.bin")),
         options: [
           ...baseOpts,
           { labels: ["--node"], description: t.option_node },
@@ -215,14 +213,12 @@ export default createCompletion({
       dlx: {
         aliases: ["x"],
         description: t.cmd_dlx,
-        args: { items: [] },
+        args: [],
         options: [...baseOpts],
       },
       watch: {
         description: t.cmd_watch,
-        args: {
-          items: dynamic(async (ctx) => scanPath(ctx.prefix)),
-        },
+        args: dynamic(async (ctx) => scanPath(ctx.prefix)),
         options: [...baseOpts],
       },
       init: {
@@ -568,7 +564,7 @@ export default createCompletion({
       },
       search: {
         description: t.cmd_search,
-        args: { items: [] },
+        args: [],
         options: [
           ...baseOpts,
           ...networkOpts,
