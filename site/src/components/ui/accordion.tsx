@@ -1,45 +1,45 @@
-import type { JSX, ValidComponent } from "solid-js"
-import { splitProps } from "solid-js"
+import type { PolymorphicProps } from "@kobalte/core/polymorphic";
+import type { JSX, ValidComponent } from "@solidjs/web";
 
-import * as AccordionPrimitive from "@kobalte/core/accordion"
-import type { PolymorphicProps } from "@kobalte/core/polymorphic"
+import * as AccordionPrimitive from "@kobalte/core/accordion";
+import { omit } from "solid-js";
 
-import { cn } from "~/lib/utils"
+import { cn } from "~/lib/utils";
 
-const Accordion = AccordionPrimitive.Root
+const Accordion = AccordionPrimitive.Root;
 
-type AccordionItemProps<T extends ValidComponent = "div"> =
-  AccordionPrimitive.AccordionItemProps<T> & {
-    class?: string | undefined
-  }
+type AccordionItemProps = AccordionPrimitive.AccordionItemProps & {
+  class?: string | undefined;
+};
 
-const AccordionItem = <T extends ValidComponent = "div">(
-  props: PolymorphicProps<T, AccordionItemProps<T>>
-) => {
-  const [local, others] = splitProps(props as AccordionItemProps, ["class"])
-  return <AccordionPrimitive.Item class={cn("border-b", local.class)} {...others} />
+function AccordionItem(props: PolymorphicProps<"div", AccordionItemProps>) {
+  const rest = omit(props as AccordionItemProps, "class");
+  return <AccordionPrimitive.Item class={cn("border-b", props.class)} {...rest} />;
 }
 
 type AccordionTriggerProps<T extends ValidComponent = "button"> =
   AccordionPrimitive.AccordionTriggerProps<T> & {
-    class?: string | undefined
-    children?: JSX.Element
-  }
+    class?: string | undefined;
+    children?: JSX.Element;
+  };
 
-const AccordionTrigger = <T extends ValidComponent = "button">(
-  props: PolymorphicProps<T, AccordionTriggerProps<T>>
-) => {
-  const [local, others] = splitProps(props as AccordionTriggerProps, ["class", "children"])
+function AccordionTrigger<T extends ValidComponent = "button">(
+  props: PolymorphicProps<T, AccordionTriggerProps<T>>,
+) {
+  const rest = omit(props as AccordionTriggerProps, "class", "children") as Record<
+    string,
+    unknown
+  >;
   return (
     <AccordionPrimitive.Header class="flex">
       <AccordionPrimitive.Trigger
         class={cn(
           "flex flex-1 items-center justify-between py-4 font-medium transition-all hover:underline [&[data-expanded]>svg]:rotate-180",
-          local.class
+          props.class,
         )}
-        {...others}
+        {...rest}
       >
-        {local.children}
+        {props.children}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -54,30 +54,33 @@ const AccordionTrigger = <T extends ValidComponent = "button">(
         </svg>
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
-  )
+  );
 }
 
 type AccordionContentProps<T extends ValidComponent = "div"> =
   AccordionPrimitive.AccordionContentProps<T> & {
-    class?: string | undefined
-    children?: JSX.Element
-  }
+    class?: string | undefined;
+    children?: JSX.Element;
+  };
 
-const AccordionContent = <T extends ValidComponent = "div">(
-  props: PolymorphicProps<T, AccordionContentProps<T>>
-) => {
-  const [local, others] = splitProps(props as AccordionContentProps, ["class", "children"])
+function AccordionContent<T extends ValidComponent = "div">(
+  props: PolymorphicProps<T, AccordionContentProps<T>>,
+) {
+  const rest = omit(props as AccordionContentProps, "class", "children") as Record<
+    string,
+    unknown
+  >;
   return (
     <AccordionPrimitive.Content
       class={cn(
         "animate-accordion-up overflow-hidden text-sm transition-all data-[expanded]:animate-accordion-down",
-        local.class
+        props.class,
       )}
-      {...others}
+      {...rest}
     >
-      <div class="pb-4 pt-0">{local.children}</div>
+      <div class="pb-4 pt-0">{props.children}</div>
     </AccordionPrimitive.Content>
-  )
+  );
 }
 
-export { Accordion, AccordionItem, AccordionTrigger, AccordionContent }
+export { Accordion, AccordionItem, AccordionTrigger, AccordionContent };

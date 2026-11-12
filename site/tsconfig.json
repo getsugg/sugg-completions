@@ -1,27 +1,50 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "useDefineForClassFields": true,
     "module": "ESNext",
-    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "lib": [
+      "ESNext",
+      "DOM",
+      "DOM.Iterable"
+    ],
     "moduleResolution": "bundler",
+    "moduleDetection": "force",
     "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
-    "moduleDetection": "force",
     "noEmit": true,
     "jsx": "preserve",
-    "jsxImportSource": "solid-js",
+    "jsxImportSource": "@solidjs/web",
     "strict": true,
-    "types": ["node"],
+    "skipLibCheck": true,
+    "types": [
+      "vite/client",
+      "node",
+      "bun"
+    ],
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": [
+        "./src/*"
+      ]
     }
   },
-  "include": ["src", "scripts", "tests"],
-  "exclude": ["public/completions", "public/generated"]
+  "include": [
+    "src",
+    "scripts",
+    "tests",
+    "vite.config.ts",
+    "playwright.config.ts",
+    "file-routes.d.ts",
+    "*.d.ts"
+  ],
+  "exclude": [
+    "public/completions",
+    "public/generated",
+    "dist",
+    "node_modules"
+  ]
 }

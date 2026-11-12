@@ -1,4 +1,6 @@
-import { For, createMemo, type JSX } from "solid-js";
+import type { JSX } from "@solidjs/web";
+import { For, createMemo } from "solid-js";
+
 import { useScriptContext } from "~/contexts/ScriptContext";
 import { cn } from "~/lib/utils";
 import { useAnnotationNavigation } from "~/hooks/useAnnotationNavigation";

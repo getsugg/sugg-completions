@@ -1,4 +1,5 @@
-import { createSignal, onMount, For } from "solid-js";
+import { For, createSignal, onSettled } from "solid-js";
+
 import { cn } from "~/lib/utils";
 
 interface MeteorsProps {
@@ -21,8 +22,8 @@ export function Meteors(props: MeteorsProps) {
 
   const [styles, setStyles] = createSignal<Record<string, string>[]>([]);
 
-  onMount(() => {
-    const items = [];
+  onSettled(() => {
+    const items: Record<string, string>[] = [];
     for (let i = 0; i < num(); i++) {
       items.push({
         "--angle": `${-angle()}deg`,

@@ -1,17 +1,19 @@
-import { createSignal, createMemo } from "solid-js";
-import { useNavigate, useParams } from "@solidjs/router";
+import { createMemo, createSignal } from "solid-js";
+import { useLocation } from "@solidjs/router";
 import { debounce } from "@solid-primitives/scheduled";
-import { VList } from "virtua/solid";
+
 import { cn } from "~/lib/utils";
 import { TextField, TextFieldInput } from "~/components/ui/text-field";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
+import { VirtualList } from "~/components/ui/virtual-list";
 import scripts from "~/generated/scripts.json";
 
 export function ScriptList() {
-  const params = useParams<{ script?: string }>();
-  const navigate = useNavigate();
-  const selectedStem = () => params.script || null;
+  const location = useLocation();
+  const activeStem = () =>
+    location.pathname.match(/^\/scripts\/([^/]+)/)?.[1] ?? null;
+
   const [searchText, setSearchText] = createSignal("");
   const debouncedSetSearch = debounce(setSearchText, 350);
 
@@ -41,18 +43,19 @@ export function ScriptList() {
         </TextField>
       </div>
       <div class="flex-1 min-h-0 px-2 pb-3">
-        <VList data={filtered()} style={{ height: "100%" }} itemSize={36} bufferSize={200}>
+        <VirtualList data={filtered()} itemSize={36} bufferSize={200}>
           {(s) => (
             <li>
               <Button
+                as="a"
+                href={`/scripts/${s.stem}/`}
                 variant="ghost"
                 class={cn(
                   "h-auto w-full justify-start gap-2 rounded-md px-3 py-2 text-left text-sm transition-none",
-                  selectedStem() === s.stem
+                  activeStem() === s.stem
                     ? "!bg-amber-700 !text-white font-semibold"
                     : "!text-[#8b7d9a] hover:!bg-[#ffffff08] hover:!text-[#c8bdd4]",
                 )}
-                onClick={() => navigate(`/scripts/${s.stem}`)}
               >
                 <span class="flex-1 truncate">{s.title}</span>
                 {s.unsafeCount > 0 && (
@@ -63,7 +66,7 @@ export function ScriptList() {
               </Button>
             </li>
           )}
-        </VList>
+        </VirtualList>
       </div>
     </aside>
   );

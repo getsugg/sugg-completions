@@ -1,4 +1,6 @@
-import { onCleanup, onMount, type ComponentProps, splitProps } from "solid-js";
+import type { ComponentProps } from "@solidjs/web";
+import { onSettled, omit } from "solid-js";
+
 import { cn } from "~/lib/utils";
 
 interface NumberTickerProps extends ComponentProps<"span"> {
@@ -10,17 +12,10 @@ interface NumberTickerProps extends ComponentProps<"span"> {
 }
 
 export function NumberTicker(props: NumberTickerProps) {
-  const [local, rest] = splitProps(props, [
-    "class",
-    "value",
-    "startValue",
-    "direction",
-    "delay",
-    "decimalPlaces",
-  ]);
-  const dir = () => local.direction ?? "up";
-  const startVal = () => local.startValue ?? 0;
-  const decimalPlaces = () => local.decimalPlaces ?? 0;
+  const rest = omit(props, "class", "value", "startValue", "direction", "delay", "decimalPlaces");
+  const dir = () => props.direction ?? "up";
+  const startVal = () => props.startValue ?? 0;
+  const decimalPlaces = () => props.decimalPlaces ?? 0;
   let ref: HTMLSpanElement | undefined;
   let rafId: number | undefined;
 
@@ -31,12 +26,12 @@ export function NumberTicker(props: NumberTickerProps) {
     }).format(n);
   };
 
-  onMount(() => {
+  onSettled(() => {
     let timer: ReturnType<typeof setTimeout> | undefined;
 
     const startAnimation = () => {
-      let value = dir() === "down" ? local.value : startVal();
-      const target = dir() === "down" ? startVal() : local.value;
+      let value = dir() === "down" ? props.value : startVal();
+      const target = dir() === "down" ? startVal() : props.value;
       let velocity = 0;
       const stiffness = 100;
       const damping = 60;
@@ -62,16 +57,17 @@ export function NumberTicker(props: NumberTickerProps) {
       rafId = requestAnimationFrame(step);
     };
 
-    if (local.delay && local.delay > 0) {
-      timer = setTimeout(startAnimation, local.delay * 1000);
+    const delay = props.delay ?? 0;
+    if (delay > 0) {
+      timer = setTimeout(startAnimation, delay * 1000);
     } else {
       startAnimation();
     }
 
-    onCleanup(() => {
+    return () => {
       if (timer) clearTimeout(timer);
       if (rafId) cancelAnimationFrame(rafId);
-    });
+    };
   });
 
   return (
@@ -79,7 +75,7 @@ export function NumberTicker(props: NumberTickerProps) {
       ref={(el) => {
         ref = el;
       }}
-      class={cn("inline-block tracking-wider tabular-nums", local.class)}
+      class={cn("inline-block tracking-wider tabular-nums", props.class)}
       {...rest}
     >
       {formatNumber(startVal())}

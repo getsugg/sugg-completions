@@ -270,17 +270,17 @@ body {
 }
 
 /* ───────── Resizable panels ───────── */
-[data-corvu-resizable-panel] {
+[data-resizable-panel] {
   min-height: 0;
   overflow: hidden;
 }
-[data-corvu-resizable-handle] {
+[data-resizable-handle] {
   min-height: 8px;
   background: hsl(var(--border));
   transition: background 0.15s;
 }
-[data-corvu-resizable-handle]:hover,
-[data-corvu-resizable-handle][data-dragging] {
+[data-resizable-handle]:hover,
+[data-resizable-handle][data-dragging] {
   background: hsl(var(--accent));
 }
 

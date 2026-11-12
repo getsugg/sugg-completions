@@ -1,6 +1,6 @@
-import { VList } from "virtua/solid";
 import { useScriptContext } from "~/contexts/ScriptContext";
 import { Badge } from "~/components/ui/badge";
+import { VirtualList } from "~/components/ui/virtual-list";
 
 const TYPE_STYLE: Record<string, { bar: string; variant: "error" | "success"; label: string }> = {
   unsafe: {
@@ -31,7 +31,7 @@ export function AnnotationList(props: AnnotationListProps) {
   const { scrollToLine } = useScriptContext();
 
   return (
-    <VList data={props.anns} style={{ height: "100%" }} itemSize={44} bufferSize={200}>
+    <VirtualList data={props.anns} itemSize={44} bufferSize={200}>
       {(a) => {
         const style = TYPE_STYLE[a.type] ?? TYPE_STYLE.safe;
         return (
@@ -60,6 +60,6 @@ export function AnnotationList(props: AnnotationListProps) {
           </button>
         );
       }}
-    </VList>
+    </VirtualList>
   );
 }

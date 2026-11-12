@@ -29,7 +29,7 @@ import {
   Boxes,
   Cloud,
   SquareTerminal,
-} from "lucide-solid";
+} from "@lucide/solid";
 import { siGithub } from "simple-icons";
 import scripts from "~/generated/scripts.json";
 import { ShimmerButton } from "~/components/magic-ui/shimmer-button";
@@ -48,6 +48,7 @@ export default function LandingPage() {
   const [codeTab, setCodeTab] = createSignal("bun");
   const [copiedIdx, setCopiedIdx] = createSignal(-1);
   const getDefaultPlatform = () => {
+    if (typeof navigator === "undefined") return "unix";
     try {
       return navigator.platform?.toLowerCase().includes("win") ? "win" : "unix";
     } catch {
@@ -120,7 +121,7 @@ export default function LandingPage() {
           >
             Install
           </button>
-          <Button variant="outline" size="sm" class="text-xs" as="a" href="#/scripts">
+          <Button variant="outline" size="sm" class="text-xs" as="a" href="/scripts/">
             Browse Scripts
           </Button>
           <Button
@@ -169,7 +170,7 @@ export default function LandingPage() {
                   : "text-muted-foreground hover:text-foreground"
               }`}
               role="tab"
-              aria-selected={heroTab() === "unix"}
+              aria-selected={heroTab() === "unix" ? "true" : "false"}
               onClick={() => setHeroTab("unix")}
             >
               macOS / Linux
@@ -182,7 +183,7 @@ export default function LandingPage() {
                   : "text-muted-foreground hover:text-foreground"
               }`}
               role="tab"
-              aria-selected={heroTab() === "win"}
+              aria-selected={heroTab() === "win" ? "true" : "false"}
               onClick={() => setHeroTab("win")}
             >
               Windows
@@ -958,7 +959,7 @@ export default function LandingPage() {
           <For each={scripts}>
             {(s) => (
               <a
-                href={`#/scripts/${s.stem}`}
+                href={`/scripts/${s.stem}/`}
                 class="px-3.5 py-1.5 rounded-md border border-border text-xs font-medium text-muted-foreground bg-card hover:border-amber-500 hover:text-amber-500 transition-all no-underline"
               >
                 {s.title}
@@ -966,7 +967,7 @@ export default function LandingPage() {
             )}
           </For>
           <a
-            href="#/scripts"
+            href="/scripts/"
             class="px-3.5 py-1.5 rounded-md border border-amber-500 text-xs font-medium text-amber-500 bg-card transition-all no-underline"
           >
             Browse all →

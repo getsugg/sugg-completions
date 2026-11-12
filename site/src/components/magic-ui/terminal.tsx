@@ -1,14 +1,6 @@
-import {
-  createSignal,
-  createMemo,
-  onCleanup,
-  onMount,
-  type ComponentProps,
-  type JSX,
-  splitProps,
-  For,
-  Show,
-} from "solid-js";
+import type { ComponentProps, JSX } from "@solidjs/web";
+import { For, Show, createMemo, createSignal, omit, onSettled } from "solid-js";
+
 import { cn } from "~/lib/utils";
 
 /* ── AnimatedSpan ── */
@@ -18,16 +10,16 @@ interface AnimatedSpanProps extends ComponentProps<"div"> {
 }
 
 export function AnimatedSpan(props: AnimatedSpanProps) {
-  const [local, rest] = splitProps(props, ["class", "delay", "children"]);
+  const rest = omit(props, "class", "delay", "children");
   return (
     <div
       class={cn(
         "grid text-sm font-normal tracking-tight transition-all duration-300 opacity-100 translate-y-0",
-        local.class,
+        props.class,
       )}
       {...rest}
     >
-      {local.children}
+      {props.children}
     </div>
   );
 }
@@ -40,10 +32,10 @@ interface TypingAnimationProps extends Omit<ComponentProps<"span">, "children"> 
 }
 
 export function TypingAnimation(props: TypingAnimationProps) {
-  const [local, rest] = splitProps(props, ["class", "children", "duration"]);
+  const rest = omit(props, "class", "children", "duration");
   return (
-    <span class={cn("text-sm font-normal tracking-tight", local.class)} {...rest}>
-      {local.children}
+    <span class={cn("text-sm font-normal tracking-tight", props.class)} {...rest}>
+      {props.children}
     </span>
   );
 }
@@ -102,22 +94,22 @@ export function DemoTerminal(props: DemoTerminalProps) {
     setVisibleCount((c) => c + 1);
   };
 
-  onMount(() => {
-    if (rootRef) {
-      const obs = new IntersectionObserver(
-        ([e]) => {
-          if (e.isIntersecting) {
-            showNext();
-            obs.disconnect();
-          }
-        },
-        { threshold: 0.3 },
-      );
-      obs.observe(rootRef);
-      onCleanup(() => obs.disconnect());
-    } else {
+  onSettled(() => {
+    if (!rootRef) {
       showNext();
+      return;
     }
+    const obs = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) {
+          showNext();
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.3 },
+    );
+    obs.observe(rootRef);
+    return () => obs.disconnect();
   });
 
   return (
@@ -169,8 +161,9 @@ function TerminalLine(props: { line: Line; onComplete: () => void }) {
 }
 
 function SpanLine(props: { text: string; class?: string; onComplete: () => void }) {
-  onMount(() => {
-    setTimeout(() => props.onComplete(), 100);
+  onSettled(() => {
+    const timer = setTimeout(() => props.onComplete(), 100);
+    return () => clearTimeout(timer);
   });
   return (
     <div
@@ -187,17 +180,21 @@ function SpanLine(props: { text: string; class?: string; onComplete: () => void 
 function TypingLine(props: { text: string; onComplete: () => void }) {
   const [text, setText] = createSignal("");
 
-  onMount(() => {
+  onSettled(() => {
     let i = 0;
+    let finishTimer: ReturnType<typeof setTimeout> | undefined;
     const interval = setInterval(() => {
       i++;
       setText(props.text.substring(0, i));
       if (i >= props.text.length) {
         clearInterval(interval);
-        setTimeout(() => props.onComplete(), 200);
+        finishTimer = setTimeout(() => props.onComplete(), 200);
       }
     }, 60);
-    onCleanup(() => clearInterval(interval));
+    return () => {
+      clearInterval(interval);
+      if (finishTimer) clearTimeout(finishTimer);
+    };
   });
 
   return <span class="text-sm font-normal tracking-tight">{text()}</span>;

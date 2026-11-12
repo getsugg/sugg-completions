@@ -1,4 +1,6 @@
-import { type ComponentProps, splitProps } from "solid-js";
+import type { ComponentProps } from "@solidjs/web";
+import { omit } from "solid-js";
+
 import { cn } from "~/lib/utils";
 
 interface AnimatedShinyTextProps extends ComponentProps<"span"> {
@@ -6,15 +8,15 @@ interface AnimatedShinyTextProps extends ComponentProps<"span"> {
 }
 
 export function AnimatedShinyText(props: AnimatedShinyTextProps) {
-  const [local, rest] = splitProps(props, ["class", "shimmerWidth", "children"]);
-  const w = () => local.shimmerWidth ?? 100;
+  const rest = omit(props, "class", "shimmerWidth", "children");
+  const width = () => props.shimmerWidth ?? 100;
   return (
     <span
       style={
         {
-          "--shiny-width": `${w()}px`,
+          "--shiny-width": `${width()}px`,
           background: `linear-gradient(to right, transparent 0%, var(--shiny-color, rgba(255,255,255,0.8)) 50%, transparent 100%)`,
-          "background-size": `${w()}px 100%`,
+          "background-size": `${width()}px 100%`,
           "background-clip": "text",
           "background-repeat": "no-repeat",
         } as Record<string, string>
@@ -23,11 +25,11 @@ export function AnimatedShinyText(props: AnimatedShinyTextProps) {
         "mx-auto text-neutral-600/70 dark:text-neutral-400/70",
         "animate-magic-shiny-text",
         "[animation-fill-mode:backwards]",
-        local.class,
+        props.class,
       )}
       {...rest}
     >
-      {local.children}
+      {props.children}
     </span>
   );
 }

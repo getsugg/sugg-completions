@@ -1,15 +1,15 @@
-import { createSignal, createMemo, createEffect, Show, For, type Setter } from "solid-js";
-import { createEventListener } from "@solid-primitives/event-listener";
+import {
+  For,
+  Show,
+  createEffect,
+  createMemo,
+  createSignal,
+  onSettled,
+  type Setter,
+} from "solid-js";
 import { debounce } from "@solid-primitives/scheduled";
 
-import { VList } from "virtua/solid";
-import {
-  Command,
-  CommandInput,
-  CommandList,
-  CommandItem,
-  CommandEmpty,
-} from "~/components/ui/command";
+import { VirtualList } from "~/components/ui/virtual-list";
 import { Button } from "~/components/ui/button";
 import type { LineData } from "~/types";
 import { tokenStyle } from "~/lib/utils";
@@ -20,7 +20,8 @@ interface CodeSearchProps {
   onSearchUpdate: Setter<Set<number>>;
 }
 
-const isMac = () => navigator.platform.toLowerCase().includes("mac");
+const isMac = () =>
+  typeof navigator !== "undefined" && navigator.platform.toLowerCase().includes("mac");
 const shortcutKey = () => (isMac() ? "⌘F" : "Ctrl+F");
 
 const ITEM_HEIGHT = 32;
@@ -31,15 +32,19 @@ export function CodeSearch(props: CodeSearchProps) {
   const { scrollToLine } = useScriptContext();
   const [open, setOpen] = createSignal(false);
   const [query, setQuery] = createSignal("");
-  const [selectedValue, setSelectedValue] = createSignal("");
+  const [activeIndex, setActiveIndex] = createSignal(0);
   let panelRef: HTMLDivElement | undefined;
+  let inputRef: HTMLInputElement | undefined;
 
-  const debouncedSetQuery = debounce(setQuery, 350);
+  const debouncedSetQuery = debounce((value: string) => {
+    setQuery(value);
+    setActiveIndex(0);
+  }, 350);
 
   const closeSearch = () => {
     setOpen(false);
     setQuery("");
-    setSelectedValue("");
+    setActiveIndex(0);
     props.onSearchUpdate(new Set<number>());
   };
 
@@ -66,44 +71,68 @@ export function CodeSearch(props: CodeSearchProps) {
 
   const highlightedLines = createMemo(() => {
     if (!open() || !query()) return new Set<number>();
-    const v = selectedValue();
-    if (v) {
-      const line = parseInt(v.slice(1), 10);
-      if (!isNaN(line)) return new Set([line]);
-    }
-    return new Set<number>();
+    const match = matches()[activeIndex()];
+    return match ? new Set([match.line]) : new Set<number>();
   });
 
-  createEffect(() => props.onSearchUpdate(highlightedLines()));
-
-  createEffect((prev: string | undefined) => {
-    const v = selectedValue();
-    if (!open() || !v || v === prev) return;
-    const line = parseInt(v.slice(1), 10);
-    if (!isNaN(line)) scrollToLine(line);
-    return v;
+  createEffect(highlightedLines, (lines) => {
+    props.onSearchUpdate(lines);
   });
 
-  createEventListener(document, "keydown", (e) => {
-    if (e.key === "f" && (e.metaKey || e.ctrlKey)) {
-      e.preventDefault();
-      setOpen(true);
-      return;
-    }
-    if (e.key === "Escape" && open()) {
-      closeSearch();
-    }
-  });
+  createEffect(
+    () => open(),
+    (isOpen) => {
+      if (!isOpen) return;
+      const frame = requestAnimationFrame(() => inputRef?.focus());
+      return () => cancelAnimationFrame(frame);
+    },
+  );
 
-  createEventListener(document, "mousedown", (e) => {
-    if (!open() || !panelRef) return;
-    const target = e.target as Node;
-    if (!panelRef.contains(target)) closeSearch();
+  onSettled(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "f" && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault();
+        setOpen(true);
+        return;
+      }
+      if (event.key === "Escape" && open()) {
+        closeSearch();
+      }
+    };
+
+    const onMouseDown = (event: MouseEvent) => {
+      if (!open() || !panelRef) return;
+      const target = event.target as Node;
+      if (!panelRef.contains(target)) closeSearch();
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("mousedown", onMouseDown);
+
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("mousedown", onMouseDown);
+    };
   });
 
   const handleSelect = (line: number) => {
     scrollToLine(line);
     closeSearch();
+  };
+
+  const handleInputKeyDown = (event: KeyboardEvent) => {
+    if (!matchCount()) return;
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setActiveIndex((i) => Math.min(i + 1, matchCount() - 1));
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setActiveIndex((i) => Math.max(i - 1, 0));
+    } else if (event.key === "Enter") {
+      event.preventDefault();
+      const match = matches()[activeIndex()];
+      if (match) handleSelect(match.line);
+    }
   };
 
   return (
@@ -139,53 +168,74 @@ export function CodeSearch(props: CodeSearchProps) {
           }}
           class="absolute top-12 right-3 z-30 w-80 rounded-lg border border-border bg-popover shadow-xl"
         >
-          <Command shouldFilter={false} value={selectedValue()} onValueChange={setSelectedValue}>
-            <CommandInput
+          <div class="flex items-center border-b px-3">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="mr-2 size-4 shrink-0 opacity-50"
+            >
+              <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+              <path d="M21 21l-6 -6" />
+            </svg>
+            <input
               ref={(el) => {
-                createEffect(() => {
-                  if (open()) requestAnimationFrame(() => el.focus());
-                });
+                inputRef = el;
               }}
               placeholder="Search in file…"
               value={query()}
-              onValueChange={debouncedSetQuery}
+              onInput={(event) => debouncedSetQuery(event.currentTarget.value)}
+              onKeyDown={handleInputKeyDown}
+              class="flex h-10 w-full rounded-md bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground"
             />
-            <CommandList class="max-h-none! overflow-visible">
-              <Show when={query() && matchCount() > 0}>
-                <VList
-                  data={matches()}
-                  style={{ height: `${Math.min(matchCount() * ITEM_HEIGHT, LIST_HEIGHT)}px` }}
-                  itemSize={ITEM_HEIGHT}
-                  bufferSize={200}
-                >
-                  {(match) => (
-                    <CommandItem value={`l${match.line}`} onSelect={() => handleSelect(match.line)}>
-                      <span class="mr-2 w-8 shrink-0 text-right font-mono text-[10px] text-muted-foreground">
-                        {match.line + 1}
-                      </span>
-                      <span class="flex-1 truncate font-mono text-[12px] leading-5 [&_span]:whitespace-nowrap!">
-                        <For each={match.lineData.tokens}>
-                          {(t) => <span style={tokenStyle(t) ?? ""}>{t.content}</span>}
-                        </For>
-                      </span>
-                    </CommandItem>
-                  )}
-                </VList>
-              </Show>
-              <Show when={query() && matchCount() === 0}>
-                <CommandEmpty>No results found</CommandEmpty>
-              </Show>
-            </CommandList>
-            <Show when={query() && matchCount() > 0}>
-              <div class="flex items-center justify-between border-t border-border px-3 py-1.5 text-[10px] text-muted-foreground">
-                <span>{matchCount()} matches</span>
-                <span class="flex items-center gap-2">
-                  <span>↑↓ navigate</span>
-                  <span>Enter jump</span>
-                </span>
-              </div>
-            </Show>
-          </Command>
+          </div>
+
+          <Show when={query() && matchCount() > 0}>
+            <div
+              style={{
+                height: `${Math.min(matchCount() * ITEM_HEIGHT, LIST_HEIGHT)}px`,
+              }}
+            >
+              <VirtualList data={matches()} itemSize={ITEM_HEIGHT} bufferSize={200}>
+                {(match, index) => (
+                  <button
+                    type="button"
+                    class="relative flex w-full cursor-default select-none items-center rounded-sm px-2 py-1.5 text-left text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground"
+                    aria-selected={index() === activeIndex() ? "true" : "false"}
+                    onMouseEnter={() => setActiveIndex(index())}
+                    onClick={() => handleSelect(match.line)}
+                  >
+                    <span class="mr-2 w-8 shrink-0 text-right font-mono text-[10px] text-muted-foreground">
+                      {match.line + 1}
+                    </span>
+                    <span class="flex-1 truncate font-mono text-[12px] leading-5 [&_span]:whitespace-nowrap!">
+                      <For each={match.lineData.tokens}>
+                        {(t) => <span style={tokenStyle(t) ?? ""}>{t.content}</span>}
+                      </For>
+                    </span>
+                  </button>
+                )}
+              </VirtualList>
+            </div>
+          </Show>
+
+          <Show when={query() && matchCount() === 0}>
+            <div class="py-6 text-center text-sm">No results found</div>
+          </Show>
+
+          <Show when={query() && matchCount() > 0}>
+            <div class="flex items-center justify-between border-t border-border px-3 py-1.5 text-[10px] text-muted-foreground">
+              <span>{matchCount()} matches</span>
+              <span class="flex items-center gap-2">
+                <span>↑↓ navigate</span>
+                <span>Enter jump</span>
+              </span>
+            </div>
+          </Show>
         </div>
       </Show>
     </>

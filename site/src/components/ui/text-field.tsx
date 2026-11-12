@@ -1,27 +1,27 @@
-import type { ValidComponent } from "solid-js"
-import { mergeProps, splitProps } from "solid-js"
+import type { PolymorphicProps } from "@kobalte/core/polymorphic";
+import type { ValidComponent } from "@solidjs/web";
 
-import type { PolymorphicProps } from "@kobalte/core"
-import * as TextFieldPrimitive from "@kobalte/core/text-field"
-import { cva } from "class-variance-authority"
+import * as TextFieldPrimitive from "@kobalte/core/text-field";
+import { cva } from "class-variance-authority";
+import { omit } from "solid-js";
 
-import { cn } from "~/lib/utils"
+import { cn } from "~/lib/utils";
 
 type TextFieldRootProps<T extends ValidComponent = "div"> =
   TextFieldPrimitive.TextFieldRootProps<T> & {
-    class?: string | undefined
-  }
+    class?: string | undefined;
+  };
 
-const TextField = <T extends ValidComponent = "div">(
-  props: PolymorphicProps<T, TextFieldRootProps<T>>
-) => {
-  const [local, others] = splitProps(props as TextFieldRootProps, ["class"])
-  return <TextFieldPrimitive.Root class={cn("flex flex-col gap-1", local.class)} {...others} />
+function TextField<T extends ValidComponent = "div">(
+  props: PolymorphicProps<T, TextFieldRootProps<T>>,
+) {
+  const rest = omit(props as TextFieldRootProps, "class") as Record<string, unknown>;
+  return <TextFieldPrimitive.Root class={cn("flex flex-col gap-1", props.class)} {...rest} />;
 }
 
 type TextFieldInputProps<T extends ValidComponent = "input"> =
   TextFieldPrimitive.TextFieldInputProps<T> & {
-    class?: string | undefined
+    class?: string | undefined;
     type?:
       | "button"
       | "checkbox"
@@ -44,42 +44,41 @@ type TextFieldInputProps<T extends ValidComponent = "input"> =
       | "text"
       | "time"
       | "url"
-      | "week"
-  }
+      | "week";
+  };
 
-const TextFieldInput = <T extends ValidComponent = "input">(
-  rawProps: PolymorphicProps<T, TextFieldInputProps<T>>
-) => {
-  const props = mergeProps<TextFieldInputProps<T>[]>({ type: "text" }, rawProps)
-  const [local, others] = splitProps(props as TextFieldInputProps, ["type", "class"])
+function TextFieldInput<T extends ValidComponent = "input">(
+  props: PolymorphicProps<T, TextFieldInputProps<T>>,
+) {
+  const rest = omit(props as TextFieldInputProps, "type", "class") as Record<string, unknown>;
   return (
     <TextFieldPrimitive.Input
-      type={local.type}
+      type={props.type ?? "text"}
       class={cn(
         "flex h-10 w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[invalid]:border-error-foreground data-[invalid]:text-error-foreground",
-        local.class
+        props.class,
       )}
-      {...others}
+      {...rest}
     />
-  )
+  );
 }
 
 type TextFieldTextAreaProps<T extends ValidComponent = "textarea"> =
-  TextFieldPrimitive.TextFieldTextAreaProps<T> & { class?: string | undefined }
+  TextFieldPrimitive.TextFieldTextAreaProps<T> & { class?: string | undefined };
 
-const TextFieldTextArea = <T extends ValidComponent = "textarea">(
-  props: PolymorphicProps<T, TextFieldTextAreaProps<T>>
-) => {
-  const [local, others] = splitProps(props as TextFieldTextAreaProps, ["class"])
+function TextFieldTextArea<T extends ValidComponent = "textarea">(
+  props: PolymorphicProps<T, TextFieldTextAreaProps<T>>,
+) {
+  const rest = omit(props as TextFieldTextAreaProps, "class") as Record<string, unknown>;
   return (
     <TextFieldPrimitive.TextArea
       class={cn(
         "flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-        local.class
+        props.class,
       )}
-      {...others}
+      {...rest}
     />
-  )
+  );
 }
 
 const labelVariants = cva(
@@ -89,57 +88,54 @@ const labelVariants = cva(
       variant: {
         label: "data-[invalid]:text-destructive",
         description: "font-normal text-muted-foreground",
-        error: "text-xs text-destructive"
-      }
+        error: "text-xs text-destructive",
+      },
     },
     defaultVariants: {
-      variant: "label"
-    }
-  }
-)
+      variant: "label",
+    },
+  },
+);
 
 type TextFieldLabelProps<T extends ValidComponent = "label"> =
-  TextFieldPrimitive.TextFieldLabelProps<T> & { class?: string | undefined }
+  TextFieldPrimitive.TextFieldLabelProps<T> & { class?: string | undefined };
 
-const TextFieldLabel = <T extends ValidComponent = "label">(
-  props: PolymorphicProps<T, TextFieldLabelProps<T>>
-) => {
-  const [local, others] = splitProps(props as TextFieldLabelProps, ["class"])
-  return <TextFieldPrimitive.Label class={cn(labelVariants(), local.class)} {...others} />
+function TextFieldLabel<T extends ValidComponent = "label">(
+  props: PolymorphicProps<T, TextFieldLabelProps<T>>,
+) {
+  const rest = omit(props as TextFieldLabelProps, "class") as Record<string, unknown>;
+  return <TextFieldPrimitive.Label class={cn(labelVariants(), props.class)} {...rest} />;
 }
 
-type TextFieldDescriptionProps<T extends ValidComponent = "div"> =
-  TextFieldPrimitive.TextFieldDescriptionProps<T> & {
-    class?: string | undefined
-  }
+type TextFieldDescriptionProps = TextFieldPrimitive.TextFieldDescriptionProps & {
+  class?: string | undefined;
+};
 
-const TextFieldDescription = <T extends ValidComponent = "div">(
-  props: PolymorphicProps<T, TextFieldDescriptionProps<T>>
-) => {
-  const [local, others] = splitProps(props as TextFieldDescriptionProps, ["class"])
+function TextFieldDescription(props: PolymorphicProps<"div", TextFieldDescriptionProps>) {
+  const rest = omit(props as TextFieldDescriptionProps, "class");
   return (
     <TextFieldPrimitive.Description
-      class={cn(labelVariants({ variant: "description" }), local.class)}
-      {...others}
+      class={cn(labelVariants({ variant: "description" }), props.class)}
+      {...rest}
     />
-  )
+  );
 }
 
 type TextFieldErrorMessageProps<T extends ValidComponent = "div"> =
   TextFieldPrimitive.TextFieldErrorMessageProps<T> & {
-    class?: string | undefined
-  }
+    class?: string | undefined;
+  };
 
-const TextFieldErrorMessage = <T extends ValidComponent = "div">(
-  props: PolymorphicProps<T, TextFieldErrorMessageProps<T>>
-) => {
-  const [local, others] = splitProps(props as TextFieldErrorMessageProps, ["class"])
+function TextFieldErrorMessage<T extends ValidComponent = "div">(
+  props: PolymorphicProps<T, TextFieldErrorMessageProps<T>>,
+) {
+  const rest = omit(props as TextFieldErrorMessageProps, "class") as Record<string, unknown>;
   return (
     <TextFieldPrimitive.ErrorMessage
-      class={cn(labelVariants({ variant: "error" }), local.class)}
-      {...others}
+      class={cn(labelVariants({ variant: "error" }), props.class)}
+      {...rest}
     />
-  )
+  );
 }
 
 export {
@@ -148,5 +144,5 @@ export {
   TextFieldTextArea,
   TextFieldLabel,
   TextFieldDescription,
-  TextFieldErrorMessage
-}
+  TextFieldErrorMessage,
+};

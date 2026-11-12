@@ -1,5 +1,7 @@
-import { type ComponentProps, mergeProps, splitProps, createEffect, onCleanup } from "solid-js";
+import type { ComponentProps } from "@solidjs/web";
 import { animate } from "motion";
+import { createEffect, omit } from "solid-js";
+
 import { cn } from "~/lib/utils";
 
 interface BorderBeamProps extends ComponentProps<"div"> {
@@ -14,11 +16,8 @@ interface BorderBeamProps extends ComponentProps<"div"> {
 }
 
 export function BorderBeam(props: BorderBeamProps) {
-  const defaults = mergeProps(
-    { size: 50, duration: 6, delay: 0, colorFrom: "#ffaa40", colorTo: "#9c40ff" },
+  const rest = omit(
     props,
-  );
-  const [local, rest] = splitProps(defaults, [
     "class",
     "size",
     "duration",
@@ -31,36 +30,47 @@ export function BorderBeam(props: BorderBeamProps) {
     "style",
     "children",
     "ref",
-  ]);
+  );
 
-  let innerRef!: HTMLDivElement;
+  let innerRef: HTMLDivElement | undefined;
 
-  createEffect(() => {
-    const el = innerRef;
-    if (!el) return;
-    const from = `${local.initialOffset ?? 0}%`;
-    const to = local.reverse
-      ? `-${local.initialOffset ?? 0}%`
-      : `${100 + (local.initialOffset ?? 0)}%`;
-    const ctrl = animate(
-      el,
-      { offsetDistance: [from, to] },
-      {
-        duration: local.duration,
-        delay: -local.delay,
-        repeat: Infinity,
-        ease: "linear",
-      },
-    );
-    onCleanup(() => ctrl.stop());
-  });
+  createEffect(
+    () => ({
+      size: props.size ?? 50,
+      duration: props.duration ?? 6,
+      delay: props.delay ?? 0,
+      colorFrom: props.colorFrom ?? "#ffaa40",
+      colorTo: props.colorTo ?? "#9c40ff",
+      reverse: props.reverse ?? false,
+      initialOffset: props.initialOffset ?? 0,
+    }),
+    (options) => {
+      const el = innerRef;
+      if (!el) return;
+      const from = `${options.initialOffset}%`;
+      const to = options.reverse
+        ? `-${options.initialOffset}%`
+        : `${100 + options.initialOffset}%`;
+      const ctrl = animate(
+        el,
+        { offsetDistance: [from, to] },
+        {
+          duration: options.duration,
+          delay: -options.delay,
+          repeat: Infinity,
+          ease: "linear",
+        },
+      );
+      return () => ctrl.stop();
+    },
+  );
 
   return (
     <div
       class="pointer-events-none absolute inset-0 rounded-[inherit] border-(length:--border-beam-width) border-transparent mask-[linear-gradient(transparent,transparent),linear-gradient(#000,#000)] mask-intersect [mask-clip:padding-box,border-box]"
       style={
         {
-          "--border-beam-width": `${local.borderWidth ?? 1}px`,
+          "--border-beam-width": `${props.borderWidth ?? 1}px`,
         } as Record<string, string>
       }
       {...rest}
@@ -72,15 +82,15 @@ export function BorderBeam(props: BorderBeamProps) {
         class={cn(
           "absolute aspect-square",
           "bg-linear-to-l from-(--color-from) via-(--color-to) to-transparent",
-          local.class,
+          props.class,
         )}
         style={
           {
-            width: `${local.size}px`,
-            "offset-path": `rect(0 auto auto 0 round ${local.size}px)`,
-            "offset-distance": `${local.initialOffset ?? 0}%`,
-            "--color-from": local.colorFrom,
-            "--color-to": local.colorTo,
+            width: `${props.size ?? 50}px`,
+            "offset-path": `rect(0 auto auto 0 round ${props.size ?? 50}px)`,
+            "offset-distance": `${props.initialOffset ?? 0}%`,
+            "--color-from": props.colorFrom ?? "#ffaa40",
+            "--color-to": props.colorTo ?? "#9c40ff",
           } as Record<string, string>
         }
       />

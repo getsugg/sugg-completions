@@ -12,3 +12,8 @@ __screenshots__/
 .vitest-attachments/
 site/public/completions/
 site/src/generated/
+site/tmp/
+.ratoon/*
+site/tests/visual/*-snapshots/
+site/test-results/
+site/playwright-report/

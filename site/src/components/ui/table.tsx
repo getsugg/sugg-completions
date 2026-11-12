@@ -1,70 +1,68 @@
-import type { Component, ComponentProps } from "solid-js"
-import { splitProps } from "solid-js"
+import type { ComponentProps } from "@solidjs/web";
+import { omit } from "solid-js";
 
-import { cn } from "~/lib/utils"
+import { cn } from "~/lib/utils";
 
-const Table: Component<ComponentProps<"table">> = (props) => {
-  const [local, others] = splitProps(props, ["class"])
+function Table(props: ComponentProps<"table">) {
+  const rest = omit(props, "class");
   return (
     <div class="relative w-full overflow-auto">
-      <table class={cn("w-full caption-bottom text-sm", local.class)} {...others} />
+      <table class={cn("w-full caption-bottom text-sm", props.class)} {...rest} />
     </div>
-  )
+  );
 }
 
-const TableHeader: Component<ComponentProps<"thead">> = (props) => {
-  const [local, others] = splitProps(props, ["class"])
-  return <thead class={cn("[&_tr]:border-b", local.class)} {...others} />
+function TableHeader(props: ComponentProps<"thead">) {
+  const rest = omit(props, "class");
+  return <thead class={cn("[&_tr]:border-b", props.class)} {...rest} />;
 }
 
-const TableBody: Component<ComponentProps<"tbody">> = (props) => {
-  const [local, others] = splitProps(props, ["class"])
-  return <tbody class={cn("[&_tr:last-child]:border-0", local.class)} {...others} />
+function TableBody(props: ComponentProps<"tbody">) {
+  const rest = omit(props, "class");
+  return <tbody class={cn("[&_tr:last-child]:border-0", props.class)} {...rest} />;
 }
 
-const TableFooter: Component<ComponentProps<"tfoot">> = (props) => {
-  const [local, others] = splitProps(props, ["class"])
+function TableFooter(props: ComponentProps<"tfoot">) {
+  const rest = omit(props, "class");
   return (
-    <tfoot class={cn("bg-primary font-medium text-primary-foreground", local.class)} {...others} />
-  )
+    <tfoot class={cn("bg-primary font-medium text-primary-foreground", props.class)} {...rest} />
+  );
 }
 
-const TableRow: Component<ComponentProps<"tr">> = (props) => {
-  const [local, others] = splitProps(props, ["class"])
+function TableRow(props: ComponentProps<"tr">) {
+  const rest = omit(props, "class");
   return (
     <tr
       class={cn(
         "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
-        local.class
+        props.class,
       )}
-      {...others}
+      {...rest}
     />
-  )
+  );
 }
 
-const TableHead: Component<ComponentProps<"th">> = (props) => {
-  const [local, others] = splitProps(props, ["class"])
+function TableHead(props: ComponentProps<"th">) {
+  const rest = omit(props, "class");
   return (
     <th
       class={cn(
         "h-10 px-2 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0",
-        local.class
+        props.class,
       )}
-      {...others}
+      {...rest}
     />
-  )
+  );
 }
 
-const TableCell: Component<ComponentProps<"td">> = (props) => {
-  const [local, others] = splitProps(props, ["class"])
-  return (
-    <td class={cn("p-2 align-middle [&:has([role=checkbox])]:pr-0", local.class)} {...others} />
-  )
+function TableCell(props: ComponentProps<"td">) {
+  const rest = omit(props, "class");
+  return <td class={cn("p-2 align-middle [&:has([role=checkbox])]:pr-0", props.class)} {...rest} />;
 }
 
-const TableCaption: Component<ComponentProps<"caption">> = (props) => {
-  const [local, others] = splitProps(props, ["class"])
-  return <caption class={cn("mt-4 text-sm text-muted-foreground", local.class)} {...others} />
+function TableCaption(props: ComponentProps<"caption">) {
+  const rest = omit(props, "class");
+  return <caption class={cn("mt-4 text-sm text-muted-foreground", props.class)} {...rest} />;
 }
 
-export { Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell, TableCaption }
+export { Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell, TableCaption };

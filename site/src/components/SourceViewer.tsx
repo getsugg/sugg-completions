@@ -1,8 +1,9 @@
-import { For, Show, onMount } from "solid-js";
-import { VList, type VirtualizerHandle } from "virtua/solid";
+import { For, Show, onSettled } from "solid-js";
+
 import type { LineData } from "~/types";
 import { cn, tokenStyle } from "~/lib/utils";
 import { Tooltip, TooltipTrigger, TooltipContent } from "~/components/ui/tooltip";
+import { VirtualList, type VirtualListHandle } from "~/components/ui/virtual-list";
 
 export const LINE_HEIGHT = 22;
 
@@ -21,7 +22,8 @@ interface SourceViewerProps {
 }
 
 export function SourceViewer(props: SourceViewerProps) {
-  let handle: VirtualizerHandle | undefined = undefined;
+  let handle: VirtualListHandle | undefined;
+
   const api: SourceViewerAPI = {
     scrollToLine: (line: number) => {
       if (!handle) return;
@@ -29,8 +31,7 @@ export function SourceViewer(props: SourceViewerProps) {
       handle.scrollToIndex(line, { align: "center" });
     },
     scrollToPos: (top: number) => {
-      if (!handle) return;
-      handle.scrollTo(top);
+      handle?.scrollTo(top);
     },
     getCenterLine: () => {
       if (!handle) return 0;
@@ -39,15 +40,14 @@ export function SourceViewer(props: SourceViewerProps) {
     getCurrentTop: () => handle?.scrollOffset ?? 0,
   };
 
-  onMount(() => props.ref?.(api));
+  onSettled(() => props.ref?.(api));
 
   return (
-    <VList
+    <VirtualList
       ref={(el) => {
         handle = el;
       }}
       data={props.rawLines}
-      style={{ height: "100%" }}
       class="source-viewer h-full overflow-auto p-4 text-sm leading-5.5"
       itemSize={LINE_HEIGHT}
       bufferSize={LINE_HEIGHT * 10}
@@ -78,9 +78,9 @@ export function SourceViewer(props: SourceViewerProps) {
                       {t.hover.textTokens ? (
                         <code class="block font-mono text-xs leading-snug max-w-[90vw] wrap-break-word whitespace-pre-wrap">
                           <For each={t.hover.textTokens}>
-                            {(line) => (
+                            {(hoverLine) => (
                               <div>
-                                <For each={line}>
+                                <For each={hoverLine}>
                                   {(tok) => (
                                     <span
                                       style={{
@@ -120,6 +120,6 @@ export function SourceViewer(props: SourceViewerProps) {
           </span>
         </div>
       )}
-    </VList>
+    </VirtualList>
   );
 }

@@ -1,4 +1,6 @@
-import { type ComponentProps, splitProps } from "solid-js";
+import type { ComponentProps } from "@solidjs/web";
+import { omit } from "solid-js";
+
 import { cn } from "~/lib/utils";
 
 interface ShimmerButtonProps extends ComponentProps<"button"> {
@@ -10,7 +12,8 @@ interface ShimmerButtonProps extends ComponentProps<"button"> {
 }
 
 export function ShimmerButton(props: ShimmerButtonProps) {
-  const [local, rest] = splitProps(props, [
+  const rest = omit(
+    props,
     "class",
     "shimmerColor",
     "shimmerSize",
@@ -18,24 +21,24 @@ export function ShimmerButton(props: ShimmerButtonProps) {
     "shimmerDuration",
     "background",
     "children",
-  ]);
+  );
   return (
     <button
       style={
         {
           "--spread": "90deg",
-          "--shimmer-color": local.shimmerColor ?? "#ffffff",
-          "--radius": local.borderRadius ?? "100px",
-          "--speed": local.shimmerDuration ?? "3s",
-          "--cut": local.shimmerSize ?? "0.05em",
-          "--bg": local.background ?? "rgba(0, 0, 0, 1)",
+          "--shimmer-color": props.shimmerColor ?? "#ffffff",
+          "--radius": props.borderRadius ?? "100px",
+          "--speed": props.shimmerDuration ?? "3s",
+          "--cut": props.shimmerSize ?? "0.05em",
+          "--bg": props.background ?? "rgba(0, 0, 0, 1)",
         } as Record<string, string>
       }
       class={cn(
         "group relative z-0 flex cursor-pointer items-center justify-center overflow-hidden whitespace-nowrap px-6 py-3 text-white",
         "[border-radius:var(--radius)] border border-white/10 [background:var(--bg)]",
         "transform-gpu transition-transform duration-300 ease-in-out active:translate-y-px",
-        local.class,
+        props.class,
       )}
       {...rest}
     >
@@ -51,7 +54,7 @@ export function ShimmerButton(props: ShimmerButtonProps) {
           />
         </div>
       </div>
-      {local.children}
+      {props.children}
       <div
         class={cn(
           "absolute inset-0 size-full rounded-2xl px-4 py-1.5 text-sm font-medium",

@@ -1,23 +1,14 @@
-import { Show, createMemo } from "solid-js";
-import { useParams } from "@solidjs/router";
+import type { JSX } from "@solidjs/web";
 import { ScriptList } from "~/components/ScriptList";
-import HomePage from "~/pages/HomePage";
-import ScriptPage from "~/pages/ScriptPage";
-import NotFound from "~/pages/NotFound";
 import scripts from "~/generated/scripts.json";
-import { getScript } from "~/lib/scripts-utils";
 
-export default function ConsoleLayout() {
-  const params = useParams<{ script?: string }>();
-  const stem = () => params.script || null;
-  const validScript = createMemo(() => (stem() ? getScript(stem()!) : null));
-
+export function ConsoleLayout(props: { children?: JSX.Element }) {
   return (
     <div class="min-h-screen bg-background text-foreground">
       <header class="relative flex h-12 items-center gap-3 border-b-2 border-amber-500 px-5 py-0 bg-[#1a1420]">
         <div class="absolute -bottom-0.5 left-0 right-0 h-0.5 bg-linear-to-r from-amber-500 via-amber-300 to-amber-700" />
-        <a href="#/" class="flex items-center gap-3">
-          <img src="logo-horizontal.svg" alt="Sugg" class="h-7 w-auto" />
+        <a href="/" class="flex items-center gap-3">
+          <img src="/logo-horizontal.svg" alt="Sugg" class="h-7 w-auto" />
         </a>
         <span class="text-[10px] text-[#6a5d78]">Completion Scripts · Security Audit</span>
         <div class="flex-1" />
@@ -28,13 +19,7 @@ export default function ConsoleLayout() {
       </header>
       <div class="flex h-[calc(100vh-48px)]">
         <ScriptList />
-        <main class="flex min-w-0 flex-1 flex-col">
-          <Show when={stem()} fallback={<HomePage />}>
-            <Show when={validScript()} fallback={<NotFound />}>
-              <ScriptPage />
-            </Show>
-          </Show>
-        </main>
+        <main class="flex min-w-0 flex-1 flex-col">{props.children}</main>
       </div>
     </div>
   );
