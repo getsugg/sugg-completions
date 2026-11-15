@@ -357,11 +357,11 @@ export function ScriptPage(props: ScriptPageProps) {
               </div>
             </Show>
             <Show when={!loading() && analysis()}>
-              {counts().unsafe > 0 && (
+              <Show when={counts().unsafe > 0}>
                 <Badge variant="error" round class="text-[11px]">
                   {counts().unsafe} unsafe
                 </Badge>
-              )}
+              </Show>
               <div class="flex items-center gap-1 text-[11px] text-[#6a5d78]">
                 <span class="text-green-500 text-[11px] font-bold">✓</span>
                 Auto Analysis

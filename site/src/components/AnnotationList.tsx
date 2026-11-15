@@ -1,3 +1,5 @@
+import { Show } from "solid-js";
+
 import { useScriptContext } from "~/contexts/ScriptContext";
 import { Badge } from "~/components/ui/badge";
 import { VirtualList } from "~/components/ui/virtual-list";
@@ -50,9 +52,9 @@ export function AnnotationList(props: AnnotationListProps) {
             <span class="font-mono text-[11px] text-[#4a3f55] w-8 shrink-0 ml-2">
               L{a.line + 1}
             </span>
-            {a.filename && (
+            <Show when={a.filename}>
               <span class="font-mono text-[10px] text-[#6a5d78] shrink-0">{a.filename}</span>
-            )}
+            </Show>
             <span class="font-mono text-xs text-[#c8bdd4] flex-1 truncate">{a.api ?? ""}</span>
             <Badge variant={style.variant} class="text-[10px] px-2 py-0.5 uppercase">
               {style.label}

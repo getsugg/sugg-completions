@@ -1,4 +1,4 @@
-import { createMemo, createSignal } from "solid-js";
+import { Show, createMemo, createSignal } from "solid-js";
 import { useLocation } from "@solidjs/router";
 import { debounce } from "@solid-primitives/scheduled";
 
@@ -58,11 +58,11 @@ export function ScriptList() {
                 )}
               >
                 <span class="flex-1 truncate">{s.title}</span>
-                {s.unsafeCount > 0 && (
+                <Show when={s.unsafeCount > 0}>
                   <Badge variant="error" class="font-mono text-[9px] px-1.5 py-0">
                     {s.unsafeCount}
                   </Badge>
-                )}
+                </Show>
               </Button>
             </li>
           )}

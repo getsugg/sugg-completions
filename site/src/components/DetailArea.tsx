@@ -1,4 +1,4 @@
-import { createEffect, createMemo, createSignal } from "solid-js";
+import { Show, createEffect, createMemo, createSignal } from "solid-js";
 import { createResizeObserver } from "@solid-primitives/resize-observer";
 
 import { useResizableContext } from "~/components/ui/resizable";
@@ -52,60 +52,62 @@ export function DetailArea(props: DetailAreaProps) {
 
   return (
     <div class="flex flex-col h-full">
-      {displayAnalysis() ? (
-        <>
-          <FilterBar ref={setBarEl} onToggle={toggle} isExpanded={isExpanded()} />
+      <Show when={displayAnalysis()}>
+        {(analysis) => (
+          <>
+            <FilterBar ref={setBarEl} onToggle={toggle} isExpanded={isExpanded()} />
 
-          {isExpanded() ? (
-            <div class="flex flex-1 flex-col min-h-0 border-t border-border bg-card">
-              <Tabs
-                value={activeTab()}
-                onChange={setActiveTab}
-                class="flex flex-col flex-1 min-h-0"
-              >
-                <TabsList class="h-auto justify-start rounded-none border-b border-border bg-transparent p-0 shrink-0">
-                  <TabsTrigger
+            <Show when={isExpanded()}>
+              <div class="flex flex-1 flex-col min-h-0 border-t border-border bg-card">
+                <Tabs
+                  value={activeTab()}
+                  onChange={setActiveTab}
+                  class="flex flex-col flex-1 min-h-0"
+                >
+                  <TabsList class="h-auto justify-start rounded-none border-b border-border bg-transparent p-0 shrink-0">
+                    <TabsTrigger
+                      value="summary"
+                      class="rounded-none px-3.5 py-1.5 text-[11px] font-medium"
+                    >
+                      Summary
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="dynamic"
+                      class="rounded-none px-3.5 py-1.5 text-[11px] font-medium"
+                    >
+                      Dynamic
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="static"
+                      class="rounded-none px-3.5 py-1.5 text-[11px] font-medium"
+                    >
+                      Static
+                    </TabsTrigger>
+                  </TabsList>
+                  <TabsContent
                     value="summary"
-                    class="rounded-none px-3.5 py-1.5 text-[11px] font-medium"
+                    class="flex-1 overflow-hidden px-4 py-3 text-xs h-full"
                   >
-                    Summary
-                  </TabsTrigger>
-                  <TabsTrigger
+                    <AnnotationList anns={filteredAnns()} />
+                  </TabsContent>
+                  <TabsContent
                     value="dynamic"
-                    class="rounded-none px-3.5 py-1.5 text-[11px] font-medium"
+                    class="flex-1 overflow-hidden px-4 py-3 text-xs h-full"
                   >
-                    Dynamic
-                  </TabsTrigger>
-                  <TabsTrigger
+                    <DynamicCodePanel dynamicHtml={analysis().dynamicHtml} />
+                  </TabsContent>
+                  <TabsContent
                     value="static"
-                    class="rounded-none px-3.5 py-1.5 text-[11px] font-medium"
+                    class="flex-1 overflow-hidden px-4 py-3 text-xs h-full"
                   >
-                    Static
-                  </TabsTrigger>
-                </TabsList>
-                <TabsContent
-                  value="summary"
-                  class="flex-1 overflow-hidden px-4 py-3 text-xs h-full"
-                >
-                  <AnnotationList anns={filteredAnns()} />
-                </TabsContent>
-                <TabsContent
-                  value="dynamic"
-                  class="flex-1 overflow-hidden px-4 py-3 text-xs h-full"
-                >
-                  <DynamicCodePanel dynamicHtml={displayAnalysis()?.dynamicHtml} />
-                </TabsContent>
-                <TabsContent
-                  value="static"
-                  class="flex-1 overflow-hidden px-4 py-3 text-xs h-full"
-                >
-                  <StaticCodePanel staticHtml={displayAnalysis()?.staticHtml} />
-                </TabsContent>
-              </Tabs>
-            </div>
-          ) : null}
-        </>
-      ) : null}
+                    <StaticCodePanel staticHtml={analysis().staticHtml} />
+                  </TabsContent>
+                </Tabs>
+              </div>
+            </Show>
+          </>
+        )}
+      </Show>
     </div>
   );
 }
