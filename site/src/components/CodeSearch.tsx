@@ -7,6 +7,7 @@ import {
   onSettled,
   type Setter,
 } from "solid-js";
+import { isServer } from "@solidjs/web";
 import { debounce } from "@solid-primitives/scheduled";
 
 import { VirtualList } from "~/components/ui/virtual-list";
@@ -20,10 +21,6 @@ interface CodeSearchProps {
   onSearchUpdate: Setter<Set<number>>;
 }
 
-const isMac = () =>
-  typeof navigator !== "undefined" && navigator.platform.toLowerCase().includes("mac");
-const shortcutKey = () => (isMac() ? "⌘F" : "Ctrl+F");
-
 const ITEM_HEIGHT = 32;
 const MAX_VISIBLE_ITEMS = 10;
 const LIST_HEIGHT = MAX_VISIBLE_ITEMS * ITEM_HEIGHT;
@@ -33,6 +30,13 @@ export function CodeSearch(props: CodeSearchProps) {
   const [open, setOpen] = createSignal(false);
   const [query, setQuery] = createSignal("");
   const [activeIndex, setActiveIndex] = createSignal(0);
+  // The server has no platform; start with the neutral label and fix it up on
+  // the client so hydration never disagrees with the prerendered HTML.
+  const [isMac, setIsMac] = createSignal(false);
+  onSettled(() => {
+    if (!isServer) setIsMac(navigator.platform.toLowerCase().includes("mac"));
+  });
+  const shortcutKey = () => (isMac() ? "⌘F" : "Ctrl+F");
   let panelRef: HTMLDivElement | undefined;
   let inputRef: HTMLInputElement | undefined;
 
@@ -45,7 +49,6 @@ export function CodeSearch(props: CodeSearchProps) {
     setOpen(false);
     setQuery("");
     setActiveIndex(0);
-    props.onSearchUpdate(new Set<number>());
   };
 
   const searchableLines = createMemo(() => props.rawLines.map((ld) => ld.text.toLowerCase()));
@@ -69,11 +72,20 @@ export function CodeSearch(props: CodeSearchProps) {
 
   const matchCount = () => matches().length;
 
-  const highlightedLines = createMemo(() => {
-    if (!open() || !query()) return new Set<number>();
-    const match = matches()[activeIndex()];
-    return match ? new Set([match.line]) : new Set<number>();
-  });
+  const sameLines = (a: Set<number>, b: Set<number>) => {
+    if (a.size !== b.size) return false;
+    for (const line of a) if (!b.has(line)) return false;
+    return true;
+  };
+
+  const highlightedLines = createMemo(
+    () => {
+      if (!open() || !query()) return new Set<number>();
+      const match = matches()[activeIndex()];
+      return match ? new Set([match.line]) : new Set<number>();
+    },
+    { equals: sameLines },
+  );
 
   createEffect(highlightedLines, (lines) => {
     props.onSearchUpdate(lines);

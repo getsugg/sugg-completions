@@ -56,7 +56,7 @@ declare module "virtual:file-routes" {
       path: "/scripts/:script";
       page: true;
       $component: FileRouteLazyRef<Pick<typeof import("./src/routes/scripts/[script]"), Extract<"default", keyof typeof import("./src/routes/scripts/[script]")>>>;
-      $$route?: undefined;
+      $$route: FileRouteEagerRef<Pick<typeof import("./src/routes/scripts/[script]"), Extract<"route", keyof typeof import("./src/routes/scripts/[script]")>>>;
     },
     {
       path: "/scripts/";
@@ -105,7 +105,7 @@ declare module "virtual:file-routes" {
           id: "/:script";
           page: true;
           $component: FileRouteLazyRef<Pick<typeof import("./src/routes/scripts/[script]"), Extract<"default", keyof typeof import("./src/routes/scripts/[script]")>>>;
-          $$route?: undefined;
+          $$route: FileRouteEagerRef<Pick<typeof import("./src/routes/scripts/[script]"), Extract<"route", keyof typeof import("./src/routes/scripts/[script]")>>>;
           children?: undefined;
         }
       ];

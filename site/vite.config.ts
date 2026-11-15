@@ -11,6 +11,9 @@ export default defineConfig({
     solid({
       start: {
         middleware: "./src/middleware.ts",
+        // Static export: render each page to one complete document instead of
+        // streaming it with <Loading> fallbacks and swap scripts.
+        renderMode: "async",
       },
       ssr: true,
       extensions: [".jsx", ".tsx"],

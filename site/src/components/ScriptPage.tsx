@@ -1,5 +1,6 @@
 import {
   For,
+  Loading,
   Show,
   createEffect,
   createMemo,
@@ -29,7 +30,6 @@ interface ScriptScrollState {
   positions: Map<string, number>;
 }
 
-const scrollState = new Map<string, ScriptScrollState>();
 const STORAGE_PREFIX = "sugg-scroll:";
 
 function loadPersisted(stem: string): ScriptScrollState | undefined {
@@ -50,11 +50,14 @@ function loadPersisted(stem: string): ScriptScrollState | undefined {
   }
 }
 
-function getOrCreateState(stem: string): ScriptScrollState {
-  let state = scrollState.get(stem);
+function getOrCreateState(
+  store: Map<string, ScriptScrollState>,
+  stem: string,
+): ScriptScrollState {
+  let state = store.get(stem);
   if (!state) {
     state = loadPersisted(stem) ?? { selectedFile: "", positions: new Map() };
-    scrollState.set(stem, state);
+    store.set(stem, state);
   }
   return state;
 }
@@ -83,6 +86,8 @@ function useScrollManager(opts: {
 }) {
   let pendingRestore: { stem: string; fileId: string } | null = null;
   let api: SourceViewerAPI | undefined;
+  // Per-instance cache: module scope would be shared by every SSR request.
+  const scrollState = new Map<string, ScriptScrollState>();
 
   createEffect(opts.rawLines, () => {
     if (!pendingRestore || !api) return;
@@ -93,29 +98,35 @@ function useScrollManager(opts: {
     pendingRestore = null;
   });
 
-  createEffect(opts.fileTabs, (tabs) => {
-    const s = opts.stem();
-    if (!s || !tabs.length) return;
-    const current = untrack(() => opts.activeFile());
-    if (current && tabs.some((t) => t.id === current)) return;
-    const saved = getOrCreateState(s).selectedFile;
-    const target = saved && tabs.some((t) => t.id === saved) ? saved : tabs[0].id;
-    pendingRestore = { stem: s, fileId: target };
-    opts.setActiveFile(target);
-  });
+  createEffect(
+    () => [opts.fileTabs(), opts.stem()] as const,
+    ([tabs, s]) => {
+      if (!s || !tabs.length) return;
+      const current = untrack(() => opts.activeFile());
+      if (current && tabs.some((t) => t.id === current)) return;
+      const saved = getOrCreateState(scrollState, s).selectedFile;
+      const target = saved && tabs.some((t) => t.id === saved) ? saved : tabs[0].id;
+      pendingRestore = { stem: s, fileId: target };
+      opts.setActiveFile(target);
+    },
+  );
 
   onSettled(() => {
     const save = () => {
       const s = opts.stem();
       const af = opts.activeFile();
       if (!s || !af || !api) return;
-      const state = getOrCreateState(s);
+      const state = getOrCreateState(scrollState, s);
       state.selectedFile = af;
       state.positions.set(af, api.getCurrentTop());
       persistState(s, state);
     };
     window.addEventListener("pagehide", save);
-    return () => window.removeEventListener("pagehide", save);
+    return () => {
+      // Navigating away disposes this page before pagehide can fire.
+      save();
+      window.removeEventListener("pagehide", save);
+    };
   });
 
   const handleFileSwitch = (newFileId: string) => {
@@ -123,7 +134,7 @@ function useScrollManager(opts: {
     const current = opts.activeFile();
     if (!s || current === newFileId) return;
     if (current && api) {
-      const state = getOrCreateState(s);
+      const state = getOrCreateState(scrollState, s);
       state.positions.set(current, api.getCurrentTop());
       state.selectedFile = newFileId;
       persistState(s, state);
@@ -137,7 +148,7 @@ function useScrollManager(opts: {
     const current = opts.activeFile();
     if (s && fileId && fileId !== current) {
       if (current && api) {
-        getOrCreateState(s).positions.set(current, api.getCurrentTop());
+        getOrCreateState(scrollState, s).positions.set(current, api.getCurrentTop());
       }
       pendingRestore = null;
       opts.setActiveFile(fileId);
@@ -161,13 +172,52 @@ interface ScriptPageProps {
   stem: string;
 }
 
+// Deterministic widths keep the placeholder stable between renders.
+const SKELETON_WIDTHS = Array.from({ length: 30 }, (_, i) => 32 + ((i * 37) % 55));
+
+function ScriptSkeleton(props: { stem: string }) {
+  const hasTabs = () => (getScript(props.stem)?.files.length ?? 0) > 1;
+  return (
+    <div class="flex min-h-0 min-w-0 flex-1 flex-col">
+      <div class="flex h-10 shrink-0 items-center gap-3 border-b border-border px-5 bg-[#110e14]">
+        <span class="text-sm font-semibold text-[#e8e4ea]">{props.stem}</span>
+        <span class="truncate text-[11px] text-[#5a4b68]">
+          {getScript(props.stem)?.description ?? ""}
+        </span>
+        <div class="flex-1" />
+        <div class="flex items-center gap-1.5 rounded border border-amber-500/20 bg-amber-500/5 px-2.5 py-1 text-[11px] text-amber-400">
+          <span class="inline-block size-1.5 animate-pulse rounded-full bg-amber-500" />
+          Analyzing
+        </div>
+      </div>
+      <Show when={hasTabs()}>
+        <div class="h-[33px] shrink-0 border-b border-border bg-[#1a1720]" />
+      </Show>
+      <div class="flex-1 min-h-0 overflow-hidden p-4" aria-hidden="true">
+        <div class="flex flex-col">
+          <For each={SKELETON_WIDTHS}>
+            {(width) => (
+              <div class="flex h-[22px] items-center">
+                <div class="flex w-8 shrink-0 justify-end pr-2">
+                  <div class="h-2 w-4 rounded bg-[#241d2d]" />
+                </div>
+                <div class="ml-[19px] h-2 rounded bg-[#241d2d]" style={{ width: `${width}%` }} />
+              </div>
+            )}
+          </For>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function ScriptPage(props: ScriptPageProps) {
   const stem = () => props.stem;
 
   const [activeFile, setActiveFile] = createSignal<string | null>(null);
 
   const { rawLines } = useSourceLoader(stem, activeFile);
-  const { analysis, loading } = useAnalysis(stem, activeFile);
+  const { analysis, loading, pending } = useAnalysis(stem, activeFile);
 
   const mergedAnnotations = createMemo(() => {
     const s = stem();
@@ -287,75 +337,82 @@ export function ScriptPage(props: ScriptPageProps) {
 
   return (
     <ScriptContext value={contextValue}>
-      <div class="flex min-h-0 min-w-0 flex-1 flex-col">
-        <div class="flex h-10 shrink-0 items-center gap-3 border-b border-border px-5 bg-[#110e14]">
-          <span class="text-sm font-semibold text-[#e8e4ea]">{stem()}</span>
-          <span class="truncate text-[11px] text-[#5a4b68]">
-            {getScript(stem())?.description ?? ""}
-          </span>
-          <div class="flex-1" />
-          <Show when={loading()}>
-            <div class="flex items-center gap-1.5 rounded border border-amber-500/20 bg-amber-500/5 px-2.5 py-1 text-[11px] text-amber-400">
-              <span class="inline-block size-1.5 animate-pulse rounded-full bg-amber-500" />
-              Analyzing
-            </div>
-          </Show>
-          <Show when={!loading() && analysis()}>
-            {counts().unsafe > 0 && (
-              <Badge variant="error" round class="text-[11px]">
-                {counts().unsafe} unsafe
-              </Badge>
-            )}
-            <div class="flex items-center gap-1 text-[11px] text-[#6a5d78]">
-              <span class="text-green-500 text-[11px] font-bold">✓</span>
-              Auto Analysis
-            </div>
-          </Show>
-        </div>
-
-        <Resizable
-          ref={setResizableEl}
-          orientation="vertical"
-          sizes={safePanelSizes()}
-          onSizesChange={handleSizesChange}
-          class="flex-1 min-h-0"
-        >
-          <ResizablePanel>
-            <div class="relative h-full flex flex-col">
-              <Show when={fileTabs().length > 1}>
-                <Tabs value={activeFile() ?? ""} onChange={handleFileSwitch}>
-                  <TabsList class="h-auto justify-start rounded-none border-b border-border bg-[#1a1720] p-0 w-full">
-                    <For each={fileTabs()}>
-                      {(tab) => (
-                        <TabsTrigger
-                          value={tab.id}
-                          class="rounded-none px-3 py-1.5 text-[11px] font-medium text-muted-foreground transition-none"
-                        >
-                          {tab.filename}
-                        </TabsTrigger>
-                      )}
-                    </For>
-                  </TabsList>
-                </Tabs>
-              </Show>
-
-              <div class="relative flex-1 min-h-0">
-                <SourceViewer
-                  ref={bindAPI}
-                  rawLines={rawLines()}
-                  getLineClass={getLineClass}
-                  onJump={setLastJumpedLine}
-                />
-                <CodeSearch rawLines={rawLines()} onSearchUpdate={setSearchMatches} />
+      <Loading on={stem()} fallback={<ScriptSkeleton stem={stem()} />}>
+        <div class="flex min-h-0 min-w-0 flex-1 flex-col">
+          <div class="flex h-10 shrink-0 items-center gap-3 border-b border-border px-5 bg-[#110e14]">
+            <span class="text-sm font-semibold text-[#e8e4ea]">{stem()}</span>
+            <span class="truncate text-[11px] text-[#5a4b68]">
+              {getScript(stem())?.description ?? ""}
+            </span>
+            <div class="flex-1" />
+            <Show when={loading()}>
+              <div class="flex items-center gap-1.5 rounded border border-amber-500/20 bg-amber-500/5 px-2.5 py-1 text-[11px] text-amber-400">
+                <span class="inline-block size-1.5 animate-pulse rounded-full bg-amber-500" />
+                Analyzing
               </div>
-            </div>
-          </ResizablePanel>
-          <ResizableHandle withHandle />
-          <ResizablePanel>
-            <DetailArea containerHeight={containerHeight()} onBarHeightChange={setBarHeight} />
-          </ResizablePanel>
-        </Resizable>
-      </div>
+            </Show>
+            <Show when={pending()}>
+              <div class="flex items-center gap-1.5 rounded border border-sky-500/20 bg-sky-500/5 px-2.5 py-1 text-[11px] text-sky-400">
+                Switching
+              </div>
+            </Show>
+            <Show when={!loading() && analysis()}>
+              {counts().unsafe > 0 && (
+                <Badge variant="error" round class="text-[11px]">
+                  {counts().unsafe} unsafe
+                </Badge>
+              )}
+              <div class="flex items-center gap-1 text-[11px] text-[#6a5d78]">
+                <span class="text-green-500 text-[11px] font-bold">✓</span>
+                Auto Analysis
+              </div>
+            </Show>
+          </div>
+
+          <Resizable
+            ref={setResizableEl}
+            orientation="vertical"
+            sizes={safePanelSizes()}
+            onSizesChange={handleSizesChange}
+            class="flex-1 min-h-0"
+          >
+            <ResizablePanel>
+              <div class="relative h-full flex flex-col">
+                <Show when={fileTabs().length > 1}>
+                  <Tabs value={activeFile() ?? ""} onChange={handleFileSwitch}>
+                    <TabsList class="h-auto justify-start rounded-none border-b border-border bg-[#1a1720] p-0 w-full">
+                      <For each={fileTabs()}>
+                        {(tab) => (
+                          <TabsTrigger
+                            value={tab.id}
+                            class="rounded-none px-3 py-1.5 text-[11px] font-medium text-muted-foreground transition-none"
+                          >
+                            {tab.filename}
+                          </TabsTrigger>
+                        )}
+                      </For>
+                    </TabsList>
+                  </Tabs>
+                </Show>
+
+                <div class="relative flex-1 min-h-0">
+                  <SourceViewer
+                    ref={bindAPI}
+                    rawLines={rawLines()}
+                    getLineClass={getLineClass}
+                    onJump={setLastJumpedLine}
+                  />
+                  <CodeSearch rawLines={rawLines()} onSearchUpdate={setSearchMatches} />
+                </div>
+              </div>
+            </ResizablePanel>
+            <ResizableHandle withHandle />
+            <ResizablePanel>
+              <DetailArea containerHeight={containerHeight()} onBarHeightChange={setBarHeight} />
+            </ResizablePanel>
+          </Resizable>
+        </div>
+      </Loading>
     </ScriptContext>
   );
 }

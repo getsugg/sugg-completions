@@ -38,12 +38,22 @@ export function VirtualList<T>(props: VirtualListProps<T>) {
     return { start, end };
   });
 
+  // Reuse the row wrapper while its item is unchanged, so identity-keyed <For>
+  // moves rows instead of rebuilding every row when the window shifts.
+  const rows = new Map<number, { item: T; index: number }>();
+
   const visible = createMemo(() => {
     const { start, end } = range();
     const items: { item: T; index: number }[] = [];
     for (let i = start; i < end; i++) {
       const item = props.data[i];
-      if (item !== undefined) items.push({ item, index: i });
+      if (item === undefined) continue;
+      let row = rows.get(i);
+      if (!row || row.item !== item) {
+        row = { item, index: i };
+        rows.set(i, row);
+      }
+      items.push(row);
     }
     return items;
   });

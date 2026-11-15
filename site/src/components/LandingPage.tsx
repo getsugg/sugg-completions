@@ -1,4 +1,5 @@
-import { For, Show, createSignal } from "solid-js";
+import { For, Show, createSignal, onSettled } from "solid-js";
+import { isServer } from "@solidjs/web";
 import { cn } from "~/lib/utils";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
@@ -48,18 +49,28 @@ export default function LandingPage() {
   const [codeTab, setCodeTab] = createSignal("bun");
   const [copiedIdx, setCopiedIdx] = createSignal(-1);
   const getDefaultPlatform = () => {
-    if (typeof navigator === "undefined") return "unix";
+    if (isServer) return "unix";
     try {
       return navigator.platform?.toLowerCase().includes("win") ? "win" : "unix";
     } catch {
       return "unix";
     }
   };
-  const [heroTab, setHeroTab] = createSignal<"unix" | "win">(getDefaultPlatform());
+  // Render the unix tab on the server so prerendered HTML never depends on the
+  // build machine; the client switches after hydration.
+  const [heroTab, setHeroTab] = createSignal<"unix" | "win">("unix");
+  onSettled(() => {
+    if (getDefaultPlatform() === "win") setHeroTab("win");
+  });
+
+  let copiedTimer: ReturnType<typeof setTimeout> | undefined;
+  onSettled(() => () => clearTimeout(copiedTimer));
+
   function copyWithFeedback(text: string, idx: number) {
-    void navigator.clipboard.writeText(text);
+    void navigator.clipboard.writeText(text).catch(() => {});
     setCopiedIdx(idx);
-    setTimeout(() => setCopiedIdx(-1), 1500);
+    clearTimeout(copiedTimer);
+    copiedTimer = setTimeout(() => setCopiedIdx(-1), 1500);
   }
   return (
     <div class="min-h-screen bg-background text-foreground">
@@ -164,11 +175,13 @@ export default function LandingPage() {
           >
             <button
               type="button"
-              class={`text-xs px-3 py-1.5 rounded-full font-medium transition-all ${
-                heroTab() === "unix"
-                  ? "bg-amber-500 text-white shadow-xs"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
+              class={[
+                "text-xs px-3 py-1.5 rounded-full font-medium transition-all",
+                {
+                  "bg-amber-500 text-white shadow-xs": heroTab() === "unix",
+                  "text-muted-foreground hover:text-foreground": heroTab() !== "unix",
+                },
+              ]}
               role="tab"
               aria-selected={heroTab() === "unix" ? "true" : "false"}
               onClick={() => setHeroTab("unix")}
@@ -177,11 +190,13 @@ export default function LandingPage() {
             </button>
             <button
               type="button"
-              class={`text-xs px-3 py-1.5 rounded-full font-medium transition-all ${
-                heroTab() === "win"
-                  ? "bg-amber-500 text-white shadow-xs"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
+              class={[
+                "text-xs px-3 py-1.5 rounded-full font-medium transition-all",
+                {
+                  "bg-amber-500 text-white shadow-xs": heroTab() === "win",
+                  "text-muted-foreground hover:text-foreground": heroTab() !== "win",
+                },
+              ]}
               role="tab"
               aria-selected={heroTab() === "win" ? "true" : "false"}
               onClick={() => setHeroTab("win")}
@@ -189,12 +204,14 @@ export default function LandingPage() {
               Windows
             </button>
           </div>
+          {/* One interpolated child, not `text {value} text`: dev SSR renders the
+              mixed form without hydration markers, which breaks hydration. */}
           <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-card border border-border font-mono text-xs text-muted-foreground">
             <Show
               when={heroTab() === "unix"}
-              fallback={<span class="text-foreground">irm {INSTALL_PS1_URL} | iex</span>}
+              fallback={<span class="text-foreground">{`irm ${INSTALL_PS1_URL} | iex`}</span>}
             >
-              <span class="text-foreground">curl -fsSL {INSTALL_SH_URL} | bash</span>
+              <span class="text-foreground">{`curl -fsSL ${INSTALL_SH_URL} | bash`}</span>
             </Show>
             <button
               type="button"

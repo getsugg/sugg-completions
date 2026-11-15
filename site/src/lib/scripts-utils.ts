@@ -1,4 +1,5 @@
 import scripts from "~/generated/scripts.json";
+import { isServer } from "@solidjs/web";
 import type { ScriptInfo, ScriptAnalysis, AnalysisData, FileState, LineData } from "~/types";
 
 const BASE = import.meta.env.BASE_URL;
@@ -45,4 +46,20 @@ export async function fetchAnalysis(stem: string): Promise<AnalysisData> {
     staticHtml: raw.staticHtml,
     dynamicHtml: raw.dynamicHtml,
   };
+}
+
+/**
+ * Warm a script's JSON before the user opens it. The route's `preload` runs
+ * this from the router's intent strategy (hover/focus/touch), so the later
+ * navigation's fetches hit the HTTP cache instead of starting cold.
+ */
+export function prefetchScript(stem: string) {
+  // The prerender crawler renders the route on the server, where relative
+  // asset URLs have no origin to resolve against.
+  if (isServer) return;
+  const script = getScript(stem);
+  if (!script) return;
+  void fetchAnalysis(stem).catch(() => {});
+  const file = script.files[0];
+  if (file) void fetchFileLines(file).catch(() => {});
 }

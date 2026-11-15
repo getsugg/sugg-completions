@@ -1,46 +1,36 @@
-import { createEffect, createMemo, createSignal, type Accessor } from "solid-js";
+import { createMemo, isPending, type Accessor } from "solid-js";
+import { isServer } from "@solidjs/web";
 import type { LineAnnotation, AnalysisData } from "~/types";
 import { getScript, getFile, fetchAnalysis } from "~/lib/scripts-utils";
 
 export function useAnalysis(stem: () => string | null, fileId?: Accessor<string | null>) {
-  const [analysis, setAnalysis] = createSignal<AnalysisData | undefined>();
-  const [loading, setLoading] = createSignal(false);
-
-  createEffect(
-    () => ({ stem: stem(), fileId: fileId?.() }),
-    ({ stem, fileId }) => {
-      if (!stem) {
-        setAnalysis(undefined);
-        return;
-      }
-      const script = getScript(stem);
-      if (!script) {
-        setAnalysis(undefined);
-        return;
-      }
-
-      let cancelled = false;
-      setLoading(true);
-
-      void fetchAnalysis(stem)
-        .then((base) => {
-          if (cancelled) return;
-          const file = fileId ? getFile(stem, fileId) : script.files[0];
-          const anns: LineAnnotation[] = file?.anns ?? base.anns;
-          setAnalysis({ ...base, stem, anns });
-        })
-        .catch(() => {
-          if (!cancelled) setAnalysis(undefined);
-        })
-        .finally(() => {
-          if (!cancelled) setLoading(false);
-        });
-
-      return () => {
-        cancelled = true;
-      };
+  // Client-only fetch: the server has no origin to resolve the relative asset
+  // URL against. On the server a real script stays at `undefined` (still
+  // loading) so the shell it renders matches the client's first hydrated
+  // frame; `loadingValue` keeps that frame from suspending. `null` means the
+  // fetch failed — distinct from `undefined`, which is only the first flight,
+  // so a failed request settles instead of spinning forever.
+  const base = createMemo<AnalysisData | null | undefined>(
+    () => {
+      const s = stem();
+      if (!s || !getScript(s)) return null;
+      if (isServer) return undefined;
+      return fetchAnalysis(s).catch(() => null);
     },
+    { loadingValue: undefined },
   );
+
+  const analysis = createMemo<AnalysisData | undefined>(() => {
+    const data = base();
+    if (!data) return undefined;
+    const id = fileId?.();
+    const file = id ? getFile(data.stem, id) : getScript(data.stem)?.files[0];
+    const anns: LineAnnotation[] = file?.anns ?? data.anns;
+    return { ...data, anns };
+  });
+
+  const loading = () => base() === undefined || isPending(base);
+  const pending = () => isPending(base);
 
   const counts = createMemo(() => {
     const anns: LineAnnotation[] = analysis()?.anns ?? [];
@@ -51,5 +41,5 @@ export function useAnalysis(stem: () => string | null, fileId?: Accessor<string 
     };
   });
 
-  return { analysis, loading, counts };
+  return { analysis, loading, counts, pending };
 }

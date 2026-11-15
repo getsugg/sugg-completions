@@ -36,23 +36,55 @@ const DIAGNOSTIC =
 
 const failures: string[] = [];
 
+// External requests (Google Fonts) are progressive enhancement and flake with
+// the runner's network. The gate is about the built site's own assets, so only
+// same-origin failures count.
+function isLocal(url: string) {
+  try {
+    return new URL(url).origin === origin;
+  } catch {
+    return true;
+  }
+}
+
+/** Keep the run hermetic: the font CDN must not decide whether the gate passes. */
+async function isolate(page: Page) {
+  await page.route("**/*", (route) => {
+    const url = route.request().url();
+    if (url.startsWith(origin) || url.startsWith("data:") || url.startsWith("blob:")) {
+      return route.continue();
+    }
+    return route.abort();
+  });
+}
+
 function watch(page: Page, messages: string[]) {
   page.on("console", (message) => {
     const text = message.text();
-    if (message.type() === "error" || DIAGNOSTIC.test(text)) messages.push(text);
+    const source = message.location().url;
+    if (message.type() === "error") {
+      if (!source || isLocal(source)) messages.push(text);
+      return;
+    }
+    if (DIAGNOSTIC.test(text)) messages.push(text);
   });
   page.on("pageerror", (error) => messages.push(`pageerror: ${error.message}`));
   page.on("response", (response) => {
-    if (response.status() >= 400) messages.push(`http ${response.status()}: ${response.url()}`);
+    if (response.status() >= 400 && isLocal(response.url())) {
+      messages.push(`http ${response.status()}: ${response.url()}`);
+    }
   });
   page.on("requestfailed", (request) => {
-    messages.push(`requestfailed: ${request.url()} ${request.failure()?.errorText ?? ""}`);
+    if (isLocal(request.url())) {
+      messages.push(`requestfailed: ${request.url()} ${request.failure()?.errorText ?? ""}`);
+    }
   });
 }
 
 async function check(route: string, run: (page: Page) => Promise<void>) {
   const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
   const messages: string[] = [];
+  await isolate(page);
   watch(page, messages);
 
   try {
@@ -126,6 +158,7 @@ async function checkLayout(route: string, options: { console?: boolean } = {}) {
   for (const width of VIEWPORTS) {
     const page = await browser.newPage({ viewport: { width, height: 800 } });
     const messages: string[] = [];
+    await isolate(page);
     watch(page, messages);
 
     try {
